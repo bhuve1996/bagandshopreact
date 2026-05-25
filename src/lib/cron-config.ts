@@ -1,3 +1,8 @@
+/** Set CRON_JOBS_ENABLED=true in env and restore vercel.json crons from vercel.crons.json to run scheduled jobs. */
+export function areCronJobsEnabled(): boolean {
+  return process.env.CRON_JOBS_ENABLED === "true";
+}
+
 function envInt(name: string, fallback: number) {
   const raw = process.env[name];
   if (!raw) return fallback;

@@ -88,6 +88,8 @@ See [docs/DATA.md](docs/DATA.md).
 
 ## Cron jobs
 
+**Disabled by default for deploy:** `CRON_JOBS_ENABLED=false`, empty `crons` in `vercel.json`. Schedules are kept in `vercel.crons.json` — merge into `vercel.json` when you enable crons on Vercel Pro+ and set `CRON_JOBS_ENABLED=true`.
+
 All routes require `Authorization: Bearer $CRON_SECRET`. Set `CRON_ADMIN_EMAIL` for low-stock and coupon-expiry admin emails.
 
 | Endpoint | Schedule (Vercel) | What it does |
@@ -110,7 +112,7 @@ curl -H "Authorization: Bearer $CRON_SECRET" \
   http://localhost:3000/api/cron/run-all
 ```
 
-`vercel.json` includes cron schedules for Vercel deployments. For Docker/self-hosted, use system cron or GitHub Actions with the same URLs.
+For Docker/self-hosted, use system cron or GitHub Actions with the same URLs (only when `CRON_JOBS_ENABLED=true`).
 
 Customers subscribe to back-in-stock alerts on the product page (POST `/api/stock-alerts`).
 
