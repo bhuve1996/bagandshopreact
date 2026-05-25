@@ -11,7 +11,7 @@ import {
 type Props = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   const { id } = await params;
 
@@ -34,7 +34,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   const { id } = await params;
 

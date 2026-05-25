@@ -9,7 +9,7 @@ import { syncProductsToAlgolia } from "@/lib/search";
 import { getAllProductsForSearch } from "@/services/products";
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   const products = await adminListProducts();
   return NextResponse.json(products);
@@ -53,7 +53,7 @@ const createSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   try {
     const body = createSchema.parse(await request.json());

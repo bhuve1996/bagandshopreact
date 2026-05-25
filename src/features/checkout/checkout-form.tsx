@@ -173,8 +173,11 @@ export function CheckoutForm() {
       if (paymentMethod === "RAZORPAY") {
         const { openRazorpayCheckout } = await import("@/lib/razorpay-checkout");
         const receipt = `BS${Date.now().toString(36).toUpperCase()}`;
+        const couponForOrder =
+          discount > 0 ? appliedCoupon || coupon : undefined;
         await openRazorpayCheckout({
-          amount: total,
+          items,
+          couponCode: couponForOrder,
           receipt,
           name: form.fullName,
           email: form.email,

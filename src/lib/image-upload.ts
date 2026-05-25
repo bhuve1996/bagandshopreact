@@ -16,7 +16,6 @@ const ALLOWED_MIME = new Set([
   "image/png",
   "image/webp",
   "image/gif",
-  "image/svg+xml",
   "image/avif",
 ]);
 
@@ -25,13 +24,12 @@ const EXT_BY_MIME: Record<string, string> = {
   "image/png": ".png",
   "image/webp": ".webp",
   "image/gif": ".gif",
-  "image/svg+xml": ".svg",
   "image/avif": ".avif",
 };
 
 export async function saveUploadedImage(file: File): Promise<string> {
   if (!ALLOWED_MIME.has(file.type)) {
-    throw new Error("Unsupported image format. Use JPEG, PNG, WebP, GIF, SVG, or AVIF.");
+    throw new Error("Unsupported image format. Use JPEG, PNG, WebP, GIF, or AVIF.");
   }
   if (file.size > MAX_BYTES) {
     throw new Error("Image must be 10 MB or smaller.");

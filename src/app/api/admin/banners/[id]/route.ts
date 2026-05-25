@@ -5,7 +5,7 @@ import { adminDeleteBanner } from "@/services/admin";
 type Props = { params: Promise<{ id: string }> };
 
 export async function DELETE(_req: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("promotions");
   if (auth.error) return auth.error;
   const { id } = await params;
   try {

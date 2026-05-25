@@ -4,13 +4,13 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { adminCreateCoupon, adminListCoupons, adminToggleCoupon } from "@/services/admin";
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("promotions");
   if (auth.error) return auth.error;
   return NextResponse.json(await adminListCoupons());
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("promotions");
   if (auth.error) return auth.error;
   try {
     const body = z
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("promotions");
   if (auth.error) return auth.error;
   try {
     const body = z.object({ id: z.string(), active: z.boolean() }).parse(await request.json());

@@ -16,6 +16,7 @@ type TrackResult = {
 export function TrackOrderView() {
   const searchParams = useSearchParams();
   const [orderNumber, setOrderNumber] = useState("");
+  const [email, setEmail] = useState("");
   const [result, setResult] = useState<TrackResult | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,8 +29,9 @@ export function TrackOrderView() {
   async function track(e?: React.FormEvent) {
     e?.preventDefault();
     const normalized = orderNumber.trim();
-    if (!normalized) {
-      setError("Enter your order number.");
+    const normalizedEmail = email.trim();
+    if (!normalized || !normalizedEmail) {
+      setError("Enter your order number and the email used at checkout.");
       return;
     }
     setError("");
@@ -37,7 +39,7 @@ export function TrackOrderView() {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/orders/track?order=${encodeURIComponent(normalized)}`
+        `/api/orders/track?order=${encodeURIComponent(normalized)}&email=${encodeURIComponent(normalizedEmail)}`
       );
       if (!res.ok) {
         const msg = "Order not found. Check the number and try again.";
@@ -58,9 +60,20 @@ export function TrackOrderView() {
       <div className="container-page max-w-md">
         <h1 className="text-3xl font-semibold tracking-tight">Track order</h1>
         <p className="mt-2 text-sm text-muted">
-          Enter your order number from the confirmation email (starts with BS).
+          Enter your order number and the email used at checkout (confirmation email).
         </p>
         <form onSubmit={track} className="card-premium mt-8 space-y-4 p-6">
+          <label className="block">
+            <span className="text-xs text-muted">Email</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="mt-1 h-11 w-full rounded-xl border border-border px-4 text-sm"
+              autoComplete="email"
+            />
+          </label>
           <label className="block">
             <span className="text-xs text-muted">Order number</span>
             <input

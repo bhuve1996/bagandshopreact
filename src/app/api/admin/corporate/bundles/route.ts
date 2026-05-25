@@ -28,7 +28,7 @@ const bundleSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   const kind = request.nextUrl.searchParams.get("kind");
   const parsed =
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   try {
     const body = bundleSchema.parse(await request.json());

@@ -2,23 +2,47 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { BrandLogoLink } from "@/components/layout/brand-logo";
 import { AdminNav, adminNavItems } from "@/components/admin/admin-nav";
 import { siteConfig } from "@/lib/site-content";
-import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+function pathAllowed(pathname: string, allowedHrefs: string[]) {
+  return allowedHrefs.some(
+    (href) =>
+      pathname === href ||
+      (href !== "/admin" && pathname.startsWith(`${href}/`)) ||
+      pathname.startsWith(href)
+  );
+}
+
+export function AdminShell({
+  children,
+  allowedHrefs,
+}: {
+  children: React.ReactNode;
+  allowedHrefs: string[];
+}) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const currentLabel =
     adminNavItems.find(
       (item) =>
-        pathname === item.href ||
-        (item.href !== "/admin" && pathname.startsWith(item.href))
+        allowedHrefs.includes(item.href) &&
+        (pathname === item.href ||
+          (item.href !== "/admin" && pathname.startsWith(item.href)))
     )?.label ?? "Admin";
+
+  useEffect(() => {
+    if (!allowedHrefs.length) return;
+    if (!pathAllowed(pathname, allowedHrefs)) {
+      router.replace(allowedHrefs[0] ?? "/admin/orders");
+    }
+  }, [pathname, allowedHrefs, router]);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -37,7 +61,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-stone-100 dark:bg-stone-950">
       <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 lg:hidden">
         <div className="min-w-0">
-          <BrandLogoLink href="/admin" height={22} />
+          <BrandLogoLink href={allowedHrefs[0] ?? "/admin"} height={22} />
           <p className="truncate text-xs text-muted">{currentLabel}</p>
         </div>
         <button
@@ -68,7 +92,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           )}
         >
           <div className="hidden border-b border-border px-4 py-5 lg:block">
-            <BrandLogoLink href="/admin" height={24} className="mb-1" />
+            <BrandLogoLink href={allowedHrefs[0] ?? "/admin"} height={24} className="mb-1" />
             <p className="text-xs text-muted">{siteConfig.name} Admin</p>
             <Link
               href="/"
@@ -89,7 +113,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </button>
           </div>
           <div className="flex-1 overflow-y-auto p-3">
-            <AdminNav onNavigate={() => setMobileOpen(false)} />
+            <AdminNav
+              allowedHrefs={allowedHrefs}
+              onNavigate={() => setMobileOpen(false)}
+            />
           </div>
           <div className="border-t border-border p-3 lg:hidden">
             <Link

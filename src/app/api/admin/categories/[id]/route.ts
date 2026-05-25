@@ -6,7 +6,7 @@ import { adminDeleteCategory, adminUpdateCategory } from "@/services/admin";
 type Props = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   const { id } = await params;
   try {
@@ -27,7 +27,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   const { id } = await params;
   try {

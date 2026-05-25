@@ -7,13 +7,13 @@ import {
 } from "@/services/corporate";
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   return NextResponse.json(await adminListCorporateInquiries());
 }
 
 export async function PATCH(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   try {
     const { id, status } = z

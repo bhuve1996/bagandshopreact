@@ -20,42 +20,49 @@ import {
   Briefcase,
   type LucideIcon,
 } from "lucide-react";
+import { adminNavDefs, type AdminPermission } from "@/lib/admin-permissions";
 import { cn } from "@/lib/utils";
 
-export const adminNavItems: {
-  href: string;
-  label: string;
-  icon: LucideIcon;
-}[] = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/categories", label: "Categories", icon: FolderOpen },
-  { href: "/admin/collections", label: "Collections", icon: Layers },
-  { href: "/admin/corporate", label: "Gifting bundles", icon: Briefcase },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
-  { href: "/admin/coupons", label: "Coupons", icon: Tag },
-  { href: "/admin/media", label: "Media gallery", icon: Images },
-  { href: "/admin/banners", label: "Banners", icon: Image },
-  { href: "/admin/blog", label: "Blog", icon: FileText },
-  { href: "/admin/videos", label: "Videos", icon: Video },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/reviews", label: "Reviews", icon: Star },
-  { href: "/admin/settings", label: "Content & labels", icon: Settings },
-];
+const ICONS: Record<string, LucideIcon> = {
+  "/admin": LayoutDashboard,
+  "/admin/analytics": BarChart3,
+  "/admin/products": Package,
+  "/admin/categories": FolderOpen,
+  "/admin/collections": Layers,
+  "/admin/corporate": Briefcase,
+  "/admin/orders": ShoppingCart,
+  "/admin/coupons": Tag,
+  "/admin/media": Images,
+  "/admin/banners": Image,
+  "/admin/blog": FileText,
+  "/admin/videos": Video,
+  "/admin/users": Users,
+  "/admin/reviews": Star,
+  "/admin/settings": Settings,
+};
+
+export const adminNavItems = adminNavDefs.map((d) => ({
+  href: d.href,
+  label: d.label,
+  permission: d.permission as AdminPermission,
+  icon: ICONS[d.href] ?? LayoutDashboard,
+}));
 
 export function AdminNav({
+  allowedHrefs,
   onNavigate,
   className,
 }: {
+  allowedHrefs: string[];
   onNavigate?: () => void;
   className?: string;
 }) {
   const pathname = usePathname();
+  const items = adminNavItems.filter((item) => allowedHrefs.includes(item.href));
 
   return (
     <nav className={cn("space-y-0.5", className)}>
-      {adminNavItems.map((item) => {
+      {items.map((item) => {
         const active =
           pathname === item.href ||
           (item.href !== "/admin" && pathname.startsWith(item.href));

@@ -1,4 +1,5 @@
 import { siteConfig } from "@/lib/site-content";
+import type { CartItem } from "@/types";
 
 declare global {
   interface Window {
@@ -21,7 +22,8 @@ export function loadRazorpayScript(): Promise<void> {
 }
 
 export async function openRazorpayCheckout(params: {
-  amount: number;
+  items: CartItem[];
+  couponCode?: string;
   receipt: string;
   name: string;
   email?: string;
@@ -35,9 +37,20 @@ export async function openRazorpayCheckout(params: {
   const res = await fetch("/api/payments/razorpay/order", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount: params.amount, receipt: params.receipt }),
+    body: JSON.stringify({
+      items: params.items.map((i) => ({
+        productId: i.productId,
+        variantId: i.variantId,
+        quantity: i.quantity,
+      })),
+      couponCode: params.couponCode,
+      receipt: params.receipt,
+    }),
   });
-  if (!res.ok) throw new Error("Razorpay unavailable");
+  if (!res.ok) {
+    const err = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(err.error ?? "Razorpay unavailable");
+  }
   const data = await res.json();
   await loadRazorpayScript();
 

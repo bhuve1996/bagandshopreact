@@ -4,13 +4,13 @@ import { requireAdmin } from "@/lib/admin-auth";
 import { adminCreateCollection, adminListCollections } from "@/services/admin";
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   return Response.json(await adminListCollections());
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   try {
     const body = z

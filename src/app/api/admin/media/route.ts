@@ -11,14 +11,14 @@ import {
 import { deleteVideoFile } from "@/lib/video-upload";
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   const assets = await listMediaAssets();
   return NextResponse.json(assets);
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
 
   try {
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 const deleteSchema = z.object({ url: z.string().min(1) });
 
 export async function DELETE(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
 
   try {

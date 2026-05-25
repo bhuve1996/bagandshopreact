@@ -1,21 +1,31 @@
 import { isDatabaseReady } from "@/lib/db-ready";
+import { computeOrderTotals } from "@/lib/order-totals";
 import { getPrisma } from "@/lib/prisma";
-import { createRazorpayOrder } from "@/lib/payments/razorpay";
+import { createRazorpayOrder, verifyRazorpaySignature } from "@/lib/payments/razorpay";
+import { isDemoAuthAllowed } from "@/lib/security/env";
+import {
+  decrementStockForItems,
+  OrderValidationError,
+  validateAndResolveCartItems,
+} from "@/lib/validate-cart-items";
 import type { CartItem } from "@/types";
-import { validateCoupon } from "@/services/coupons";
 import { sendOrderConfirmationEmail } from "@/services/email";
 import { markCartRecovered } from "@/services/abandoned-cart";
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackEvent } from "@/services/analytics";
 
-const SHIPPING_FREE_THRESHOLD = 999;
-const SHIPPING_COST = 99;
-const TAX_RATE = 0.18;
-
 export type CreateOrderInput = {
   userId?: string;
   customerEmail?: string;
-  items: CartItem[];
+  items: Array<{
+    productId: string;
+    variantId?: string;
+    quantity: number;
+    name?: string;
+    image?: string;
+    price?: number;
+    slug?: string;
+  }>;
   paymentMethod: "RAZORPAY" | "COD" | "UPI";
   couponCode?: string;
   razorpayPaymentId?: string;
@@ -32,27 +42,45 @@ export type CreateOrderInput = {
   };
 };
 
-function calcTotals(items: CartItem[], couponCode?: string) {
-  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
-  const shipping =
-    subtotal >= SHIPPING_FREE_THRESHOLD ? 0 : SHIPPING_COST;
-  return { subtotal, shipping };
+function resolvePaymentStatus(input: CreateOrderInput): "PENDING" | "PAID" {
+  if (input.paymentMethod === "COD") return "PENDING";
+  if (
+    input.paymentMethod === "RAZORPAY" &&
+    input.razorpayPaymentId &&
+    input.razorpayOrderId &&
+    input.razorpaySignature
+  ) {
+    const valid = verifyRazorpaySignature({
+      orderId: input.razorpayOrderId,
+      paymentId: input.razorpayPaymentId,
+      signature: input.razorpaySignature,
+    });
+    if (!valid) {
+      throw new OrderValidationError("Invalid payment verification");
+    }
+    return "PAID";
+  }
+  return "PENDING";
 }
 
 export async function createOrder(input: CreateOrderInput) {
-  const { subtotal, shipping } = calcTotals(input.items, input.couponCode);
-  let discount = 0;
-  if (input.couponCode) {
-    const coupon = await validateCoupon(input.couponCode, subtotal);
-    if (coupon.valid) discount = coupon.discount;
-  }
-  const taxable = Math.max(0, subtotal - discount);
-  const tax = Math.round(taxable * TAX_RATE);
-  const total = taxable + shipping + tax;
+  const validatedItems = await validateAndResolveCartItems(
+    input.items.map((i) => ({
+      productId: i.productId,
+      variantId: i.variantId,
+      quantity: i.quantity,
+    }))
+  );
+
+  const { subtotal, discount, shipping, tax, total } = await computeOrderTotals(
+    validatedItems,
+    input.couponCode
+  );
   const orderNumber = `BS${Date.now().toString(36).toUpperCase()}`;
+  const paymentStatus = resolvePaymentStatus(input);
 
   let razorpayOrderId = input.razorpayOrderId;
-  if (input.paymentMethod === "RAZORPAY" && !razorpayOrderId) {
+  if (input.paymentMethod === "RAZORPAY" && !razorpayOrderId && paymentStatus === "PENDING") {
     const rz = await createRazorpayOrder({
       amount: total,
       receipt: orderNumber,
@@ -61,12 +89,15 @@ export async function createOrder(input: CreateOrderInput) {
   }
 
   if (!(await isDatabaseReady())) {
+    if (!isDemoAuthAllowed()) {
+      throw new OrderValidationError("Checkout is temporarily unavailable");
+    }
     const mockOrder = {
       id: `mock-${orderNumber}`,
       orderNumber,
       status: "PENDING" as const,
       paymentMethod: input.paymentMethod,
-      paymentStatus: input.paymentMethod === "COD" ? "PENDING" : "PAID",
+      paymentStatus: input.paymentMethod === "COD" ? "PENDING" : paymentStatus,
       subtotal,
       discount,
       shipping,
@@ -76,12 +107,12 @@ export async function createOrder(input: CreateOrderInput) {
       mock: true,
     };
     await markCartRecovered(input.userId, input.customerEmail);
-    if (input.customerEmail) {
+    if (input.customerEmail && mockOrder.paymentStatus === "PAID") {
       await sendOrderConfirmationEmail({
         to: input.customerEmail,
         orderNumber,
         total,
-        items: input.items.map((i) => ({
+        items: validatedItems.map((i) => ({
           name: i.name,
           quantity: i.quantity,
           price: i.price,
@@ -91,12 +122,7 @@ export async function createOrder(input: CreateOrderInput) {
     return mockOrder;
   }
 
-  const paymentStatus =
-    input.paymentMethod === "COD"
-      ? "PENDING"
-      : input.razorpayPaymentId
-        ? "PAID"
-        : "PENDING";
+  await decrementStockForItems(validatedItems);
 
   const order = await getPrisma().order.create({
     data: {
@@ -120,7 +146,7 @@ export async function createOrder(input: CreateOrderInput) {
       shippingState: input.shipping.state,
       shippingPincode: input.shipping.pincode,
       items: {
-        create: input.items.map((item) => ({
+        create: validatedItems.map((item) => ({
           productId: item.productId,
           variantId: item.variantId,
           name: item.name,
@@ -143,13 +169,12 @@ export async function createOrder(input: CreateOrderInput) {
     metadata: {
       total,
       orderNumber,
-      itemCount: input.items.length,
+      itemCount: validatedItems.length,
       paymentMethod: input.paymentMethod,
     },
   });
 
-  const email =
-    input.customerEmail ?? order.user?.email ?? undefined;
+  const email = input.customerEmail ?? order.user?.email ?? undefined;
   if (email && paymentStatus === "PAID") {
     await sendOrderConfirmationEmail({
       to: email,
@@ -184,4 +209,41 @@ export async function getOrderByNumber(orderNumber: string, userId?: string) {
     },
     include: { items: true },
   });
+}
+
+export async function getOrderForTracking(orderNumber: string, email: string) {
+  if (!(await isDatabaseReady())) return null;
+  const normalized = email.toLowerCase().trim();
+  return getPrisma().order.findFirst({
+    where: {
+      orderNumber,
+      OR: [
+        { customerEmail: normalized },
+        { user: { email: normalized } },
+      ],
+    },
+    select: {
+      orderNumber: true,
+      status: true,
+      paymentStatus: true,
+      total: true,
+      createdAt: true,
+    },
+  });
+}
+
+/** Server-side total for Razorpay checkout (validated cart lines). */
+export async function computeCheckoutTotal(
+  lines: CreateOrderInput["items"],
+  couponCode?: string
+): Promise<{ items: CartItem[]; total: number; subtotal: number }> {
+  const items = await validateAndResolveCartItems(
+    lines.map((i) => ({
+      productId: i.productId,
+      variantId: i.variantId,
+      quantity: i.quantity,
+    }))
+  );
+  const totals = await computeOrderTotals(items, couponCode);
+  return { items, total: totals.total, subtotal: totals.subtotal };
 }

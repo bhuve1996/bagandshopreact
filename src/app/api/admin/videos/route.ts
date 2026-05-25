@@ -7,13 +7,13 @@ import {
 } from "@/services/admin";
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   return NextResponse.json(await adminListSiteVideos());
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
 
   try {

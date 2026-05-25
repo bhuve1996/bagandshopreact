@@ -78,13 +78,13 @@ function validateStorefrontPayload(body: unknown) {
 }
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("settings");
   if (auth.error) return auth.error;
   return NextResponse.json(await adminGetStorefrontSettings());
 }
 
 export async function PUT(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("settings");
   if (auth.error) return auth.error;
   try {
     const body = await request.json();

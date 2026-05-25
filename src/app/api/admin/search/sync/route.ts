@@ -3,7 +3,7 @@ import { syncProductsToAlgolia, isAlgoliaConfigured } from "@/lib/search";
 import { getAllProductsForSearch } from "@/services/products";
 
 export async function POST() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("search");
   if (auth.error) return auth.error;
   if (!isAlgoliaConfigured()) {
     return Response.json(

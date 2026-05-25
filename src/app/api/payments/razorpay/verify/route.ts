@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { applyRateLimit } from "@/lib/security/rate-limit";
 import { getPrisma } from "@/lib/prisma";
 import { isDatabaseReady } from "@/lib/db-ready";
 import {
@@ -16,6 +17,12 @@ const schema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const limited = applyRateLimit(request, "razorpay-verify", {
+    limit: 30,
+    windowMs: 60_000,
+  });
+  if (limited) return limited;
+
   if (!isRazorpayConfigured()) {
     return NextResponse.json({ error: "Not configured" }, { status: 503 });
   }

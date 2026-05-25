@@ -17,13 +17,13 @@ const blogBodySchema = z.object({
 });
 
 export async function GET() {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   return NextResponse.json(await adminListBlogPosts());
 }
 
 export async function POST(request: NextRequest) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   try {
     const body = blogBodySchema.parse(await request.json());

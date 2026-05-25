@@ -49,7 +49,7 @@ const patchSchema = z.object({
 });
 
 export async function GET(_req: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   const { id } = await params;
   const product = await adminGetProduct(id);
@@ -58,7 +58,7 @@ export async function GET(_req: NextRequest, { params }: Props) {
 }
 
 export async function PATCH(request: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   const { id } = await params;
   try {
@@ -74,7 +74,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("catalog");
   if (auth.error) return auth.error;
   const { id } = await params;
   try {

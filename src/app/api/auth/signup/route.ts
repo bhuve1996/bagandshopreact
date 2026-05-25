@@ -3,17 +3,24 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { isDatabaseReady } from "@/lib/db-ready";
 import { getPrisma } from "@/lib/prisma";
+import { applyRateLimit } from "@/lib/security/rate-limit";
 import { sendWelcomeEmail } from "@/services/email";
 import { applyReferralCode, ensureReferralCode } from "@/services/referrals";
 
 const schema = z.object({
   email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(2),
+  password: z.string().min(8).max(128),
+  name: z.string().min(2).max(120),
   referralCode: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
+  const limited = applyRateLimit(request, "auth-signup", {
+    limit: 5,
+    windowMs: 15 * 60_000,
+  });
+  if (limited) return limited;
+
   try {
     const body = schema.parse(await request.json());
     const email = body.email.toLowerCase().trim();

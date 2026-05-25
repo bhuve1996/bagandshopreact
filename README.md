@@ -41,7 +41,18 @@ npm run db:sync   # push schema → import catalog → seed users/coupons/banner
 
 See [docs/DATA.md](docs/DATA.md).
 
+## Security
+
+- Checkout prices/stock validated server-side; Razorpay amounts computed from DB cart lines.
+- Payments marked **PAID** only after Razorpay signature verification.
+- Order tracking requires order number **and** checkout email.
+- Demo logins (`admin@test.com`) work only in development unless `ALLOW_DEMO_AUTH=true`.
+- Admin **RBAC**: `MANAGER`, `SUPPORT`, `INVENTORY`, `MARKETING` have limited permissions (see `src/lib/admin-permissions.ts`).
+- Rate limits on signup, checkout, order tracking, and Razorpay endpoints.
+
 ## Demo accounts
+
+Local dev only (blocked in production unless `ALLOW_DEMO_AUTH=true`):
 
 | Email | Password | Role |
 |-------|----------|------|

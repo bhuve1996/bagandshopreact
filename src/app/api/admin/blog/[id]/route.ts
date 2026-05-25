@@ -19,7 +19,7 @@ const blogPatchSchema = z.object({
 });
 
 export async function PATCH(request: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   const { id } = await params;
   try {
@@ -33,7 +33,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 }
 
 export async function DELETE(_request: NextRequest, { params }: Props) {
-  const auth = await requireAdmin();
+  const auth = await requireAdmin("content");
   if (auth.error) return auth.error;
   const { id } = await params;
   try {

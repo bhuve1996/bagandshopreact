@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { isDatabaseReady } from "@/lib/db-ready";
 import { getPrisma } from "@/lib/prisma";
+import { isDemoAuthAllowed } from "@/lib/security/env";
 
 const DEMO_USERS = [
   {
@@ -53,6 +54,8 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
           };
         }
+
+        if (!isDemoAuthAllowed()) return null;
 
         const demo = DEMO_USERS.find((u) => u.email === email);
         if (!demo || demo.password !== credentials.password) return null;
