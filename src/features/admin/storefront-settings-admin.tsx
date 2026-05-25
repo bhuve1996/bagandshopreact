@@ -38,13 +38,18 @@ const SHARE_OPTIONS: { id: ShareChannel; label: string }[] = [
 function Field({
   label,
   children,
+  hint,
 }: {
   label: string;
   children: React.ReactNode;
+  hint?: string;
 }) {
   return (
     <label className="block text-sm">
       <span className="font-medium">{label}</span>
+      {hint ? (
+        <span className="mt-0.5 block text-xs text-muted">{hint}</span>
+      ) : null}
       <div className="mt-1">{children}</div>
     </label>
   );
