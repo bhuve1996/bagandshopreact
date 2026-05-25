@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { StaticPageLayout } from "@/components/content/static-page-layout";
 import { staticPageMetadata } from "@/lib/seo/config";
+import { resolveBlogCoverImage } from "@/lib/blog-image";
 import { listPublishedBlogPosts } from "@/services/blog";
 
 export async function generateMetadata() {
@@ -32,20 +33,18 @@ export default async function BlogPage() {
           {posts.map((post) => (
             <li key={post.id} className="border-b border-border pb-10 last:border-0">
               <article>
-                {post.coverImage ? (
-                  <Link
-                    href={`/blog/${post.slug}`}
-                    className="relative mb-4 block aspect-2/1 max-h-56 overflow-hidden rounded-xl bg-stone-100"
-                  >
-                    <Image
-                      src={post.coverImage}
-                      alt=""
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 672px) 100vw, 672px"
-                    />
-                  </Link>
-                ) : null}
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="relative mb-4 block aspect-2/1 max-h-56 overflow-hidden rounded-xl bg-stone-100"
+                >
+                  <Image
+                    src={resolveBlogCoverImage(post.coverImage)}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 672px) 100vw, 672px"
+                  />
+                </Link>
                 <time
                   dateTime={post.publishedAt}
                   className="text-xs uppercase tracking-wide text-muted"

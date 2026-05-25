@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { Button } from "@/components/ui/button";
+import { resolveBlogCoverImage } from "@/lib/blog-image";
 import { slugify } from "@/lib/slug";
 import { toast } from "@/lib/toast";
 
@@ -346,17 +347,15 @@ export function BlogAdmin() {
               key={post.id}
               className="card-premium flex flex-col gap-4 p-4 sm:flex-row sm:items-start"
             >
-              {post.coverImage ? (
-                <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-lg bg-stone-100">
-                  <Image
-                    src={post.coverImage}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    sizes="128px"
-                  />
-                </div>
-              ) : null}
+              <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-lg bg-stone-100">
+                <Image
+                  src={resolveBlogCoverImage(post.coverImage)}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  sizes="128px"
+                />
+              </div>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-medium">{post.title}</h3>

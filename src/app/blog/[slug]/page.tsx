@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { resolveBlogCoverImage } from "@/lib/blog-image";
 import { BlogContent } from "@/lib/blog-content";
 import { pageMetadata } from "@/lib/seo/metadata-helpers";
 import { getSeoSettings } from "@/lib/seo/config";
@@ -64,18 +65,16 @@ export default async function BlogPostPage({ params }: Props) {
           </h1>
           <p className="mt-4 text-muted leading-relaxed">{post.excerpt}</p>
         </header>
-        {post.coverImage ? (
-          <div className="relative mt-8 aspect-2/1 overflow-hidden rounded-xl bg-stone-100">
-            <Image
-              src={post.coverImage}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(max-width: 672px) 100vw, 672px"
-              priority
-            />
-          </div>
-        ) : null}
+        <div className="relative mt-8 aspect-2/1 overflow-hidden rounded-xl bg-stone-100">
+          <Image
+            src={resolveBlogCoverImage(post.coverImage)}
+            alt=""
+            fill
+            className="object-cover"
+            sizes="(max-width: 672px) 100vw, 672px"
+            priority
+          />
+        </div>
         <div className="prose prose-stone mt-8 max-w-none text-sm text-muted">
           <BlogContent content={post.content} />
         </div>

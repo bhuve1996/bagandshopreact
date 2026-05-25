@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import type { HomepageSectionCopy } from "@/types/storefront-settings";
+import { resolveBlogCoverImage } from "@/lib/blog-image";
 import type { BlogPostSummary } from "@/services/blog";
 
 type Props = {
@@ -39,9 +40,7 @@ export function BlogSection({ posts, section }: Props) {
             >
               <div className="relative aspect-2/1 overflow-hidden bg-stone-100 dark:bg-stone-800">
                 <Image
-                  src={
-                    post.coverImage ?? "/products/_placeholders/category.jpg"
-                  }
+                  src={resolveBlogCoverImage(post.coverImage)}
                   alt=""
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"

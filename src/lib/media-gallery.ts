@@ -50,6 +50,12 @@ const SCAN_ROOTS: {
     deletable: false,
   },
   {
+    disk: path.join(process.cwd(), "public", "blog"),
+    urlPrefix: "/blog",
+    source: "site",
+    deletable: false,
+  },
+  {
     disk: path.join(process.cwd(), "public", "bagnshop_brand_assets"),
     urlPrefix: "/bagnshop_brand_assets",
     source: "brand",
