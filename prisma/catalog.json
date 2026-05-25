@@ -1,0 +1,892 @@
+{
+  "categories": [
+    {
+      "slug": "general",
+      "name": "General",
+      "description": "Shop General"
+    },
+    {
+      "slug": "uncategorized",
+      "name": "Uncategorized",
+      "description": "Shop Uncategorized"
+    },
+    {
+      "slug": "beauty",
+      "name": "Health & Beauty",
+      "description": "Shop Health & Beauty"
+    },
+    {
+      "slug": "desk",
+      "name": "Home & Garden",
+      "description": "Shop Home & Garden"
+    },
+    {
+      "slug": "tech",
+      "name": "Electronics",
+      "description": "Shop Electronics"
+    }
+  ],
+  "products": [
+    {
+      "slug": "multifold-led-makeup-mirror",
+      "name": "Multifold LED Makeup Mirror",
+      "description": "Multifold LED Makeup Mirror\n\nThis foldable three-panel vanity mirror features LED lighting and 1×/2×/3× magnification options to help you achieve precise makeup, grooming or skincare routines. With touch-sensitive controls for three lighting modes and a 180° open angle, it provides full view flexibility and high visibility. \n\nCompact and lightweight, the mirror is ideal for travel, bathroom counters, dresser setups or professional salons. A practical, stylish accessory for daily beauty.\n\nBenefits\n\n· Precision Grooming Made Easy: Magnification and full-view panels help you apply makeup or groom accurately.\n· Flawless Lighting: LED lighting in multiple colour modes ensures true representation of colours and tones.\n· Space-Saving Design: Foldable format keeps your surroundings clutter-free and travel-ready.\n· Versatile for All Settings: From vanity table to hotel room to salon.\n· Stylish & Practical Gift: Ideal for beauty enthusiasts, frequent travellers or salon professionals.\n\nFAQs\n\nQ: Can I travel with this mirror (e.g., pack it in a suitcase)?\n Yes — its foldable design and compact size make it travel-friendly.\n\nQ: What magnification levels are available?\n You get 1×, 2× and 3× magnification options in one mirror kit. \n\nQ: Does it come with built-in lighting?\n Yes — it includes LED lighting and has touch control for three colour modes.\n\nQ: Is it suitable for professional salon use?\n Yes — the large viewing panels, high-quality lighting and foldable format make it suitable.\n\nQ: How do I power the lights?\n Depending on the variant you choose, the mirror may be powered via USB or batteries — always check the specific listing for power details.",
+      "price": 2499,
+      "compareAtPrice": 3499,
+      "categorySlug": "general",
+      "tags": [
+        "beauty accessories",
+        "foldable mirror",
+        "led mirror",
+        "magnifying mirror",
+        "makeup mirror",
+        "shop",
+        "vanity mirror"
+      ],
+      "images": [
+        "/products/multifold-led-makeup-mirror/main.png",
+        "/products/multifold-led-makeup-mirror/gallery-01.jpg",
+        "/products/multifold-led-makeup-mirror/gallery-02.png",
+        "/products/multifold-led-makeup-mirror/gallery-03.png",
+        "/products/multifold-led-makeup-mirror/gallery-04.png",
+        "/products/multifold-led-makeup-mirror/gallery-05.png"
+      ],
+      "hoverImage": "/products/multifold-led-makeup-mirror/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 2499,
+          "compareAtPrice": 3499,
+          "sku": "VFPD11330-VT0",
+          "stock": 100,
+          "image": "/products/multifold-led-makeup-mirror/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "portable-camping-gas-stove",
+      "name": "Portable Camping Gas Stove",
+      "description": "Butane Gas Stove\n\nEnjoy convenient outdoor cooking anywhere with this Portable Outdoor Gas Burner Stove. Built with durable stainless steel and designed for stability, it’s perfect for camping, picnics, trekking, or emergencies.\n\n The foldable legs make it compact for easy storage and transport. Compatible with standard butane gas canisters (not included), this burner offers a reliable flame and adjustable heat for quick and efficient cooking on the go.\n\nBenefits\n\n· Convenient for camping, hiking, and outdoor cooking\n· Foldable design saves space and fits easily in backpacks\n· Ensures fast and even heating for multiple cooking needs\n· Built tough to withstand high temperatures and outdoor use\n· Simple ignition system for effortless operation\n· Provides stable cooking even in windy conditions\n\nFAQs\n\nQ1: Is the gas canister included with this stove?\n No, the gas canister is not included. It must be purchased separately.\n\nQ2: What type of gas canister does it use?\n This stove is compatible with standard butane gas canisters available in most stores.\n\nQ3: Can it be used indoors?\n It’s recommended for outdoor use only due to ventilation and safety requirements.\n\nQ4: How do I ignite the stove?\n Simply connect the butane canister, turn the valve, and press the built-in piezo ignition button.\n\nQ5: Is it suitable for large cookware?\n Yes, the wide support frame can hold medium to large pots and pans securely.",
+      "price": 2599,
+      "compareAtPrice": 3899,
+      "categorySlug": "general",
+      "tags": [
+        "camping gear",
+        "camping stove",
+        "gas stove",
+        "outdoor cooking",
+        "portable stove",
+        "shop",
+        "travel cooking"
+      ],
+      "images": [
+        "/products/portable-camping-gas-stove/main.png",
+        "/products/portable-camping-gas-stove/gallery-01.png",
+        "/products/portable-camping-gas-stove/gallery-02.png",
+        "/products/portable-camping-gas-stove/gallery-03.png",
+        "/products/portable-camping-gas-stove/gallery-04.png",
+        "/products/portable-camping-gas-stove/gallery-05.png"
+      ],
+      "hoverImage": "/products/portable-camping-gas-stove/gallery-01.png",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 2599,
+          "compareAtPrice": 3899,
+          "sku": "VFPD11257-VT0",
+          "stock": 100,
+          "image": "/products/portable-camping-gas-stove/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "wall-mount-mop-grippers",
+      "name": "Wall Mount Mop Grippers",
+      "description": "Say Goodbye To Messy Corners With Wall Mount Mop Grippers\n\nWall Mount Mop Grippers are a practical storage solution that securely holds mops, brooms, and cleaning tools, saving space and keeping areas organized.\n\n2. Benefits\nKeeps cleaning tools organized and easily accessible.\nSpace-saving wall-mount design for efficient storage.\nStrong grip holds tools securely in place.\nDurable construction for long-term use.\nEasy installation without professional help.\nSuitable for home, office, or garage use.\nHelps maintain a neat and tidy cleaning area.\n\nFAQsQ1: How many tools can it hold at once?\nA: Each gripper can hold 1–2 tools depending on size and handle thickness.\n\nQ2: What is the weight capacity?\nA: Each gripper can support up to 5 kg.\n\nQ3: How is it installed?\nA: It can be mounted using screws or heavy-duty adhesive strips.\n\nQ4: Is it suitable for outdoor use?\nA: Yes, it is made of durable materials suitable for indoor and outdoor use.\n\nQ5: Will it work with all handle sizes?\nA: Yes, the grip adjusts to different handle diameters for secure storage.",
+      "price": 999,
+      "compareAtPrice": 1499,
+      "categorySlug": "general",
+      "tags": [
+        "broom holder",
+        "cleaning accessories",
+        "home organization",
+        "mop holder",
+        "shop",
+        "wall mount"
+      ],
+      "images": [
+        "/products/wall-mount-mop-grippers/main.png",
+        "/products/wall-mount-mop-grippers/gallery-01.png",
+        "/products/wall-mount-mop-grippers/gallery-02.png",
+        "/products/wall-mount-mop-grippers/gallery-03.jpg",
+        "/products/wall-mount-mop-grippers/gallery-04.jpg",
+        "/products/wall-mount-mop-grippers/gallery-05.jpg"
+      ],
+      "hoverImage": "/products/wall-mount-mop-grippers/gallery-01.png",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 999,
+          "compareAtPrice": 1499,
+          "sku": "VFPD9541-VT0",
+          "stock": 100,
+          "image": "/products/wall-mount-mop-grippers/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "multifunctional-electric-food-heating-glass-tray",
+      "name": "Multifunctional Electric Food Heating Glass Tray",
+      "description": "Multifunctional Electric Food Heating Tray\n\nWhether you’re hosting family gatherings, parties, or simply enjoying daily meals, this heating tray ensures your food stays at the perfect temperature. With rapid heating, a large double-zone surface, and an elegant glass-top design, it elevates both your dining experience and kitchen aesthetics.\n\nBenefits✔ Keeps Food Warm for HoursNo more reheating! Perfect for families with different eating times.\n✔ Ideal for Parties & BuffetsServe multiple guests with perfectly warm dishes throughout the event.\n✔ Protects Food Texture & FreshnessMaintains heat without overcooking or burning.\n✔ Saves Kitchen TimeAvoids repeated microwave or gas heating, making meal prep easier.\n✔ Versatile Use CasesGreat for tea/coffee, curry pots, pizzas, snacks, dosa, chapati, soups & more.\n\n(FAQ)Q1: Can I place metal, glass, or ceramic dishes on it?Yes. It supports all heat-safe materials including stainless steel, ceramic, and glass.\n\nQ2: Does it overheat or burn the food?No. It uses constant-temperature technology designed to maintain warmth without burning.\n\nQ3: Can both heating zones work at the same time?Yes, both zones heat simultaneously for multi-dish warming.\n\nQ4: Is it safe to keep switched on for long durations?Absolutely. It has overheat protection ensuring safe continuous use.\n\nQ5: Can I cook food on it?No. It is designed for warming only, not cooking.",
+      "price": 1599,
+      "compareAtPrice": 2399,
+      "categorySlug": "general",
+      "tags": [
+        "dining",
+        "food heating",
+        "food warmer",
+        "heating tray",
+        "kitchen appliance",
+        "party essentials",
+        "shop"
+      ],
+      "images": [
+        "/products/multifunctional-electric-food-heating-glass-tray/main.jpg",
+        "/products/multifunctional-electric-food-heating-glass-tray/gallery-01.jpg",
+        "/products/multifunctional-electric-food-heating-glass-tray/gallery-02.jpg",
+        "/products/multifunctional-electric-food-heating-glass-tray/gallery-03.png",
+        "/products/multifunctional-electric-food-heating-glass-tray/gallery-04.png",
+        "/products/multifunctional-electric-food-heating-glass-tray/gallery-05.jpg"
+      ],
+      "hoverImage": "/products/multifunctional-electric-food-heating-glass-tray/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 1599,
+          "compareAtPrice": 2399,
+          "sku": "VFPD11986-VT0",
+          "stock": 100,
+          "image": "/products/multifunctional-electric-food-heating-glass-tray/main.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "adhesive-punch-free-socket-holder-pack-of-2",
+      "name": "Adhesive Punch-Free Socket Holder (Pack of 2)",
+      "description": "Overview\nThe Adhesive Punch-Free Socket Holder (Pack of 2) is a convenient solution for mounting power strips, extension boards, and small devices without damage to your walls. It installs easily without the need for tools, screws, or drilling, ensuring your walls remain clean and intact.\nThis product is suitable for various settings, including homes, offices, rental spaces, and dorm rooms where permanent fixtures are restricted.\nKey Features\n\nEasy no-drill mounting solution\nStrong adhesion without wall damage\nUniversal compatibility with power strips and devices\nDetachable design for easy removal and repositioning\nTool-free installation\nUniversal & Multi-Purpose Use\nThe holder works well with:\n\nPower strips & extension boards\nWi-Fi routers\nSet-top boxes\nTissue boxes & small accessories\nThis makes it an ideal choice for organized cable and device management.\nSlide & Lock Detachable Design\nFeaturing a slide-and-lock mechanism, the holder allows for easy attachment and detachment of devices, providing flexibility in usage.\n\n{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"Product\",\"name\":\"BagnShop Adhesive Punch-Free Socket Holder – Pack of 2\",\"description\":\"Overview The Adhesive Punch-Free Socket Holder (Pack of 2) is a convenient solution for mounting power strips, extension boards, and small devices without damage to your walls. It installs easily without the need for tools, screws, or drilling, ensuring your walls remain clean and intact. This product is suitable for various settings, including homes, offices, rental spaces, and dorm rooms where permanent fixtures are restricted. Key Features Easy no-drill mounting solution Strong adhesion without wall damage Universal compatibility with power strips and devices Detachable design for easy removal and repositioning Tool-free installation Universal & Multi-Purpose Use The holder works well with: Power strips & extension boards Wi-Fi routers Set-top boxes Tissue boxes & small accessories This makes it an ideal choice for organized cable and device management. Slide & Lock Detachable Design Featuring a slide-and-lock mechanism, the holder allows for easy attachment and detachment of devices, providing flexibility in usage.\",\"brand\":{\"@type\":\"Brand\",\"name\":\"BagnShop\",\"@id\":\"https://bagnshop.com/products/adhesive-punch-free-socket-holder-pack-of-2#brand\"},\"image\":[\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/3461c7cfa8fe4bb27c62338cdeff80ae.jpg?v=1767041305\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/99ae01e0cb41ee10d2d8e25c62f5f409.jpg?v=1767041305\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/07ff3d5a1e4b8e6fa89fc1894079cebb.jpg?v=1767041305\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/dac7c8521ab3bf6ea105372982a72e31.jpg?v=1765221591\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/373efbfac31de03ee5ea5bfddd618f2d.jpg?v=1765221594\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/aafec77a9d962fa05064d924893fd582.jpg?v=1765221596\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/b8a65b12387b608b1667666be6a788dc.png?v=1765221599\"],\"@id\":\"https://bagnshop.com/products/adhesive-punch-free-socket-holder-pack-of-2#product\",\"url\":\"https://bagnshop.com/products/adhesive-punch-free-socket-holder-pack-of-2\",\"category\":\"accessories\",\"material\":[\"Wood\",\"Glass\"],\"additionalProperty\":[{\"@type\":\"PropertyValue\",\"name\":\"specs\",\"value\":\"default\"}],\"offers\":{\"@type\":\"Offer\",\"priceCurrency\":\"USD\",\"price\":\"699.00\",\"availability\":\"https://schema.org/InStock\",\"itemCondition\":\"https://schema.org/NewCondition\",\"seller\":{\"@type\":\"Organization\",\"name\":\"BagnShop\"},\"priceValidUntil\":\"2026-08-12\",\"@id\":\"https://bagnshop.com/products/adhesive-punch-free-socket-holder-pack-of-2#offer\",\"url\":\"https://bagnshop.com/products/adhesive-punch-free-socket-holder-pack-of-2\",\"sku\":\"VFPD8510-VT0\"}},{\"@type\":\"FAQPage\",\"mainEntityOfPage\":{\"@id\":\"https://bagnshop.com/products/adhesive-punch-free-socket-holder-pack-of-2#product\"},\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Who is this product suitable for?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ideal for homeowners, office workers, renters, and students.\"}},{\"@type\":\"Question\",\"name\":\"What should I consider before buying?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Ensure compatibility with the surfaces where you plan to install the holders.\"}}]}]}",
+      "price": 699,
+      "compareAtPrice": 1398,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "cable management",
+        "extension board holder",
+        "home organization",
+        "office accessories",
+        "shop",
+        "socket holder"
+      ],
+      "images": [
+        "/products/adhesive-punch-free-socket-holder-pack-of-2/main.jpg",
+        "/products/adhesive-punch-free-socket-holder-pack-of-2/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/adhesive-punch-free-socket-holder-pack-of-2/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 699,
+          "compareAtPrice": 1398,
+          "sku": "VFPD8510-VT0",
+          "stock": 100,
+          "image": "/products/adhesive-punch-free-socket-holder-pack-of-2/main.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "mini-washing-machine",
+      "name": "Portable Mini Washing Machine, Compact and Wireless",
+      "description": "Portable Mini Washing Machine – Easy Washing for Small Clothes The Portable Mini Washing Machine offers a compact and wireless solution for quickly and hygienically washing small laundry loads. It reduces the need for handwashing and reliance on full-size washing machines for everyday essentials. Ideal for washing innerwear, baby clothes, socks, handkerchiefs, masks, and delicate fabrics, this washer is suitable for use in homes, hostels, PGs, hotels, and during travel. Efficient & Gentle Cleaning The washing machine employs high-frequency turbine rotation with bubbling action to create effective water movement that removes dirt from fabrics while remaining gentle on delicate items. It's perfect for garments that require careful washing. Simple & Hassle-Free Operation \n Add water and mild detergent Place clothes inside Switch on and set the wash time Rinse and air-dry after washing  No installation, plumbing, or fixed power connection is needed. Compact, Wireless & Travel-Friendly This lightweight washing machine is designed to be easily carried, making it ideal for travelers and those living in small spaces.\n\nOverview\n\nCompact and wireless design for easy portability\nHigh-frequency turbine rotation for gentle cleaning\nUSB rechargeable, perfect for travel\n\nKey highlights\n\nEfficient for small laundry loads of delicate fabrics\nLightweight and easy to carry\n\nSpecs\n\nBrand: BagnShop\nProduct Type: Mini Washing Machine\nIncluded Items: Portable Mini Washing Machine, USB Charging Cable, User Manual\nTarget User: Individuals living in small spaces, travelers\n\n{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"Product\",\"name\":\"BagnShop Portable Mini Washing Machine – Compact and Wireless\",\"description\":\"Portable Mini Washing Machine – Easy Washing for Small Clothes The Portable Mini Washing Machine offers a compact and wireless solution for quickly and hygienically washing small laundry loads. It reduces the need for handwashing and reliance on full-size washing machines for everyday essentials. Ideal for washing innerwear, baby clothes, socks, handkerchiefs, masks, and delicate fabrics , this washer is suitable for use in homes, hostels, PGs, hotels, and during travel. Efficient & Gentle Cleaning The washing machine employs high-frequency turbine rotation with bubbling action to create effective water movement that removes dirt from fabrics while remaining gentle on delicate items. It's perfect for garments that require careful washing. Simple & Hassle-Free Operation Add water and mild detergent Place clothes inside Switch on and set the wash time Rinse and air-dry after washing No installation, plumbing, or fixed power connection is needed. Compact, Wireless & Travel-Friendly This lightweight washing machine is designed to be easily carried, making it ideal for travelers and those living in small spaces. Overview Compact and wireless design for easy portability High-frequency turbine rotation for gentle cleaning USB rechargeable, perfect for travel Key highlights Efficient for small laundry loads of delicate fabrics Lightweight and easy to carry Specs Brand: BagnShop Product Type: Mini Washing Machine Included Items: Portable Mini Washing Machine, USB Charging Cable, User Manual Target User: Individuals living in small spaces, travelers\",\"brand\":{\"@type\":\"Brand\",\"name\":\"BagnShop\",\"@id\":\"https://bagnshop.com/products/mini-washing-machine#brand\"},\"image\":[\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/fcc1945d5dab914cbadc9e41fe6273c6Screenshot_202025-06-11_20at_202.27.54_20PM.png?v=1770416581\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/8043473412019995f55d2cdda10ebbee.jpg?v=1766949156\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/63684977777c5215d459189ca7e4a110Screenshot_202025-06-11_20at_202.28.07_20PM.png?v=1766949156\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/af7abd4133ed48f7ff8c148e9532fc40Screenshot_202025-06-11_20at_202.28.31_20PM.png?v=1766949156\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/fcc1945d5dab914cbadc9e41fe6273c6Screenshot_202025-06-11_20at_202.28.00_20PM.png?v=1766949156\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/1a7703b7f599c6a1270222395938d844Screenshot_202025-06-11_20at_202.28.22_20PM.png?v=1766949156\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/1a7703b7f599c6a1270222395938d844Screenshot_202025-06-11_20at_202.28.12_20PM.png?v=1766949156\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/e9fba98ab0891ea885b53ac71aaeacd0.jpg?v=1766949156\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/655970ea7d2a5b39fb8deae35e0bb99c.jpg?v=1766949156\"],\"@id\":\"https://bagnshop.com/products/mini-washing-machine#product\",\"url\":\"https://bagnshop.com/products/mini-washing-machine\",\"category\":\"accessories\",\"additionalProperty\":[{\"@type\":\"PropertyValue\",\"name\":\"specs\",\"value\":\"default\"}],\"offers\":{\"@type\":\"Offer\",\"priceCurrency\":\"USD\",\"price\":\"2699.00\",\"availability\":\"https://schema.org/InStock\",\"itemCondition\":\"https://schema.org/NewCondition\",\"seller\":{\"@type\":\"Organization\",\"name\":\"BagnShop\"},\"priceValidUntil\":\"2026-08-12\",\"@id\":\"https://bagnshop.com/products/mini-washing-machine#offer\",\"url\":\"https://bagnshop.com/products/mini-washing-machine\",\"sku\":\"VFPD9022-VT0\"}},{\"@type\":\"FAQPage\",\"mainEntityOfPage\":{\"@id\":\"https://bagnshop.com/products/mini-washing-machine#product\"},\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"Who is this product suitable for?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"This product is ideal for individuals living in small spaces, travelers, and anyone needing to wash delicate items.\"}},{\"@type\":\"Question\",\"name\":\"What should I consider before buying?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Consider your laundry needs and the need for a compact washing solution for delicate items.\"}}]}]}",
+      "price": 2699,
+      "compareAtPrice": 3999,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "compact appliance",
+        "home appliances",
+        "laundry",
+        "mini washing machine",
+        "portable washer",
+        "shop",
+        "travel appliance",
+        "washing machine"
+      ],
+      "images": [
+        "/products/mini-washing-machine/main.png",
+        "/products/mini-washing-machine/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/mini-washing-machine/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 2699,
+          "compareAtPrice": 3999,
+          "sku": "VFPD9022-VT0",
+          "stock": 100,
+          "image": "/products/mini-washing-machine/variant-standard.png"
+        }
+      ]
+    },
+    {
+      "slug": "electric-shoe-dryer",
+      "name": "Electric Shoe Dryer",
+      "description": "Dry your footwear safely and evenly with the BagnShop Electric Shoe Dryer. This compact device circulates warm air to help remove moisture from shoes, boots, gloves, and socks.\n\nFeatures:\n\nEven warm-air drying for daily footwear\n\nHelps prevent moisture build-up inside shoes\n\nLightweight, portable design\n\nSuitable for sports shoes, leather shoes, and boots\n\nSimple plug-and-use operation\n\nTemperature-controlled heating elements\n\nLow-noise performance\n\nSpecifications:\n\nMaterial: ABS\n\nPower: 20–30W (varies by model)\n\nCable length: 1–1.5m\n\nColour: As shown\n\nPlug type: Standard Indian plug\n\nWhat’s in the Box:\n\n1 Pair of electric shoe dryers\n\nSafety:\n\nFor indoor use only\n\nKeep away from water\n\nDo not exceed the recommended drying time",
+      "price": 1799,
+      "compareAtPrice": 2699,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "electric dryer",
+        "footwear care",
+        "home appliances",
+        "monsoon essential",
+        "shoe dryer",
+        "shop"
+      ],
+      "images": [
+        "/products/electric-shoe-dryer/main.png",
+        "/products/electric-shoe-dryer/gallery-01.png"
+      ],
+      "hoverImage": "/products/electric-shoe-dryer/gallery-01.png",
+      "variants": [
+        {
+          "name": "Orange-Box",
+          "color": "Orange-Box",
+          "price": 1799,
+          "compareAtPrice": 2699,
+          "sku": "VFPD9090-VT0",
+          "stock": 100,
+          "image": "/products/electric-shoe-dryer/main.png"
+        },
+        {
+          "name": "White-Box",
+          "color": "White-Box",
+          "price": 1799,
+          "compareAtPrice": 2699,
+          "sku": "VFPD9090-VT1",
+          "stock": 100,
+          "image": "/products/electric-shoe-dryer/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "portable-cosmetic-organizer-with-led-mirror",
+      "name": "Portable Cosmetic Organizer with LED Mirror",
+      "description": "Keep your makeup neatly arranged and easy to access with the BagnShop Portable Cosmetic Organiser. Designed with a built-in LED mirror, this all-in-one case is perfect for travel, vanity tables, and everyday use.\n\nFeatures:\n\nBuilt-in LED mirror with adjustable lighting\n\nKeeps skincare, makeup, brushes, and accessories organised\n\nLightweight and portable for home or travel\n\nSturdy outer shell protects cosmetics\n\nUSB-powered LED light\n\nSpacious storage with multiple compartments\n\nSpecifications:\n\nMaterial: ABS + Acrylic\n\nPower: USB interface\n\nLED brightness: Adjustable\n\nColour: As shown\n\nWhat’s Included:\n\n1 x Cosmetic organiser\n\n1 x USB cable\n\nCare:\n\nWipe with a dry cloth\n\nDo not expose to moisture",
+      "price": 1199,
+      "compareAtPrice": 1799,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "beauty accessories",
+        "cosmetic organizer",
+        "led mirror",
+        "makeup organizer",
+        "shop",
+        "vanity organizer"
+      ],
+      "images": [
+        "/products/portable-cosmetic-organizer-with-led-mirror/main.jpg",
+        "/products/portable-cosmetic-organizer-with-led-mirror/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/portable-cosmetic-organizer-with-led-mirror/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "White",
+          "color": "White",
+          "price": 1199,
+          "compareAtPrice": 1799,
+          "sku": "VFPD7144-VT0",
+          "stock": 100,
+          "image": "/products/portable-cosmetic-organizer-with-led-mirror/main.jpg"
+        },
+        {
+          "name": "Black",
+          "color": "Black",
+          "price": 1199,
+          "compareAtPrice": 1799,
+          "sku": "VFPD7144-VT1",
+          "stock": 100,
+          "image": "/products/portable-cosmetic-organizer-with-led-mirror/main.jpg"
+        },
+        {
+          "name": "Pink",
+          "color": "Pink",
+          "price": 1199,
+          "compareAtPrice": 1799,
+          "sku": "VFPD7144-VT2",
+          "stock": 100,
+          "image": "/products/portable-cosmetic-organizer-with-led-mirror/main.jpg"
+        },
+        {
+          "name": "Green",
+          "color": "Green",
+          "price": 1199,
+          "compareAtPrice": 1799,
+          "sku": "VFPD7144-VT3",
+          "stock": 100,
+          "image": "/products/portable-cosmetic-organizer-with-led-mirror/main.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "wireless-portable-magnetic-speaker",
+      "name": "Wireless Magnetic Speaker",
+      "description": "Enjoy clear, portable sound with the BagnShop Wireless Magnetic Speaker. The magnetic backing lets you attach it to metal surfaces, making it perfect for home, travel, workouts, or outdoor use.\n\nFeatures:\n\nBluetooth wireless connectivity\n\nMagnetic attachment design\n\nBuilt-in rechargeable battery\n\nCompact, lightweight body\n\nSuitable for calls and music playback\n\nSpecifications:\n\nConnectivity: Bluetooth\n\nBattery: Rechargeable (USB charged)\n\nMaterial: ABS + Magnet\n\nRange: 8–10m (approx.)\n\nWhat’s Included:\n\n1 x Magnetic speaker\n\n1 x Charging cable",
+      "price": 1799,
+      "compareAtPrice": 5198,
+      "categorySlug": "uncategorized",
+      "tags": [],
+      "images": [
+        "/products/wireless-portable-magnetic-speaker/main.jpg",
+        "/products/wireless-portable-magnetic-speaker/gallery-01.jpg",
+        "/products/wireless-portable-magnetic-speaker/gallery-02.png",
+        "/products/wireless-portable-magnetic-speaker/gallery-03.png",
+        "/products/wireless-portable-magnetic-speaker/gallery-04.jpg",
+        "/products/wireless-portable-magnetic-speaker/gallery-05.jpg"
+      ],
+      "hoverImage": "/products/wireless-portable-magnetic-speaker/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 1799,
+          "compareAtPrice": 5198,
+          "sku": "VFPD8241-VT0",
+          "stock": 100,
+          "image": "/products/wireless-portable-magnetic-speaker/main.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "catnip-wall-mounted-treat-ball-pack-of-2",
+      "name": "Catnip Wall Mounted Treat Ball (Pack of 2)",
+      "description": "Give your cat an engaging and natural chewing experience with the BagnShop Catnip Wall-Mounted Treat Ball. Designed to stick to flat surfaces, this snack ball offers cats a fun way to lick, chew, and stay entertained.\n\nFeatures:\n\nPack of 2 natural catnip treat balls\n\nRotatable ball design for longer-lasting use\n\nAdhesive base sticks to walls, tiles, windows, or floors\n\nHelps keep pets active and mentally stimulated\n\nSuitable for kittens and adult cats\n\nEasy to attach and remove\n\nSafe ingredients commonly used in cat toys and treats\n\nWhat’s Inside:\n\n2 x Catnip treat balls with adhesive holders\n\nCare & Safety:\n\nIntended for pet entertainment only\n\nSupervise during use\n\nRemove if worn out or damaged",
+      "price": 699,
+      "compareAtPrice": 1199,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "cat toy",
+        "cat treats",
+        "catnip",
+        "pet accessories",
+        "pet supplies",
+        "shop",
+        "wall mount toy"
+      ],
+      "images": [
+        "/products/catnip-wall-mounted-treat-ball-pack-of-2/main.png",
+        "/products/catnip-wall-mounted-treat-ball-pack-of-2/gallery-01.png"
+      ],
+      "hoverImage": "/products/catnip-wall-mounted-treat-ball-pack-of-2/gallery-01.png",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 699,
+          "compareAtPrice": 1199,
+          "sku": "VFPD9272-VT0",
+          "stock": 100,
+          "image": "/products/catnip-wall-mounted-treat-ball-pack-of-2/variant-standard.png"
+        }
+      ]
+    },
+    {
+      "slug": "carbon-fibre-rearview-mirror-rain-cover",
+      "name": "Carbon Fibre Rearview Mirror Rain Cover",
+      "description": "Protect your car’s rearview mirrors from rain and dust with the BagnShop Carbon-Fiber Rearview Mirror Rain Cover. Designed as a practical car accessory for safer driving in wet or dusty conditions.\n\nFeatures:\n\nDurable carbon-fiber textured build (or high-quality ABS with carbon finish — specify actual material)\n\nWater-resistant cover protects side mirrors from rain/dust\n\nEasy to install — clip-on design\n\nLightweight, weather-resistant, and suitable for most car mirror shapes\n\nWhat’s Included:\n\n2 x mirror rain covers (left + right) — or as per product packaging",
+      "price": 499,
+      "compareAtPrice": 999,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "auto accessories",
+        "car accessories",
+        "car protection",
+        "carbon fibre",
+        "mirror cover",
+        "rain cover",
+        "rearview mirror",
+        "shop"
+      ],
+      "images": [
+        "/products/carbon-fibre-rearview-mirror-rain-cover/main.jpg",
+        "/products/carbon-fibre-rearview-mirror-rain-cover/gallery-01.png"
+      ],
+      "hoverImage": "/products/carbon-fibre-rearview-mirror-rain-cover/gallery-01.png",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 499,
+          "compareAtPrice": 999,
+          "sku": "VFPD8544-VT0",
+          "stock": 100,
+          "image": "/products/carbon-fibre-rearview-mirror-rain-cover/main.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "2-in-1-kitchen-strainer-cum-basket",
+      "name": "2-in-1 Kitchen Strainer Cum Basket",
+      "description": "Organize and rinse vegetables, fruits, or kitchen ingredients with ease using the BagnShop 2-in-1 Kitchen Strainer & Basket — a versatile tool for everyday kitchen tasks.\n\nFeatures:\n\nDual-function design: acts as a strainer and a storage basket\n\nDurable, food-safe material (e.g., plastic / stainless steel — mention exact if known)\n\nComfortable grip & easy draining holes\n\nEasy to clean and reuse\n\nLightweight and compact for kitchen use\n\nWhat’s Included:\n\n1 x 2-in-1 kitchen strainer/basket",
+      "price": 699,
+      "compareAtPrice": 1199,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "colander",
+        "kitchen basket",
+        "kitchen organizer",
+        "kitchen tools",
+        "shop",
+        "strainer",
+        "vegetable wash"
+      ],
+      "images": [
+        "/products/2-in-1-kitchen-strainer-cum-basket/main.png",
+        "/products/2-in-1-kitchen-strainer-cum-basket/gallery-01.png"
+      ],
+      "hoverImage": "/products/2-in-1-kitchen-strainer-cum-basket/gallery-01.png",
+      "variants": [
+        {
+          "name": "Standard",
+          "color": null,
+          "price": 699,
+          "compareAtPrice": 1199,
+          "sku": "VFPD9063-VT0",
+          "stock": 100,
+          "image": "/products/2-in-1-kitchen-strainer-cum-basket/variant-standard.png"
+        }
+      ]
+    },
+    {
+      "slug": "nail-fungus-removal-laser-device",
+      "name": "Nail Fungus Removal Laser Device",
+      "description": "The BagnShop Nail Fungus Removal Laser Device uses focused laser technology to target nail fungus at the source, helping nails grow back healthier and clearer with regular use.\nKey Features\n\nAdvanced Laser Technology: Penetrates deep to eliminate fungus at its source.\n\nPainless & Safe: Non-invasive treatment with no side effects.\n\nCompact & Portable: Take it anywhere for convenient, on-the-go care.\n\nEasy Operation: One-button design for hassle-free use.\n\nVisible Improvement: Noticeable results with consistent daily use.\nHow It WorksThe device uses focused laser beams to penetrate the nail and reach the fungus underneath. This light energy disrupts fungal growth, allowing the nail to heal naturally and grow back healthy and clear.\nDirections for Use\nClean the affected nail area thoroughly.\nPlace the device over the infected nail.\nPress the power button and hold for a few minutes per session.\nRepeat daily until the fungus clears.\nSpecifications\nMaterial: ABS\nPower: USB rechargeable\nLight type: Low-level laser (LLLT)\nWhat's Included\n1 x Nail Fungus Removal Laser Device\n1 x Charging cable\nNote: This is a general wellness device and not a medically certified treatment. Results may vary. Consult a healthcare professional for persistent nail conditions.",
+      "price": 1199,
+      "compareAtPrice": 1999,
+      "categorySlug": "beauty",
+      "tags": [
+        "foot care",
+        "fungus removal",
+        "health gadget",
+        "laser device",
+        "nail care",
+        "nail fungus",
+        "shop",
+        "wellness"
+      ],
+      "images": [
+        "/products/nail-fungus-removal-laser-device/main.jpg",
+        "/products/nail-fungus-removal-laser-device/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/nail-fungus-removal-laser-device/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 1199,
+          "compareAtPrice": 1999,
+          "sku": "BSGN-NFLZR-01",
+          "stock": 100,
+          "image": "/products/nail-fungus-removal-laser-device/variant-default-title.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "hd-wireless-ear-wax-removal-camera",
+      "name": "HD Wireless Ear Wax Removal Camera",
+      "description": "The BagnShop Wireless Inspection Camera is a compact visual tool designed for close-range inspection of small areas. It connects to your smartphone over Wi-Fi and displays clear HD images on your screen.\n\nFeatures:\n\nHD camera with LED illumination\n\nWireless smartphone connectivity\n\nSlim probe for inspecting small spaces\n\nReal-time viewing on app\n\nRechargeable battery\n\nSpecifications:\n\nResolution: HD\n\nConnectivity: Wi-Fi\n\nLED lights: 4–6 LEDs\n\nMaterial: ABS\n\nWhat’s Included:\n\n1 x Inspection camera\n\n1 x Charging cable\n\n1 x Accessory set (if applicable)\n\nSafety:\n\nNot a medical device\n\nAvoid inserting into sensitive body areas\n\nFor general inspection use only",
+      "price": 999,
+      "compareAtPrice": 1799,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "ear camera",
+        "ear cleaning",
+        "ear wax removal",
+        "health gadget",
+        "inspection camera",
+        "personal care",
+        "shop",
+        "wireless camera"
+      ],
+      "images": [
+        "/products/hd-wireless-ear-wax-removal-camera/main.jpg",
+        "/products/hd-wireless-ear-wax-removal-camera/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/hd-wireless-ear-wax-removal-camera/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 999,
+          "compareAtPrice": 1799,
+          "sku": "BSGN-EWCAM-01",
+          "stock": 100,
+          "image": "/products/hd-wireless-ear-wax-removal-camera/variant-default-title.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "transparent-magnetic-wireless-charger-for-iphone",
+      "name": "Transparent Magnetic Wireless Charger for iPhone",
+      "description": "Charge your phone wirelessly and conveniently with the BagnShop Transparent Magnetic Wireless Charger. Sleek design, convenient magnetic alignment, ideal for homes and offices.\n\nFeatures:\n\nMagSafe-style magnetic alignment for easy attachment (if compatible)\n\nQi wireless charging support (mention compatibility with iPhone models)\n\nTransparent or minimal design for modern look\n\nSpecifications: (fill based on actual product)\n\nInput: 5–12V USB\n\nOutput: 10–15W (or relevant)\n\nMaterial: ABS + magnetic components\n\nCable: USB-C or included as per packaging\n\nWhat’s Included:\n\n1 x Wireless charger\n\n1 x USB cable / adapter (if included)",
+      "price": 1399,
+      "compareAtPrice": 2499,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "charging",
+        "iphone charger",
+        "magnetic charger",
+        "magsafe",
+        "mobile accessories",
+        "shop",
+        "tech gadgets",
+        "wireless charger"
+      ],
+      "images": [
+        "/products/transparent-magnetic-wireless-charger-for-iphone/main.jpg",
+        "/products/transparent-magnetic-wireless-charger-for-iphone/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/transparent-magnetic-wireless-charger-for-iphone/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 1399,
+          "compareAtPrice": 2499,
+          "sku": "BSGN-WMGCHG-01",
+          "stock": 100,
+          "image": "/products/transparent-magnetic-wireless-charger-for-iphone/variant-default-title.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "labubu-mystery-box",
+      "name": "Labubu Mystery Box Labubu 1st Generation Mystery Box",
+      "description": "Enjoy the excitement of surprise gifting with the BagnShop Labubu Mystery Box — a fun collectible or gift item for yourself or loved ones. Each box contains one random item from our selected range.\n\nFeatures:\n\nMystery/ surprise box format — contents are random from a curated selection\n\nGreat as a gift or collectible\n\nSuitable for adults and older teens (mention age-appropriate)\n\nFun, affordable, and easy to send as a gift\n\nImportant Notice (Transparency):\n\nThe contents are random — you cannot choose specific items\n\nProduct value and exact contents vary — the mystery aspect is part of the purchase",
+      "price": 999,
+      "compareAtPrice": 1499,
+      "categorySlug": "desk",
+      "tags": [
+        "collectible",
+        "gift",
+        "labubu",
+        "mystery box",
+        "new arrivals",
+        "perfect gift",
+        "surprise box"
+      ],
+      "images": [
+        "/products/labubu-mystery-box/main.gif",
+        "/products/labubu-mystery-box/gallery-01.gif",
+        "/products/labubu-mystery-box/gallery-02.svg",
+        "/products/labubu-mystery-box/gallery-03.png",
+        "/products/labubu-mystery-box/gallery-04.jpg",
+        "/products/labubu-mystery-box/gallery-05.jpg"
+      ],
+      "hoverImage": "/products/labubu-mystery-box/gallery-01.gif",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 999,
+          "compareAtPrice": 1499,
+          "sku": "VFPD8835-VT0",
+          "stock": 100,
+          "image": "/products/labubu-mystery-box/main.gif"
+        }
+      ]
+    },
+    {
+      "slug": "diy-snowy-street-led-lamp",
+      "name": "DIY Snowy Street LED Lamp",
+      "description": "Add warm, decorative ambiance to any room with the BagnShop DIY Snowy Street LED Lamp — a charming tabletop light inspired by a classic street scene with a snow effect. Perfect for bedrooms, study desks, or as a thoughtful gift.\nKey Features\nDecorative LED lamp with a snowy street aesthetic\nUSB powered for easy plug-in use\nWarm white glow ideal for ambient lighting\nSimple assembly — no tools needed\nSafe for indoor use\nMakes a great gift for home décor lovers\nSpecifications\nMaterial: Plastic / ABS with LED components\nPower: USB (cable included)\nLight type: Warm white LED\nUsage: Indoor decorative lighting\nWhat's Included\n1 x DIY Snowy Street LED Lamp\n1 x USB power cable",
+      "price": 1199,
+      "compareAtPrice": 2199,
+      "categorySlug": "tech",
+      "tags": [
+        "bedroom decor",
+        "decorative light",
+        "diy lamp",
+        "gift",
+        "home decor",
+        "led lamp",
+        "night light",
+        "perfect gift",
+        "shop"
+      ],
+      "images": [
+        "/products/diy-snowy-street-led-lamp/main.png",
+        "/products/diy-snowy-street-led-lamp/gallery-01.png"
+      ],
+      "hoverImage": "/products/diy-snowy-street-led-lamp/gallery-01.png",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 1199,
+          "compareAtPrice": 2199,
+          "sku": "VFPD7582-VT0",
+          "stock": 100,
+          "image": "/products/diy-snowy-street-led-lamp/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "glow-in-dark-garden-rocks-pack-of-100-pcs",
+      "name": "Glow In Dark Garden Rocks (Pack Of 100 pcs)",
+      "description": "Brighten your garden, walkway, or indoor décor with BagnShop Glow-in-Dark Decorative Rocks. These stones absorb light during the day and emit a soft glow in low-light conditions.\n\nFeatures:\n\nGlow effect after exposure to light\n\nPack of 100 stones\n\nSuitable for gardens, fish tanks, planters, and walkways\n\nNon-toxic and reusable\n\nSpecifications:\n\nMaterial: Photoluminescent resin\n\nColour: As shown\n\nWhat’s Included:\n\n100 x Glow stones",
+      "price": 799,
+      "compareAtPrice": 1499,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "decorative rocks",
+        "garden decor",
+        "garden lighting",
+        "glow in dark",
+        "home decor",
+        "outdoor decor",
+        "perfect gift",
+        "shop",
+        "walkway decor"
+      ],
+      "images": [
+        "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/main.png",
+        "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/gallery-01.png",
+        "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/gallery-02.png",
+        "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/gallery-03.svg",
+        "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/gallery-04.jpg",
+        "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/gallery-05.png"
+      ],
+      "hoverImage": "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/gallery-01.png",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 799,
+          "compareAtPrice": 1499,
+          "sku": "VFPD7492-VT0",
+          "stock": 100,
+          "image": "/products/glow-in-dark-garden-rocks-pack-of-100-pcs/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "2-in-1-peeler-knife",
+      "name": "2-in-1 Peeler & Knife",
+      "description": "The BagnShop 2-in-1 Peeler Knife combines a sharp peeler and a small cutting blade in one ergonomic tool, perfect for fruits and vegetables.\n\nFeatures:\n\nDual-function design\n\nSharp stainless steel blades\n\nComfortable grip\n\nCompact & easy to store\n\nSpecifications:\n\nMaterial: ABS + Stainless Steel\n\nColour: As shown\n\nWhat's in the Box:\n\n1 x Peeler knife",
+      "price": 399,
+      "compareAtPrice": 799,
+      "categorySlug": "desk",
+      "tags": [
+        "2-in-1 tool",
+        "cooking tools",
+        "fruit peeler",
+        "kitchen gadget",
+        "kitchen knife",
+        "peeler",
+        "shop",
+        "vegetable peeler"
+      ],
+      "images": [
+        "/products/2-in-1-peeler-knife/main.jpg",
+        "/products/2-in-1-peeler-knife/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/2-in-1-peeler-knife/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 399,
+          "compareAtPrice": 799,
+          "sku": "VFPD7478-VT0",
+          "stock": 100,
+          "image": "/products/2-in-1-peeler-knife/variant-default-title.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "sleep-relaxing-therapy-device",
+      "name": "Sleep Relaxing Therapy Device",
+      "description": "The BagnShop Handheld Relaxation Massager is a compact device designed to provide gentle vibration for general comfort. Easy to carry and simple to use, it helps create a soothing environment at home, during travel, or while working.\n\nFeatures:\n\nCompact handheld design\n\nGentle vibration for everyday relaxation\n\nEasy one-button operation\n\nUSB-charged for portability\n\nLightweight and travel-friendly\n\nSpecifications:\n\nMaterial: ABS\n\nPower: USB rechargeable\n\nModes: Multiple vibration levels\n\nWhat's Included:\n\n1 x Handheld massager\n\n1 x Charging cable\n\nSafety:\n\nNot a medical or therapeutic device\n\nDoes not diagnose or treat any condition",
+      "price": 1399,
+      "compareAtPrice": 2499,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "handheld massager",
+        "massager",
+        "relaxation",
+        "shop",
+        "sleep aid",
+        "stress relief",
+        "therapy device",
+        "wellness"
+      ],
+      "images": [
+        "/products/sleep-relaxing-therapy-device/main.png",
+        "/products/sleep-relaxing-therapy-device/gallery-01.png"
+      ],
+      "hoverImage": "/products/sleep-relaxing-therapy-device/gallery-01.png",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 1399,
+          "compareAtPrice": 2499,
+          "sku": "VFPD7431-VT0",
+          "stock": 100,
+          "image": "/products/sleep-relaxing-therapy-device/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "easy-trim-compact-nose-trimmer",
+      "name": "Easy Trim Compact Nose Trimmer",
+      "description": "The BagnShop Nose & Ear Hair Trimmer offers quick, precise grooming with a compact and easy-to-hold design.\n\nFeatures:\n\nStainless steel trimming head\n\nSmooth and painless trimming\n\nDetachable head for cleaning\n\nBattery-operated design\n\nSpecifications:\n\nMaterial: ABS + Steel\n\nBattery: 1 x AA (not included)\n\nWhat's Included:\n\n1 x Nose trimmer\n\n1 x Cap",
+      "price": 1099,
+      "compareAtPrice": 1999,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "compact trimmer",
+        "ear trimmer",
+        "grooming",
+        "men grooming",
+        "new arrivals",
+        "nose trimmer",
+        "personal care",
+        "shop"
+      ],
+      "images": [
+        "/products/easy-trim-compact-nose-trimmer/main.png",
+        "/products/easy-trim-compact-nose-trimmer/gallery-01.jpg",
+        "/products/easy-trim-compact-nose-trimmer/gallery-02.jpg",
+        "/products/easy-trim-compact-nose-trimmer/gallery-03.jpg",
+        "/products/easy-trim-compact-nose-trimmer/gallery-04.jpg",
+        "/products/easy-trim-compact-nose-trimmer/gallery-05.png"
+      ],
+      "hoverImage": "/products/easy-trim-compact-nose-trimmer/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 1099,
+          "compareAtPrice": 1999,
+          "sku": "VFPD7295-VT0",
+          "stock": 100,
+          "image": "/products/easy-trim-compact-nose-trimmer/main.png"
+        }
+      ]
+    },
+    {
+      "slug": "smart-rgb-rhythm-sound-bar",
+      "name": "Smart RGB Rhythm Sound Bar",
+      "description": "Enhance your desk setup with the BagnShop Smart RGB Rhythm Sound Bar, a colourful LED display that reacts to music and ambient sound. Great for gaming, parties, or mood lighting.\n\nFeatures:\n\nRGB LED lights synchronised with sound\n\nMultiple lighting modes\n\nBuilt-in microphone for sound pickup\n\nUSB-powered\n\nCompact desk-friendly design\n\nSpecifications:\n\nPower: USB\n\nMaterial: ABS\n\nModes: Multi-colour patterns\n\nSize: As shown\n\nWhat's in the Box:\n\n1 x RGB sound bar\n\n1 x USB cable\n\n1 x Stand (if applicable)",
+      "price": 699,
+      "compareAtPrice": 1499,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "desk setup",
+        "gaming",
+        "home audio",
+        "led speaker",
+        "music visualizer",
+        "rgb soundbar",
+        "shop",
+        "soundbar"
+      ],
+      "images": [
+        "/products/smart-rgb-rhythm-sound-bar/main.jpg",
+        "/products/smart-rgb-rhythm-sound-bar/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/smart-rgb-rhythm-sound-bar/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 699,
+          "compareAtPrice": 1499,
+          "sku": "VFPD6944-VT0",
+          "stock": 100,
+          "image": "/products/smart-rgb-rhythm-sound-bar/main.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "hidden-camera-detector-with-keychain",
+      "name": "Hidden Camera Detector With Keychain",
+      "description": "The BagnShop RF Signal Scanner Keychain is a compact tool designed to help users detect common radio-frequency signals used by various everyday devices. Useful for general safety awareness during travel or hotel stays.\n\nFeatures:\n\nDetects basic RF signal ranges\n\nPortable keychain design\n\nSimple switch operation\n\nBuilt-in indicator light\n\nSpecifications:\n\nDetection range: Standard RF frequencies\n\nPower: Rechargeable (USB)\n\nMaterial: ABS\n\nWhat’s Included:\n\n1 x RF signal scanner\n\n1 x Charging cable\n\nSafety:\n\nNot a professional or guaranteed detection device\n\nFor general awareness purposes only",
+      "price": 599,
+      "compareAtPrice": 1499,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "camera detector",
+        "home security",
+        "keychain",
+        "rf scanner",
+        "security",
+        "shop",
+        "spy detector"
+      ],
+      "images": [
+        "/products/hidden-camera-detector-with-keychain/main.jpg",
+        "/products/hidden-camera-detector-with-keychain/gallery-01.jpg"
+      ],
+      "hoverImage": "/products/hidden-camera-detector-with-keychain/gallery-01.jpg",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 599,
+          "compareAtPrice": 1499,
+          "sku": "VFPD6899-VT0",
+          "stock": 100,
+          "image": "/products/hidden-camera-detector-with-keychain/variant-default-title.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "wireless-magnetic-speaker",
+      "name": "BagnShop Wireless Magnetic Speaker – Portable with RGB Lighting",
+      "description": "Overview\nThis Wireless Magnetic Speaker combines clear sound quality with a modern design, making it a great choice for music lovers, gamers, and tech enthusiasts. Its portability allows you to enjoy your favorite audio anywhere.\nKey Features:\n\nDynamic RGB Lighting: Enjoy vibrant, pulsing colors that sync with your music.\n\nHigh-Quality Sound: Experience clear stereo audio with rich bass for an immersive listening experience.\n\nBluetooth Connectivity: Seamlessly connect your devices for hassle-free audio streaming.\n\nMultiple Sound Modes: Choose between music, movie, and gaming settings for tailored audio performance.\n\nCompact & Stylish Design: Features a modern aesthetic that fits perfectly in any home or office.\n\n{\"@context\":\"https://schema.org\",\"@graph\":[{\"@type\":\"Product\",\"name\":\"Bagnshop Wireless Magnetic Speaker – Portable with RGB Lighting\",\"description\":\"Overview This Wireless Magnetic Speaker combines clear sound quality with a modern design, making it a great choice for music lovers, gamers, and tech enthusiasts. Its portability allows you to enjoy your favorite audio anywhere. Key Features: Dynamic RGB Lighting: Enjoy vibrant, pulsing colors that sync with your music. High-Quality Sound: Experience clear stereo audio with rich bass for an immersive listening experience. Bluetooth Connectivity: Seamlessly connect your devices for hassle-free audio streaming. Multiple Sound Modes: Choose between music, movie, and gaming settings for tailored audio performance. Compact & Stylish Design: Features a modern aesthetic that fits perfectly in any home or office.\",\"brand\":{\"@type\":\"Brand\",\"name\":\"My Store\",\"@id\":\"https://bagnshop.com/products/wireless-magnetic-speaker#brand\"},\"image\":[\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/d14940dc1e7a69fd71771ab2cbd82854.png?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/85d573d444febe23be5cea411b1094b6.png?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/b97d02f0a87a1244167975087039a611.png?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/1d3eb579cf196b5ae9d95fd29a3fe882.webp?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/51a94777960e56d1271fd3b16f3f96d8.jpg?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/c306647c0f15284dffad9dc37fc5041f.png?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/66286213a57263674254174f78a8992d.png?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/eeeea8d4a6589f664fd0ccae1e8f25bb.png?v=1757536887\",\"https://cdn.shopify.com/s/files/1/0754/2292/5038/files/ee8e7ec3a451c278d75b632438f35054.png?v=1757536887\"],\"@id\":\"https://bagnshop.com/products/wireless-magnetic-speaker#product\",\"url\":\"https://bagnshop.com/products/wireless-magnetic-speaker\",\"category\":\"electronics\",\"offers\":{\"@type\":\"Offer\",\"priceCurrency\":\"USD\",\"price\":\"1099.00\",\"availability\":\"https://schema.org/InStock\",\"itemCondition\":\"https://schema.org/NewCondition\",\"seller\":{\"@type\":\"Organization\",\"name\":\"My Store\"},\"priceValidUntil\":\"2026-08-11\",\"@id\":\"https://bagnshop.com/products/wireless-magnetic-speaker#offer\",\"url\":\"https://bagnshop.com/products/wireless-magnetic-speaker\",\"sku\":\"VFPD6869-VT0\"}},{\"@type\":\"FAQPage\",\"mainEntityOfPage\":{\"@id\":\"https://bagnshop.com/products/wireless-magnetic-speaker#product\"},\"mainEntity\":[{\"@type\":\"Question\",\"name\":\"What material is this speaker made of?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Information about the materials is currently unavailable.\"}},{\"@type\":\"Question\",\"name\":\"Who is this speaker suitable for?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"This speaker is ideal for music lovers, gamers, and tech enthusiasts.\"}},{\"@type\":\"Question\",\"name\":\"What should I consider before buying?\",\"acceptedAnswer\":{\"@type\":\"Answer\",\"text\":\"Consider the various sound modes and Bluetooth connectivity for optimal use.\"}}]}]}",
+      "price": 1099,
+      "compareAtPrice": 1999,
+      "categorySlug": "uncategorized",
+      "tags": [
+        "bluetooth speaker",
+        "gaming speaker",
+        "portable audio",
+        "rgb lighting",
+        "shop",
+        "tech gadgets",
+        "wireless speaker"
+      ],
+      "images": [
+        "/products/wireless-magnetic-speaker/main.png",
+        "/products/wireless-magnetic-speaker/gallery-01.png"
+      ],
+      "hoverImage": "/products/wireless-magnetic-speaker/gallery-01.png",
+      "variants": [
+        {
+          "name": "Default Title",
+          "color": "Default Title",
+          "price": 1099,
+          "compareAtPrice": 1999,
+          "sku": "VFPD6869-VT0",
+          "stock": 100,
+          "image": "/products/wireless-magnetic-speaker/variant-default-title.png"
+        }
+      ]
+    }
+  ]
+}

@@ -7,14 +7,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { defaultBanners } from "@/lib/default-banners";
 import type { BannerSlide } from "@/services/banners";
 
 export function HeroCarousel() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const { data: slides = defaultBanners } = useQuery({
+  const { data: slides = [] } = useQuery({
     queryKey: ["banners"],
     queryFn: () =>
       fetch("/api/banners").then((r) => r.json() as Promise<BannerSlide[]>),

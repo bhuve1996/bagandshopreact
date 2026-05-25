@@ -1,6 +1,12 @@
 import { mkdir, unlink, writeFile } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import {
+  deleteBlobByUrl,
+  isBlobMediaUrl,
+  isBlobStorageEnabled,
+  putPublicBlob,
+} from "@/lib/blob-storage";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "images");
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -33,6 +39,15 @@ export async function saveUploadedImage(file: File): Promise<string> {
 
   const ext = EXT_BY_MIME[file.type] ?? ".jpg";
   const filename = `${randomUUID()}${ext}`;
+
+  if (isBlobStorageEnabled()) {
+    return putPublicBlob(
+      `uploads/images/${filename}`,
+      file,
+      file.type || "application/octet-stream"
+    );
+  }
+
   await mkdir(UPLOAD_DIR, { recursive: true });
   const buffer = Buffer.from(await file.arrayBuffer());
   await writeFile(path.join(UPLOAD_DIR, filename), buffer);
@@ -40,6 +55,10 @@ export async function saveUploadedImage(file: File): Promise<string> {
 }
 
 export async function deleteImageFile(publicSrc: string) {
+  if (isBlobMediaUrl(publicSrc)) {
+    await deleteBlobByUrl(publicSrc);
+    return;
+  }
   if (!publicSrc.startsWith("/uploads/images/")) return;
   const diskPath = path.join(process.cwd(), "public", publicSrc);
   try {

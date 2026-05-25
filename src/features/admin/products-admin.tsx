@@ -47,7 +47,7 @@ export function ProductsAdmin() {
         <div>
           <h1 className="text-2xl font-semibold">Products</h1>
           <p className="mt-1 text-sm text-muted">
-            Manage catalog from CSV import — edit prices, variants, flags, and images.
+            Manage catalog — edit prices, variants, flags, and images.
           </p>
         </div>
         <Button asChild>
@@ -144,7 +144,7 @@ export function ProductsAdmin() {
           </table>
           {(data ?? []).length === 0 && (
             <p className="p-8 text-center text-sm text-muted">
-              No products. Run <code className="text-xs">npm run db:import</code> or add
+              No products. Run <code className="text-xs">npm run db:sync</code> or add
               one manually.
             </p>
           )}

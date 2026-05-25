@@ -43,11 +43,8 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# Local import assets (CSV, scrape) — see docs/DATA.md
+# Legacy local scrape/CSV (not used by the app)
 /data/
 
-# Generated product images from db:import
-/public/products/
-
-# Admin-uploaded homepage videos
+# Admin-uploaded media (banners, gallery uploads)
 /public/uploads/

@@ -1,6 +1,12 @@
 import { mkdir, unlink, writeFile } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
+import {
+  deleteBlobByUrl,
+  isBlobMediaUrl,
+  isBlobStorageEnabled,
+  putPublicBlob,
+} from "@/lib/blob-storage";
 
 const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "videos");
 const MAX_BYTES = 80 * 1024 * 1024;
@@ -29,6 +35,15 @@ export async function saveUploadedVideo(file: File): Promise<string> {
 
   const ext = EXT_BY_MIME[file.type] ?? ".mp4";
   const filename = `${randomUUID()}${ext}`;
+
+  if (isBlobStorageEnabled()) {
+    return putPublicBlob(
+      `uploads/videos/${filename}`,
+      file,
+      file.type || "application/octet-stream"
+    );
+  }
+
   await mkdir(UPLOAD_DIR, { recursive: true });
   const buffer = Buffer.from(await file.arrayBuffer());
   await writeFile(path.join(UPLOAD_DIR, filename), buffer);
@@ -36,6 +51,10 @@ export async function saveUploadedVideo(file: File): Promise<string> {
 }
 
 export async function deleteVideoFile(publicSrc: string) {
+  if (isBlobMediaUrl(publicSrc)) {
+    await deleteBlobByUrl(publicSrc);
+    return;
+  }
   if (!publicSrc.startsWith("/uploads/videos/")) return;
   const diskPath = path.join(process.cwd(), "public", publicSrc);
   try {

@@ -15,7 +15,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { cn } from "@/lib/utils";
-import { defaultSiteVideos } from "@/lib/default-site-videos";
 import { useStorefrontCopy } from "@/providers/storefront-copy-provider";
 import type { SiteVideoSlide } from "@/services/site-videos";
 
@@ -23,9 +22,9 @@ const AUTO_ADVANCE_MS = 8000;
 
 async function fetchSiteVideos(): Promise<SiteVideoSlide[]> {
   const res = await fetch("/api/videos");
-  if (!res.ok) return defaultSiteVideos;
+  if (!res.ok) return [];
   const data = (await res.json()) as SiteVideoSlide[];
-  return Array.isArray(data) && data.length > 0 ? data : defaultSiteVideos;
+  return Array.isArray(data) ? data : [];
 }
 
 type Props = {
@@ -43,22 +42,19 @@ export function VideoCarousel({ initialSlides }: Props) {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const scrollRaf = useRef<number | null>(null);
 
-  const fallbackSlides = useMemo(
-    () =>
-      initialSlides && initialSlides.length > 0
-        ? initialSlides
-        : defaultSiteVideos,
+  const serverSlides = useMemo(
+    () => (initialSlides && initialSlides.length > 0 ? initialSlides : []),
     [initialSlides]
   );
 
   const { data } = useQuery({
     queryKey: ["site-videos"],
     queryFn: fetchSiteVideos,
-    initialData: fallbackSlides,
-    placeholderData: fallbackSlides,
+    initialData: serverSlides,
+    placeholderData: serverSlides,
   });
 
-  const slides = data && data.length > 0 ? data : defaultSiteVideos;
+  const slides = data && data.length > 0 ? data : serverSlides;
 
   const scrollToIndex = useCallback(
     (i: number, behavior: ScrollBehavior = "smooth") => {

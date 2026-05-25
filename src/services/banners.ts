@@ -1,5 +1,4 @@
 import { isDatabaseReady } from "@/lib/db-ready";
-import { defaultBanners } from "@/lib/default-banners";
 import { getPrisma } from "@/lib/prisma";
 
 export type BannerSlide = {
@@ -13,15 +12,12 @@ export type BannerSlide = {
 
 export async function getActiveBanners(position = "homepage"): Promise<BannerSlide[]> {
   if (!(await isDatabaseReady())) {
-    return defaultBanners;
+    return [];
   }
   const rows = await getPrisma().banner.findMany({
     where: { active: true, position },
     orderBy: { sortOrder: "asc" },
   });
-  if (rows.length === 0) {
-    return defaultBanners;
-  }
   return rows.map((b) => ({
     id: b.id,
     title: b.title,

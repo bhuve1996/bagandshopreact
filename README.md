@@ -24,19 +24,22 @@ docker compose up -d
 npm run db:sync
 ```
 
-(`db:sync` = `db:push` → `db:import` → `db:seed` — replaces old catalog with CSV data only.)
+(`db:sync` = `db:push` → `db:import` → `db:seed`)
 
-### Import Shopify CSV (Bag & Shop catalog)
+### Catalog (database)
 
-Place export at `data/products_export.csv`, then:
+The storefront reads **products, categories, banners, and coupons from Postgres** (manage in `/admin`). Initial data is seeded from:
+
+- `prisma/catalog.json` — bootstrap product metadata
+- `public/products/{slug}/` — product image files (deployed with the app)
 
 ```bash
-npm run db:import
+npm run db:sync   # push schema → import catalog → seed users/coupons/banner
 ```
 
-Imports **24 products** with variants. Images are copied from `data/scraped-data/assets/images` into `public/products/{slug}/` (not Shopify CDN). Requires `data/scraped-data/website-data.json` for best handle→image matching.
+**Vercel Blob** (optional): add Blob storage on Vercel for admin uploads (`BLOB_READ_WRITE_TOKEN`). Without it, uploads save to `public/uploads/` locally only.
 
-`data/` and `public/products/` are **gitignored** — see [docs/DATA.md](docs/DATA.md) for the local folder layout.
+See [docs/DATA.md](docs/DATA.md).
 
 ## Demo accounts
 

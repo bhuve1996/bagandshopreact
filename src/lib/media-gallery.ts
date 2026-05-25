@@ -1,5 +1,6 @@
 import { readdir, stat } from "fs/promises";
 import path from "path";
+import { isBlobMediaUrl, isBlobStorageEnabled, listUploadBlobs } from "@/lib/blob-storage";
 
 export type MediaKind = "image" | "video";
 export type MediaSource = "uploads" | "products" | "brand" | "site";
@@ -98,12 +99,38 @@ async function walkDir(
   }
 }
 
+async function listBlobUploadAssets(): Promise<MediaAsset[]> {
+  if (!isBlobStorageEnabled()) return [];
+
+  const blobs = await listUploadBlobs();
+  return blobs.map((blob) => {
+    const kind: MediaKind = blob.pathname.includes("/videos/")
+      ? "video"
+      : "image";
+    return {
+      url: blob.url,
+      kind,
+      source: "uploads" as const,
+      filename: path.basename(blob.pathname),
+      sizeBytes: blob.size,
+      deletable: true,
+    };
+  });
+}
+
 export async function listMediaAssets(): Promise<MediaAsset[]> {
   const assets: MediaAsset[] = [];
+  assets.push(...(await listBlobUploadAssets()));
   for (const root of SCAN_ROOTS) {
     await walkDir(root.disk, root.urlPrefix, root.source, root.deletable, assets);
   }
-  return assets.sort((a, b) => {
+  const seen = new Set<string>();
+  const deduped = assets.filter((a) => {
+    if (seen.has(a.url)) return false;
+    seen.add(a.url);
+    return true;
+  });
+  return deduped.sort((a, b) => {
     if (a.source !== b.source) {
       const order: MediaSource[] = ["uploads", "products", "brand", "site"];
       return order.indexOf(a.source) - order.indexOf(b.source);
@@ -112,17 +139,20 @@ export async function listMediaAssets(): Promise<MediaAsset[]> {
   });
 }
 
-/** Only admin-uploaded files under /uploads/ may be deleted from disk. */
+/** Admin uploads: local /uploads/* or Vercel Blob URLs. */
 export function isDeletableMediaUrl(url: string): boolean {
   return (
-    url.startsWith("/uploads/images/") || url.startsWith("/uploads/videos/")
+    url.startsWith("/uploads/images/") ||
+    url.startsWith("/uploads/videos/") ||
+    isBlobMediaUrl(url)
   );
 }
 
 export function normalizePublicMediaPath(url: string): string | null {
   const trimmed = url.trim();
-  if (!trimmed.startsWith("/")) return null;
   if (trimmed.includes("..")) return null;
+  if (isBlobMediaUrl(trimmed)) return trimmed;
+  if (!trimmed.startsWith("/")) return null;
   if (!trimmed.startsWith("/uploads/")) return null;
   return trimmed;
 }

@@ -147,7 +147,7 @@ export function MediaPicker({
             <p className="text-sm text-muted">Loading gallery…</p>
           ) : filtered.length === 0 ? (
             <p className="text-sm text-muted">
-              No files yet. Upload images or run product import to populate{" "}
+              No files yet. Upload images or add files under{" "}
               <code className="text-xs">/public/products</code>.
             </p>
           ) : (

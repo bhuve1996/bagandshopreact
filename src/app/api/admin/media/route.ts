@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 import { deleteImageFile, saveUploadedImage } from "@/lib/image-upload";
+import { isBlobMediaUrl } from "@/lib/blob-storage";
 import {
   isDeletableMediaUrl,
   listMediaAssets,
@@ -49,11 +50,13 @@ export async function DELETE(request: NextRequest) {
     const url = normalizePublicMediaPath(body.url);
     if (!url || !isDeletableMediaUrl(url)) {
       return NextResponse.json(
-        { error: "Only files under /uploads/images or /uploads/videos can be deleted" },
+        { error: "Only admin uploads (local /uploads or Vercel Blob) can be deleted" },
         { status: 400 }
       );
     }
-    if (url.startsWith("/uploads/images/")) {
+    if (isBlobMediaUrl(url)) {
+      await deleteImageFile(url);
+    } else if (url.startsWith("/uploads/images/")) {
       await deleteImageFile(url);
     } else {
       await deleteVideoFile(url);

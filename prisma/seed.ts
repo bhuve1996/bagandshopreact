@@ -3,7 +3,8 @@ import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
-import { seedSiteVideos } from "../src/lib/default-site-videos";
+import { importCatalogFromRepo } from "./catalog-import";
+import { seedSiteVideos } from "./seed-data/site-videos";
 import {
   DEFAULT_STOREFRONT_SETTINGS,
   STOREFRONT_SETTINGS_KEY,
@@ -87,6 +88,9 @@ async function seedFeaturedReviews(
 }
 
 async function main() {
+  console.log("Importing catalog into database…");
+  await importCatalogFromRepo();
+
   console.log("Seeding users, coupons, banner, videos, and featured reviews...");
 
   await prisma.coupon.upsert({
@@ -205,7 +209,7 @@ async function main() {
   console.log("  customer@test.com / password123");
   console.log("  admin@test.com / admin123");
   if (products.length === 0) {
-    console.warn("  No products in DB — run npm run db:import before db:seed");
+    console.warn("  No products in DB — check prisma/catalog.json and public/products/");
   } else {
     console.log(`  ${SEED_REVIEWS.length} approved homepage reviews`);
   }
