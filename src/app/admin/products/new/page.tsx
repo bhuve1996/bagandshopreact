@@ -1,7 +1,5 @@
-import { ProductForm } from "@/features/admin/product-form";
-
-export const metadata = { title: "New Product" };
+import { ProductFormAdmin } from "@/features/admin/product-form-admin";
 
 export default function NewProductPage() {
-  return <ProductForm />;
+  return <ProductFormAdmin />;
 }

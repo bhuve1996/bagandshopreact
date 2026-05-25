@@ -1,24 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
-import { categories } from "@/lib/mock-data";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { formatCopy } from "@/lib/format-copy";
+import type { HomepageSectionCopy, LabelsCopy } from "@/types/storefront-settings";
+import type { Category } from "@/types";
 
-export function FeaturedCategories() {
+type Props = {
+  categories: Category[];
+  section: HomepageSectionCopy;
+  labels: LabelsCopy;
+};
+
+export function FeaturedCategories({ categories, section, labels }: Props) {
+  if (categories.length === 0) return null;
+
   return (
     <section className="section-padding">
       <div className="container-page">
-        <div className="mb-10 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted">
-              Shop by category
-            </p>
-            <h2 className="mt-1 text-3xl font-semibold tracking-tight">
-              Find your fit
-            </h2>
-          </div>
-          <Link href="/collections" className="text-sm font-medium underline-offset-4 hover:underline">
-            View all
-          </Link>
-        </div>
+        <SectionHeading
+          eyebrow={section.eyebrow}
+          title={section.title}
+          linkText={section.linkText}
+          linkHref={section.linkHref}
+        />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
           {categories.map((cat) => (
             <Link
@@ -37,7 +41,14 @@ export function FeaturedCategories() {
                 <div className="gradient-fade-bottom absolute inset-0" />
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <h3 className="text-lg font-semibold">{cat.name}</h3>
-                  <p className="text-xs text-white/80">{cat.productCount} products</p>
+                  <p className="text-xs text-white/80">
+                    {formatCopy(
+                      cat.productCount === 1
+                        ? labels.productCount
+                        : labels.productsCount,
+                      { count: cat.productCount }
+                    )}
+                  </p>
                 </div>
               </div>
             </Link>

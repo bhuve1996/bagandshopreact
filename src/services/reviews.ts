@@ -8,29 +8,41 @@ export type ReviewView = {
   content: string;
   createdAt: string;
   userName: string;
+  productName?: string;
+  productSlug?: string;
 };
 
-const MOCK_REVIEWS: ReviewView[] = [
-  {
-    id: "m1",
-    rating: 5,
-    title: "Perfect everyday bag",
-    content: "Quality is excellent and shipping was fast.",
-    createdAt: new Date().toISOString(),
-    userName: "Priya S.",
-  },
-  {
-    id: "m2",
-    rating: 4,
-    title: "Great design",
-    content: "Minimal look, exactly as shown in photos.",
-    createdAt: new Date().toISOString(),
-    userName: "Arjun M.",
-  },
-];
+export async function getFeaturedReviews(limit = 3): Promise<ReviewView[]> {
+  if (!(await isDatabaseReady())) return [];
+  const rows = await getPrisma().review.findMany({
+    where: { approved: true },
+    include: {
+      user: { select: { name: true } },
+      product: { select: { name: true, slug: true } },
+    },
+    orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+    take: limit,
+  });
+  return rows.map((r) => ({
+    id: r.id,
+    rating: r.rating,
+    title: r.title,
+    content: r.content,
+    createdAt: r.createdAt.toISOString(),
+    userName: r.user.name ? formatReviewerName(r.user.name) : "Customer",
+    productName: r.product.name,
+    productSlug: r.product.slug,
+  }));
+}
+
+function formatReviewerName(name: string) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0];
+  return `${parts[0]} ${parts[parts.length - 1].charAt(0)}.`;
+}
 
 export async function getApprovedReviews(productId: string) {
-  if (!(await isDatabaseReady())) return MOCK_REVIEWS;
+  if (!(await isDatabaseReady())) return [];
   const rows = await getPrisma().review.findMany({
     where: { productId, approved: true },
     include: { user: { select: { name: true } } },
@@ -43,7 +55,7 @@ export async function getApprovedReviews(productId: string) {
     title: r.title,
     content: r.content,
     createdAt: r.createdAt.toISOString(),
-    userName: r.user.name ? `${r.user.name.split(" ")[0]}.` : "Customer",
+    userName: r.user.name ? formatReviewerName(r.user.name) : "Customer",
   }));
 }
 

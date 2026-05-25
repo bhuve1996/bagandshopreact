@@ -1,28 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { useStorefrontCopy } from "@/providers/storefront-copy-provider";
 
 export function Newsletter() {
+  const { homepage } = useStorefrontCopy();
+  const section = homepage.newsletter;
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const emailId = useId();
 
   return (
-    <section className="section-padding">
+    <section className="section-padding" aria-labelledby="newsletter-heading">
       <div className="container-page">
         <div className="card-premium mx-auto max-w-2xl px-8 py-12 text-center md:px-16">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted">
-            Newsletter
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
-            Early access to drops & offers
-          </h2>
-          <p className="mt-2 text-sm text-muted">
-            Join 50,000+ design lovers. Unsubscribe anytime.
-          </p>
+          <SectionHeading
+            headingId="newsletter-heading"
+            eyebrow={section.eyebrow}
+            title={section.title}
+            description={section.description}
+            align="center"
+            className="mb-0"
+            titleClassName="md:text-3xl"
+          />
           {submitted ? (
-            <p className="mt-8 text-sm font-medium text-accent">
-              Thanks — you&apos;re on the list.
+            <p
+              role="status"
+              className="mt-8 text-sm font-medium text-success"
+            >
+              {section.successMessage}
             </p>
           ) : (
             <form
@@ -32,16 +40,21 @@ export function Newsletter() {
                 setSubmitted(true);
               }}
             >
+              <label htmlFor={emailId} className="sr-only">
+                Email address
+              </label>
               <input
+                id={emailId}
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@email.com"
-                className="h-11 flex-1 rounded-full border border-border bg-background px-5 text-sm outline-none focus:ring-2 focus:ring-stone-300 sm:max-w-xs"
+                placeholder={section.emailPlaceholder}
+                autoComplete="email"
+                className="h-11 flex-1 rounded-full border border-border bg-background px-5 text-sm focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 sm:max-w-xs"
               />
               <Button type="submit" size="lg">
-                Subscribe
+                {section.subscribeButton}
               </Button>
             </form>
           )}

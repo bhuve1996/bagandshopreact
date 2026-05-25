@@ -43,7 +43,10 @@ export function ProductAccordion({ description }: ProductAccordionProps) {
               )}
             >
               {item.title}
-              <ChevronDown className="h-4 w-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+              <ChevronDown
+                className="h-4 w-4 shrink-0 transition-transform group-data-[state=open]:rotate-180"
+                aria-hidden
+              />
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content className="overflow-hidden text-sm text-muted data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">

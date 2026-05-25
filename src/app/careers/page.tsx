@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { staticPageMetadata } from "@/lib/seo/config";
 
-export const metadata = { title: "Careers" };
+export async function generateMetadata() {
+  return staticPageMetadata("/careers", {
+    title: "Careers",
+    description: "Join the Bag & Shop team — open roles and how to apply.",
+  });
+}
 
 export default function CareersPage() {
   return (

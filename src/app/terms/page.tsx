@@ -1,6 +1,12 @@
 import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { staticPageMetadata } from "@/lib/seo/config";
 
-export const metadata = { title: "Terms of service" };
+export async function generateMetadata() {
+  return staticPageMetadata("/terms", {
+    title: "Terms of service",
+    description: "Terms and conditions for shopping at Bag & Shop.",
+  });
+}
 
 export default function TermsPage() {
   return (

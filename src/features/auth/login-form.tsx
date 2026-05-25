@@ -3,8 +3,9 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/lib/toast";
 
 export function LoginForm() {
   const router = useRouter();
@@ -14,6 +15,12 @@ export function LoginForm() {
   const [password, setPassword] = useState("password123");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get("registered") === "1") {
+      toast.success("Account ready", "Sign in with your email and password.");
+    }
+  }, [searchParams]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,8 +34,10 @@ export function LoginForm() {
     setLoading(false);
     if (res?.error) {
       setError("Invalid email or password");
+      toast.error("Sign in failed", "Check your email and password.");
       return;
     }
+    toast.success("Welcome back!");
     router.push(callbackUrl);
     router.refresh();
   }
@@ -39,7 +48,11 @@ export function LoginForm() {
       <p className="text-sm text-muted">
         Demo: customer@test.com / password123
       </p>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       <label className="block">
         <span className="text-xs text-muted">Email</span>
         <input

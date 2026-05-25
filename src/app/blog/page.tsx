@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { staticPageMetadata } from "@/lib/seo/config";
 
-export const metadata = { title: "Blog" };
+export async function generateMetadata() {
+  return staticPageMetadata("/blog", {
+    title: "Blog",
+    description: "Design, carry, and workspace stories from Bag & Shop.",
+  });
+}
 
 const posts = [
   {

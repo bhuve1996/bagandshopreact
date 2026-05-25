@@ -41,7 +41,7 @@ const DEVICE_SLUGS = new Set([
   "watch",
 ]);
 
-const DEVICE_QUERY: Record<string, string> = {
+export const DEVICE_QUERY: Record<string, string> = {
   iphone: "iPhone",
   samsung: "Samsung",
   macbook: "MacBook",
@@ -52,6 +52,12 @@ const DEVICE_QUERY: Record<string, string> = {
 
 export function formatSlugTitle(slug: string): string {
   return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Parent category slug when `slug` is a nav sub-collection (e.g. phone-cases → tech). */
+export function getParentCategorySlug(rawSlug: string): string | undefined {
+  const slug = normalizeCollectionSlug(rawSlug);
+  return SUBCATEGORY_TO_CATEGORY[slug];
 }
 
 export function normalizeCollectionSlug(raw: string): string {

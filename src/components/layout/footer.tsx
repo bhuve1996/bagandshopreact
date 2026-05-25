@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { siteConfig } from "@/lib/mock-data";
+import { BrandLogoLink } from "@/components/layout/brand-logo";
+import { siteConfig } from "@/lib/site-content";
 
 const footerLinks = {
   Shop: [
@@ -32,17 +33,18 @@ export function Footer() {
       <div className="container-page section-padding">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
-            <Link href="/" className="text-xl font-semibold tracking-tight">
-              {siteConfig.name}
-            </Link>
+            <BrandLogoLink height={36} />
             <p className="mt-3 max-w-sm text-sm text-muted">
               {siteConfig.tagline}. Premium accessories designed for modern
               life — minimal, functional, and beautifully made.
             </p>
           </div>
           {Object.entries(footerLinks).map(([title, links]) => (
-            <div key={title}>
-              <h3 className="text-xs font-semibold uppercase tracking-widest text-muted">
+            <nav key={title} aria-labelledby={`footer-${title}`}>
+              <h3
+                id={`footer-${title}`}
+                className="text-xs font-semibold uppercase tracking-widest text-muted"
+              >
                 {title}
               </h3>
               <ul className="mt-4 space-y-2">
@@ -57,7 +59,7 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </nav>
           ))}
         </div>
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-xs text-muted sm:flex-row">

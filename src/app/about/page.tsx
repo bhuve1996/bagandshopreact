@@ -1,4 +1,12 @@
-export const metadata = { title: "About" };
+import { staticPageMetadata } from "@/lib/seo/config";
+
+export async function generateMetadata() {
+  return staticPageMetadata("/about", {
+    title: "About",
+    description:
+      "Learn about Bag & Shop — design-led lifestyle accessories from India.",
+  });
+}
 
 export default function AboutPage() {
   return (

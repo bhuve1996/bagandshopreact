@@ -2,9 +2,11 @@ export type ProductVariant = {
   id: string;
   name: string;
   color?: string;
+  image?: string;
   price: number;
   compareAtPrice?: number;
   inStock: boolean;
+  sku?: string;
 };
 
 export type Product = {
@@ -12,11 +14,15 @@ export type Product = {
   slug: string;
   name: string;
   description: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImage?: string;
   price: number;
   compareAtPrice?: number;
   images: string[];
   hoverImage?: string;
   category: string;
+  categoryName?: string;
   collection?: string;
   tags: string[];
   rating: number;
@@ -51,6 +57,7 @@ export type NavItem = {
   children?: {
     label: string;
     href: string;
+    productCount?: number;
     featured?: Product;
   }[];
   banner?: {

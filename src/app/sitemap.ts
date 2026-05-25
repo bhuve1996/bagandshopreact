@@ -1,13 +1,14 @@
 import type { MetadataRoute } from "next";
-import { getCollections, getCategories, getProducts } from "@/services/products";
+import { getSiteUrl } from "@/lib/seo/site-url";
+import { getAllProductSitemapEntries } from "@/lib/seo/sitemap-products";
+import { getCategories, getCollections } from "@/services/products";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const base = getSiteUrl();
 
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
     "/collections",
-    "/search",
     "/about",
     "/contact",
     "/faq",
@@ -18,40 +19,57 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/blog",
     "/careers",
     "/track-order",
-    "/wishlist",
   ].map((path) => ({
     url: `${base}${path}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
-    priority: path === "" ? 1 : 0.8,
+    priority: path === "" ? 1 : path === "/collections" ? 0.9 : 0.7,
   }));
 
-  const [categories, collections, { items: products }] = await Promise.all([
+  const [categories, collections, products] = await Promise.all([
     getCategories(),
     getCollections(),
-    getProducts({ limit: 100, page: 1 }),
+    getAllProductSitemapEntries(),
   ]);
 
-  const categoryUrls = categories.map((c) => ({
-    url: `${base}/collections/${c.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "daily" as const,
-    priority: 0.7,
-  }));
+  const seen = new Set<string>(staticRoutes.map((e) => e.url));
 
-  const collectionUrls = collections.map((c) => ({
-    url: `${base}/collections/${c.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "daily" as const,
-    priority: 0.7,
-  }));
+  function pushUnique(
+    entries: MetadataRoute.Sitemap,
+    path: string,
+    opts: Omit<MetadataRoute.Sitemap[number], "url">
+  ) {
+    const url = `${base}${path}`;
+    if (seen.has(url)) return;
+    seen.add(url);
+    entries.push({ url, ...opts });
+  }
 
-  const productUrls = products.map((p) => ({
-    url: `${base}/products/${p.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.9,
-  }));
+  const dynamic: MetadataRoute.Sitemap = [];
 
-  return [...staticRoutes, ...categoryUrls, ...collectionUrls, ...productUrls];
+  for (const c of categories) {
+    pushUnique(dynamic, `/collections/${c.slug}`, {
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    });
+  }
+
+  for (const c of collections) {
+    pushUnique(dynamic, `/collections/${c.slug}`, {
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.75,
+    });
+  }
+
+  for (const p of products) {
+    pushUnique(dynamic, `/products/${p.slug}`, {
+      lastModified: p.updatedAt,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    });
+  }
+
+  return [...staticRoutes, ...dynamic];
 }

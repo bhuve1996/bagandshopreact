@@ -11,14 +11,20 @@ import {
   ShoppingBag,
   User,
 } from "lucide-react";
+import { BrandLogoLink } from "@/components/layout/brand-logo";
+import { CategoryNavStrip } from "@/components/layout/category-nav-strip";
 import { MegaMenu } from "@/components/layout/mega-menu";
-import { siteConfig, navigation } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { useCartStore, useCartTotals } from "@/store/cart-store";
 import { useUIStore } from "@/store/ui-store";
 import type { NavItem } from "@/types";
 
-export function Header() {
+type HeaderProps = {
+  navigation: NavItem[];
+  categoryNav: NavItem[];
+};
+
+export function Header({ navigation, categoryNav }: HeaderProps) {
   const [activeNav, setActiveNav] = useState<NavItem | null>(null);
   const { itemCount } = useCartTotals();
   const openCart = useCartStore((s) => s.openCart);
@@ -32,47 +38,60 @@ export function Header() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="rounded-full p-2 hover:bg-stone-100 dark:hover:bg-stone-800"
+            className="rounded-full p-2 hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 dark:hover:bg-stone-800"
             aria-label="Open menu"
           >
             <Menu className="h-5 w-5" />
           </button>
         </div>
 
-        <Link
-          href="/"
-          className="absolute left-1/2 -translate-x-1/2 text-lg font-semibold tracking-tight lg:static lg:translate-x-0"
-        >
-          {siteConfig.name}
-        </Link>
+        <BrandLogoLink
+          height={28}
+          priority
+          className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0"
+        />
 
         <nav
-          className="hidden items-center gap-8 lg:flex"
+          aria-label="Primary"
+          className="scrollbar-none hidden max-w-[min(52vw,42rem)] items-center gap-5 overflow-x-auto lg:flex xl:max-w-none xl:gap-6"
           onMouseLeave={() => setActiveNav(null)}
         >
-          {navigation.map((item) => (
+          {navigation.map((item) => {
+            const hasPanel =
+              (item.children?.length ?? 0) > 0 || Boolean(item.banner);
+            return (
             <div
               key={item.label}
-              onMouseEnter={() => setActiveNav(item)}
+              onMouseEnter={() => setActiveNav(hasPanel ? item : null)}
+              onFocus={() => setActiveNav(hasPanel ? item : null)}
             >
               <Link
                 href={item.href}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-muted",
+                  "text-sm font-medium transition-colors hover:text-muted focus-visible:underline",
                   activeNav?.label === item.label && "text-muted"
                 )}
+                aria-expanded={
+                  item.children?.length
+                    ? activeNav?.label === item.label
+                    : undefined
+                }
+                aria-controls={
+                  item.children?.length ? "mega-menu-panel" : undefined
+                }
               >
                 {item.label}
               </Link>
             </div>
-          ))}
+          );
+          })}
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-2">
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className="rounded-full p-2 hover:bg-stone-100 dark:hover:bg-stone-800"
+            className="rounded-full p-2 hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 dark:hover:bg-stone-800"
             aria-label="Search"
           >
             <Search className="h-5 w-5" />
@@ -102,8 +121,12 @@ export function Header() {
           <button
             type="button"
             onClick={openCart}
-            className="relative rounded-full p-2 hover:bg-stone-100 dark:hover:bg-stone-800"
-            aria-label="Open cart"
+            className="relative rounded-full p-2 hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 dark:hover:bg-stone-800"
+            aria-label={
+              itemCount > 0
+                ? `Open cart, ${itemCount} item${itemCount === 1 ? "" : "s"}`
+                : "Open cart"
+            }
           >
             <ShoppingBag className="h-5 w-5" />
             {itemCount > 0 && (
@@ -114,7 +137,14 @@ export function Header() {
           </button>
         </div>
       </div>
-      <MegaMenu item={activeNav} open={!!activeNav} />
+      <MegaMenu
+        item={activeNav}
+        open={
+          !!activeNav &&
+          ((activeNav.children?.length ?? 0) > 0 || Boolean(activeNav.banner))
+        }
+      />
+      <CategoryNavStrip categories={categoryNav} />
     </header>
   );
 }

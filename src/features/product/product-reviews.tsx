@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/lib/toast";
 import type { ReviewView } from "@/services/reviews";
 
 export function ProductReviews({ slug }: { slug: string }) {
@@ -35,10 +36,16 @@ export function ProductReviews({ slug }: { slug: string }) {
     });
     const j = await res.json().catch(() => ({}));
     if (!res.ok) {
-      setMsg(j.error ?? "Could not submit review");
+      const err = j.error ?? "Could not submit review";
+      setMsg(err);
+      toast.error("Review not submitted", err);
       return;
     }
-    setMsg("Thanks! Your review will appear after approval.");
+    setMsg("");
+    toast.success(
+      "Review submitted",
+      "It will appear after our team approves it."
+    );
     setContent("");
     setTitle("");
     qc.invalidateQueries({ queryKey: ["reviews", slug] });

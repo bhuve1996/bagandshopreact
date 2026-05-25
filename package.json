@@ -10,6 +10,8 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "db:import": "tsx prisma/import-products.ts",
+    "db:sync": "npm run db:push && npm run db:import && npm run db:seed",
     "db:studio": "prisma studio"
   },
   "dependencies": {
@@ -34,6 +36,7 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "resend": "^6.12.3",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3",
     "zustand": "^5.0.13"

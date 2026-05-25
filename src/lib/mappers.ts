@@ -5,6 +5,9 @@ type DbProduct = {
   slug: string;
   name: string;
   description: string;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  ogImage: string | null;
   price: number;
   compareAtPrice: number | null;
   images: string[];
@@ -16,14 +19,16 @@ type DbProduct = {
   isNew: boolean;
   isBestseller: boolean;
   collectionSlug: string | null;
-  category: { slug: string };
+  category: { slug: string; name: string };
   variants?: {
     id: string;
     name: string;
     color: string | null;
+    image: string | null;
     price: number;
     compareAtPrice: number | null;
     stock: number;
+    sku: string | null;
   }[];
 };
 
@@ -33,11 +38,15 @@ export function mapProduct(p: DbProduct): Product {
     slug: p.slug,
     name: p.name,
     description: p.description,
+    metaTitle: p.metaTitle ?? undefined,
+    metaDescription: p.metaDescription ?? undefined,
+    ogImage: p.ogImage ?? undefined,
     price: p.price,
     compareAtPrice: p.compareAtPrice ?? undefined,
     images: p.images,
     hoverImage: p.hoverImage ?? undefined,
     category: p.category.slug,
+    categoryName: p.category.name,
     collection: p.collectionSlug ?? undefined,
     tags: p.tags,
     rating: p.rating,
@@ -54,9 +63,11 @@ function mapVariant(v: NonNullable<DbProduct["variants"]>[number]): ProductVaria
     id: v.id,
     name: v.name,
     color: v.color ?? undefined,
+    image: v.image ?? undefined,
     price: v.price,
     compareAtPrice: v.compareAtPrice ?? undefined,
     inStock: v.stock > 0,
+    sku: v.sku ?? undefined,
   };
 }
 

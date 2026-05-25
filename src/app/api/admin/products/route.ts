@@ -6,7 +6,7 @@ import {
   adminListProducts,
 } from "@/services/admin";
 import { syncProductsToAlgolia } from "@/lib/search";
-import { getProducts } from "@/services/products";
+import { getAllProductsForSearch } from "@/services/products";
 
 export async function GET() {
   const auth = await requireAdmin();
@@ -15,18 +15,35 @@ export async function GET() {
   return NextResponse.json(products);
 }
 
+const variantSchema = z.object({
+  name: z.string().min(1),
+  color: z.string().optional(),
+  image: z.string().optional(),
+  price: z.number().min(0),
+  compareAtPrice: z.number().optional(),
+  stock: z.number().min(0),
+  sku: z.string().optional(),
+});
+
 const createSchema = z.object({
   slug: z.string().min(1),
   name: z.string().min(1),
   description: z.string(),
+  metaTitle: z.string().optional().nullable(),
+  metaDescription: z.string().optional().nullable(),
+  ogImage: z.string().optional().nullable(),
   price: z.number().min(0),
   compareAtPrice: z.number().optional(),
   images: z.array(z.string()).min(1),
+  hoverImage: z.string().optional(),
   tags: z.array(z.string()).default([]),
   categoryId: z.string(),
   stock: z.number().optional(),
   isNew: z.boolean().optional(),
   isBestseller: z.boolean().optional(),
+  device: z.string().optional(),
+  collectionSlug: z.string().optional(),
+  variants: z.array(variantSchema).optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -35,8 +52,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = createSchema.parse(await request.json());
     const product = await adminCreateProduct(body);
-    const all = await getProducts({ limit: 100, page: 1 });
-    await syncProductsToAlgolia(all.items).catch(() => {});
+    const all = await getAllProductsForSearch();
+    await syncProductsToAlgolia(all).catch(() => {});
     return NextResponse.json(product, { status: 201 });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Failed";

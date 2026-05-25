@@ -1,7 +1,7 @@
-import { DashboardView } from "@/features/admin/dashboard-view";
+import { AnalyticsAdmin } from "@/features/admin/analytics-admin";
 
 export const metadata = { title: "Analytics" };
 
 export default function AdminAnalyticsPage() {
-  return <DashboardView />;
+  return <AnalyticsAdmin />;
 }

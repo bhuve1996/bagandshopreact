@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState, Suspense } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/lib/toast";
 
 function SignupFormInner() {
   const router = useRouter();
@@ -29,16 +30,23 @@ function SignupFormInner() {
     setLoading(false);
     if (!res.ok) {
       const j = await res.json().catch(() => ({}));
-      setError(j.error ?? "Signup failed");
+      const msg = j.error ?? "Signup failed";
+      setError(msg);
+      toast.error("Could not create account", msg);
       return;
     }
+    toast.success("Account created", "Sign in with your new credentials.");
     router.push("/login?registered=1");
   }
 
   return (
     <form onSubmit={handleSubmit} className="card-premium mx-auto max-w-md space-y-4 p-8">
       <h1 className="text-2xl font-semibold tracking-tight">Create account</h1>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       <label className="block">
         <span className="text-xs text-muted">Name</span>
         <input

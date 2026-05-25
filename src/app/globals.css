@@ -3,22 +3,25 @@
 :root {
   --background: #faf9f7;
   --foreground: #1c1917;
-  --muted: #78716c;
+  /* ~5.5:1 on background — WCAG 2.2 AA for normal text */
+  --muted: #57534e;
   --border: #e7e5e4;
   --card: #ffffff;
   --accent: #c4a77d;
   --accent-muted: #f5f0e8;
+  --success: #44403c;
   --radius: 1rem;
 }
 
 .dark {
   --background: #0c0a09;
   --foreground: #fafaf9;
-  --muted: #a8a29e;
+  --muted: #d6d3d1;
   --border: #292524;
   --card: #1c1917;
   --accent: #d4b896;
   --accent-muted: #292524;
+  --success: #e7e5e4;
 }
 
 @theme inline {
@@ -29,6 +32,7 @@
   --color-card: var(--card);
   --color-accent: var(--accent);
   --color-accent-muted: var(--accent-muted);
+  --color-success: var(--success);
   --font-sans: var(--font-inter);
   --radius-xl: var(--radius);
 }
@@ -39,6 +43,37 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 body {

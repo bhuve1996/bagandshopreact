@@ -2,110 +2,92 @@ import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
-import {
-  categories,
-  collections,
-  products,
-} from "../src/lib/mock-data";
 import { PrismaClient } from "../src/generated/prisma/client";
+import { seedSiteVideos } from "../src/lib/default-site-videos";
+import {
+  DEFAULT_STOREFRONT_SETTINGS,
+  STOREFRONT_SETTINGS_KEY,
+} from "../src/types/storefront-settings";
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+import { getPgConnectionString } from "../src/lib/pg-connection";
+
+const pool = new Pool({ connectionString: getPgConnectionString() });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
+const SEED_REVIEWS = [
+  {
+    id: "seed-review-1",
+    rating: 5,
+    title: "Exactly as described",
+    content:
+      "Quality is great for the price. Packaging was secure and delivery was quick.",
+  },
+  {
+    id: "seed-review-2",
+    rating: 5,
+    title: "Worth it",
+    content:
+      "Bought this as a gift — they loved it. Would shop here again.",
+  },
+  {
+    id: "seed-review-3",
+    rating: 4,
+    title: "Solid purchase",
+    content:
+      "Works well daily. Only wish there were more colour options.",
+  },
+] as const;
+
+async function seedFeaturedReviews(
+  customerId: string,
+  productIds: string[]
+) {
+  if (productIds.length === 0) return;
+
+  for (let i = 0; i < SEED_REVIEWS.length; i++) {
+    const seed = SEED_REVIEWS[i];
+    const productId = productIds[i % productIds.length];
+    await prisma.review.upsert({
+      where: { id: seed.id },
+      update: {
+        rating: seed.rating,
+        title: seed.title,
+        content: seed.content,
+        approved: true,
+      },
+      create: {
+        id: seed.id,
+        productId,
+        userId: customerId,
+        rating: seed.rating,
+        title: seed.title,
+        content: seed.content,
+        approved: true,
+      },
+    });
+  }
+
+  for (const productId of productIds) {
+    const stats = await prisma.review.aggregate({
+      where: { productId, approved: true },
+      _avg: { rating: true },
+      _count: true,
+    });
+    if (stats._count > 0) {
+      await prisma.product.update({
+        where: { id: productId },
+        data: {
+          rating: stats._avg.rating ?? 0,
+          reviewCount: stats._count,
+        },
+      });
+    }
+  }
+}
+
 async function main() {
-  console.log("Seeding database...");
-
-  for (const cat of categories) {
-    await prisma.category.upsert({
-      where: { slug: cat.slug },
-      update: {
-        name: cat.name,
-        description: cat.description,
-        image: cat.image,
-      },
-      create: {
-        slug: cat.slug,
-        name: cat.name,
-        description: cat.description,
-        image: cat.image,
-      },
-    });
-  }
-
-  for (const col of collections) {
-    await prisma.collection.upsert({
-      where: { slug: col.slug },
-      update: {
-        name: col.name,
-        description: col.description,
-        image: col.image,
-        accent: col.accent,
-      },
-      create: {
-        slug: col.slug,
-        name: col.name,
-        description: col.description,
-        image: col.image,
-        accent: col.accent,
-      },
-    });
-  }
-
-  const categoryMap = Object.fromEntries(
-    (await prisma.category.findMany()).map((c) => [c.slug, c.id])
-  );
-  const collectionMap = Object.fromEntries(
-    (await prisma.collection.findMany()).map((c) => [c.slug, c.id])
-  );
-
-  for (const p of products) {
-    const categoryId = categoryMap[p.category];
-    if (!categoryId) continue;
-
-    const collectionId = p.collection
-      ? collectionMap[p.collection]
-      : undefined;
-
-    await prisma.product.upsert({
-      where: { slug: p.slug },
-      update: {
-        name: p.name,
-        description: p.description,
-        price: p.price,
-        compareAtPrice: p.compareAtPrice,
-        images: p.images,
-        hoverImage: p.hoverImage,
-        tags: p.tags,
-        rating: p.rating,
-        reviewCount: p.reviewCount,
-        device: p.device,
-        isNew: !!p.isNew,
-        isBestseller: !!p.isBestseller,
-        collectionSlug: p.collection,
-        categoryId,
-        collectionId,
-      },
-      create: {
-        slug: p.slug,
-        name: p.name,
-        description: p.description,
-        price: p.price,
-        compareAtPrice: p.compareAtPrice,
-        images: p.images,
-        hoverImage: p.hoverImage,
-        tags: p.tags,
-        rating: p.rating,
-        reviewCount: p.reviewCount,
-        device: p.device,
-        isNew: !!p.isNew,
-        isBestseller: !!p.isBestseller,
-        collectionSlug: p.collection,
-        categoryId,
-        collectionId,
-      },
-    });
-  }
+  console.log("Seeding users, coupons, banner, videos, and featured reviews...");
 
   await prisma.coupon.upsert({
     where: { code: "WELCOME10" },
@@ -134,7 +116,7 @@ async function main() {
   const password = await bcrypt.hash("password123", 10);
   const adminPassword = await bcrypt.hash("admin123", 10);
 
-  await prisma.user.upsert({
+  const customer = await prisma.user.upsert({
     where: { email: "customer@test.com" },
     update: { referralCode: "CUST2024" },
     create: {
@@ -158,30 +140,75 @@ async function main() {
     },
   });
 
+  const featured = await prisma.product.findFirst({
+    orderBy: { createdAt: "desc" },
+  });
+  const bannerImage =
+    featured?.images[0] ?? "/products/_placeholders/category.jpg";
+
   await prisma.banner.upsert({
     where: { id: "seed-hero-1" },
     update: {
-      title: "Spring Collection",
-      subtitle: "Design-led accessories",
-      image:
-        "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
-      href: "/collections/new-arrivals",
+      title: "Shop Bag & Shop",
+      subtitle: "Lifestyle products for home, travel & more",
+      image: bannerImage,
+      href: featured ? `/products/${featured.slug}` : "/collections",
     },
     create: {
       id: "seed-hero-1",
-      title: "Spring Collection",
-      subtitle: "Design-led accessories",
-      image:
-        "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
-      href: "/collections/new-arrivals",
+      title: "Shop Bag & Shop",
+      subtitle: "Lifestyle products for home, travel & more",
+      image: bannerImage,
+      href: featured ? `/products/${featured.slug}` : "/collections",
       position: "homepage",
       sortOrder: 0,
+      active: true,
     },
   });
 
+  for (const video of seedSiteVideos) {
+    await prisma.siteVideo.upsert({
+      where: { id: video.id },
+      update: {
+        title: video.title,
+        src: video.src,
+        poster: video.poster,
+        href: video.href,
+        sortOrder: video.sortOrder,
+        active: video.active,
+      },
+      create: video,
+    });
+  }
+
+  const products = await prisma.product.findMany({
+    take: 3,
+    orderBy: { createdAt: "desc" },
+    select: { id: true },
+  });
+  await seedFeaturedReviews(
+    customer.id,
+    products.map((p) => p.id)
+  );
+
+  await prisma.siteSetting.upsert({
+    where: { key: STOREFRONT_SETTINGS_KEY },
+    create: {
+      key: STOREFRONT_SETTINGS_KEY,
+      value: DEFAULT_STOREFRONT_SETTINGS as object,
+    },
+    update: { value: DEFAULT_STOREFRONT_SETTINGS as object },
+  });
+
   console.log("Seed complete.");
+  console.log(`  ${seedSiteVideos.length} homepage videos (sample clips)`);
   console.log("  customer@test.com / password123");
   console.log("  admin@test.com / admin123");
+  if (products.length === 0) {
+    console.warn("  No products in DB — run npm run db:import before db:seed");
+  } else {
+    console.log(`  ${SEED_REVIEWS.length} approved homepage reviews`);
+  }
 }
 
 main()

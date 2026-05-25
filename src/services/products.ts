@@ -1,14 +1,8 @@
-import {
-  categories as mockCategories,
-  collections as mockCollections,
-  products as mockProducts,
-  getProductBySlug as mockGetBySlug,
-} from "@/lib/mock-data";
+import type { Category, Collection, Product } from "@/types";
 import { applyCollectionSlugToFilters } from "@/lib/collection-slugs";
 import { isDatabaseReady } from "@/lib/db-ready";
 import { mapCategory, mapCollection, mapProduct } from "@/lib/mappers";
 import { getPrisma } from "@/lib/prisma";
-import type { Category, Collection, Product } from "@/types";
 
 export type ProductFilters = {
   category?: string;
@@ -34,74 +28,8 @@ export type PaginatedProducts = {
   hasMore: boolean;
 };
 
-function sortMock(products: Product[], sort?: ProductFilters["sort"]) {
-  const list = [...products];
-  switch (sort) {
-    case "price-asc":
-      return list.sort((a, b) => a.price - b.price);
-    case "price-desc":
-      return list.sort((a, b) => b.price - a.price);
-    case "rating":
-      return list.sort((a, b) => b.rating - a.rating);
-    case "popular":
-      return list.sort((a, b) => b.reviewCount - a.reviewCount);
-    case "newest":
-    default:
-      return list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
-  }
-}
-
-function filterMock(filters: ProductFilters): Product[] {
-  const resolved = applyCollectionSlugToFilters(filters);
-  let list = [...mockProducts];
-  const slug = resolved.collection ?? resolved.collectionSlug ?? resolved.category;
-
-  if (resolved.category) {
-    list = list.filter((p) => p.category === resolved.category);
-  }
-  if (resolved.collectionSlug || resolved.collection) {
-    const col = resolved.collectionSlug ?? resolved.collection;
-    if (col === "best-sellers") list = list.filter((p) => p.isBestseller);
-    else if (col === "new-arrivals") list = list.filter((p) => p.isNew);
-    else if (col === "work-anywhere") {
-      list = list.filter((p) =>
-        ["desk", "bags", "tech"].includes(p.category)
-      );
-    } else if (col === "gift-sets" || col === "everyday") {
-      list = list.filter(
-        (p) => p.isBestseller || p.isNew || p.collection === "everyday"
-      );
-    } else {
-      list = list.filter(
-        (p) => p.collection === col || p.category === col
-      );
-    }
-  }
-  if (slug === "best-sellers") list = list.filter((p) => p.isBestseller);
-  if (slug === "new-arrivals") list = list.filter((p) => p.isNew);
-  if (resolved.isBestseller) list = list.filter((p) => p.isBestseller);
-  if (resolved.isNew) list = list.filter((p) => p.isNew);
-  if (resolved.device) {
-    list = list.filter((p) =>
-      p.device?.toLowerCase().includes(resolved.device!.toLowerCase())
-    );
-  }
-  if (resolved.minPrice != null) list = list.filter((p) => p.price >= resolved.minPrice!);
-  if (resolved.maxPrice != null) list = list.filter((p) => p.price <= resolved.maxPrice!);
-  if (resolved.tags?.length) {
-    list = list.filter((p) => resolved.tags!.some((t) => p.tags.includes(t)));
-  }
-  if (resolved.search) {
-    const q = resolved.search.toLowerCase();
-    list = list.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.category.includes(q) ||
-        p.tags.some((t) => t.includes(q))
-    );
-  }
-  return sortMock(list, resolved.sort);
+function emptyPage(page: number, limit: number): PaginatedProducts {
+  return { items: [], total: 0, page, limit, hasMore: false };
 }
 
 function orderBy(sort?: ProductFilters["sort"]) {
@@ -129,15 +57,7 @@ export async function getProducts(
   const skip = (page - 1) * limit;
 
   if (!(await isDatabaseReady())) {
-    const all = filterMock(resolvedFilters);
-    const items = all.slice(skip, skip + limit);
-    return {
-      items,
-      total: all.length,
-      page,
-      limit,
-      hasMore: skip + limit < all.length,
-    };
+    return emptyPage(page, limit);
   }
 
   const where: Record<string, unknown> = {};
@@ -200,9 +120,25 @@ export async function getProducts(
   };
 }
 
+/** All products for Algolia / bulk jobs (paginated reads). */
+export async function getAllProductsForSearch(): Promise<Product[]> {
+  const all: Product[] = [];
+  let page = 1;
+  const limit = 100;
+
+  while (true) {
+    const { items, hasMore } = await getProducts({ page, limit });
+    all.push(...items);
+    if (!hasMore) break;
+    page += 1;
+  }
+
+  return all;
+}
+
 export async function getProductBySlug(slug: string): Promise<Product | null> {
   if (!(await isDatabaseReady())) {
-    return mockGetBySlug(slug) ?? null;
+    return null;
   }
   const row = await getPrisma().product.findUnique({
     where: { slug },
@@ -224,7 +160,7 @@ export async function getRelatedProducts(
 }
 
 export async function getCategories(): Promise<Category[]> {
-  if (!(await isDatabaseReady())) return mockCategories;
+  if (!(await isDatabaseReady())) return [];
   const rows = await getPrisma().category.findMany({
     include: { _count: { select: { products: true } } },
     orderBy: { name: "asc" },
@@ -233,7 +169,7 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 export async function getCollections(): Promise<Collection[]> {
-  if (!(await isDatabaseReady())) return mockCollections;
+  if (!(await isDatabaseReady())) return [];
   const rows = await getPrisma().collection.findMany({ orderBy: { name: "asc" } });
   return rows.map(mapCollection);
 }
@@ -246,4 +182,30 @@ export async function getCategoryBySlug(slug: string) {
 export async function getCollectionBySlug(slug: string) {
   const cols = await getCollections();
   return cols.find((c) => c.slug === slug) ?? null;
+}
+
+export type CategoryShowcaseTile = {
+  id: string;
+  slug: string;
+  name: string;
+  image: string;
+  productCount: number;
+};
+
+/** Compact category tiles for homepage (imported catalog only). */
+export async function getCategoryShowcase(
+  limit = 6
+): Promise<CategoryShowcaseTile[]> {
+  const categories = await getCategories();
+  return categories
+    .filter((c) => c.productCount > 0 && Boolean(c.image))
+    .sort((a, b) => b.productCount - a.productCount)
+    .slice(0, limit)
+    .map((c) => ({
+      id: c.id,
+      slug: c.slug,
+      name: c.name,
+      image: c.image,
+      productCount: c.productCount,
+    }));
 }

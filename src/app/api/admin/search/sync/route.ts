@@ -1,6 +1,6 @@
 import { requireAdmin } from "@/lib/admin-auth";
 import { syncProductsToAlgolia, isAlgoliaConfigured } from "@/lib/search";
-import { getProducts } from "@/services/products";
+import { getAllProductsForSearch } from "@/services/products";
 
 export async function POST() {
   const auth = await requireAdmin();
@@ -11,7 +11,7 @@ export async function POST() {
       { status: 503 }
     );
   }
-  const { items } = await getProducts({ limit: 200, page: 1 });
+  const items = await getAllProductsForSearch();
   const result = await syncProductsToAlgolia(items);
   return Response.json(result);
 }

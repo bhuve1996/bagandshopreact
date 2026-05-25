@@ -2,30 +2,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const banners = [
-  {
-    title: "Work From Anywhere",
-    subtitle: "Desk & carry essentials for the modern nomad",
-    href: "/collections/work-anywhere",
-    image:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    title: "Gift Something Beautiful",
-    subtitle: "Curated sets ready to delight",
-    href: "/collections/gift-sets",
-    image:
-      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
-  },
-];
+export type LifestyleBanner = {
+  title: string;
+  subtitle: string;
+  href: string;
+  image: string;
+};
 
-export function LifestyleBanners() {
+type Props = { banners: LifestyleBanner[]; discoverLabel: string };
+
+export function LifestyleBanners({ banners, discoverLabel }: Props) {
+  if (banners.length === 0) return null;
+
   return (
     <section className="section-padding">
       <div className="container-page grid gap-6 md:grid-cols-2">
         {banners.map((banner) => (
           <div
-            key={banner.title}
+            key={banner.href}
             className="group relative overflow-hidden rounded-2xl"
           >
             <div className="relative aspect-4/3">
@@ -45,7 +39,7 @@ export function LifestyleBanners() {
                   {banner.title}
                 </h3>
                 <Button variant="secondary" className="mt-6 w-fit" asChild>
-                  <Link href={banner.href}>Discover</Link>
+                  <Link href={banner.href}>{discoverLabel}</Link>
                 </Button>
               </div>
             </div>

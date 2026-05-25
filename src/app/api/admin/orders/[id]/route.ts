@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
-import { adminGetOrder, adminUpdateOrderStatus } from "@/services/admin";
+import { adminGetOrder, adminUpdateOrder } from "@/services/admin";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -21,15 +21,17 @@ export async function PATCH(request: NextRequest, { params }: Props) {
   try {
     const body = z
       .object({
-        status: z.string(),
+        status: z.string().optional(),
         paymentStatus: z.string().optional(),
       })
+      .refine((d) => d.status ?? d.paymentStatus, {
+        message: "Provide status and/or paymentStatus",
+      })
       .parse(await request.json());
-    const order = await adminUpdateOrderStatus(
-      id,
-      body.status,
-      body.paymentStatus
-    );
+    const order = await adminUpdateOrder(id, {
+      status: body.status,
+      paymentStatus: body.paymentStatus,
+    });
     return NextResponse.json(order);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Failed";

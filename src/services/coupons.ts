@@ -5,6 +5,14 @@ export type CouponResult =
   | { valid: true; code: string; discount: number; type: "PERCENT" | "FIXED" }
   | { valid: false; message: string };
 
+export type PublicCoupon = {
+  code: string;
+  description: string | null;
+  type: "PERCENT" | "FIXED";
+  value: number;
+  minOrder: number;
+};
+
 const MOCK_COUPONS: Record<string, { type: "PERCENT" | "FIXED"; value: number; minOrder: number }> = {
   WELCOME10: { type: "PERCENT", value: 10, minOrder: 500 },
   FLAT200: { type: "FIXED", value: 200, minOrder: 1500 },
@@ -17,6 +25,37 @@ function calcDiscount(
 ): number {
   if (type === "PERCENT") return Math.round((subtotal * value) / 100);
   return Math.min(value, subtotal);
+}
+
+/** Active, non-expired coupons available store-wide at checkout. */
+export async function listActiveCoupons(): Promise<PublicCoupon[]> {
+  const now = new Date();
+
+  if (await isDatabaseReady()) {
+    const rows = await getPrisma().coupon.findMany({
+      where: {
+        active: true,
+        OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        code: true,
+        description: true,
+        type: true,
+        value: true,
+        minOrder: true,
+      },
+    });
+    return rows;
+  }
+
+  return Object.entries(MOCK_COUPONS).map(([code, c]) => ({
+    code,
+    description: null,
+    type: c.type,
+    value: c.value,
+    minOrder: c.minOrder,
+  }));
 }
 
 export async function validateCoupon(

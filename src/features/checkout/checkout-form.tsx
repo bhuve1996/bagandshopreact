@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-import { createOrderApi, validateCouponApi } from "@/lib/api-client";
+import {
+  createOrderApi,
+  fetchActiveCouponsApi,
+  type PublicCoupon,
+  validateCouponApi,
+} from "@/lib/api-client";
+import { formatCouponOffer } from "@/lib/coupon-utils";
+import { toast } from "@/lib/toast";
 import { formatPrice } from "@/lib/utils";
+import { AnalyticsEventType } from "@/lib/analytics-events";
+import { trackAnalytics } from "@/lib/analytics-client";
 import { useCartStore, useCartTotals } from "@/store/cart-store";
 
 const SHIPPING_FREE = 999;
@@ -17,10 +26,13 @@ export function CheckoutForm() {
   const { items, clearCart } = useCartStore();
   const { subtotal, itemCount } = useCartTotals();
   const [coupon, setCoupon] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState("");
   const [referral, setReferral] = useState("");
   const [discount, setDiscount] = useState(0);
   const [referralDiscount, setReferralDiscount] = useState(0);
   const [couponMsg, setCouponMsg] = useState("");
+  const [activeCoupons, setActiveCoupons] = useState<PublicCoupon[]>([]);
+  const [applyingCode, setApplyingCode] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"COD" | "UPI" | "RAZORPAY">("COD");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -39,30 +51,73 @@ export function CheckoutForm() {
   const tax = Math.round(taxable * 0.18);
   const total = taxable + shipping + tax;
 
-  async function applyCoupon() {
-    const result = await validateCouponApi(coupon, subtotal);
-    if (result.valid) {
-      setDiscount(result.discount);
-      setCouponMsg(`Coupon applied: ${result.code}`);
-    } else {
-      setDiscount(0);
-      setCouponMsg(result.message ?? "Invalid coupon");
+  useEffect(() => {
+    if (itemCount > 0) {
+      trackAnalytics({
+        type: AnalyticsEventType.BEGIN_CHECKOUT,
+        metadata: { itemCount, subtotal },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per checkout visit
+  }, []);
+
+  useEffect(() => {
+    fetchActiveCouponsApi()
+      .then(setActiveCoupons)
+      .catch(() => setActiveCoupons([]));
+  }, []);
+
+  async function applyCoupon(code?: string) {
+    const codeToApply = (code ?? coupon).trim().toUpperCase();
+    if (!codeToApply) {
+      toast.error("Enter a coupon code");
+      return;
+    }
+    setApplyingCode(codeToApply);
+    try {
+      const result = await validateCouponApi(codeToApply, subtotal);
+      if (result.valid) {
+        setCoupon(codeToApply);
+        setAppliedCoupon(result.code ?? codeToApply);
+        setDiscount(result.discount);
+        setCouponMsg("");
+        toast.success("Coupon applied", result.code ?? codeToApply);
+      } else {
+        setDiscount(0);
+        setAppliedCoupon("");
+        setCouponMsg("");
+        toast.error(result.message ?? "Invalid coupon");
+      }
+    } catch {
+      toast.error("Could not validate coupon", "Please try again.");
+    } finally {
+      setApplyingCode(null);
     }
   }
 
   async function applyReferral() {
-    const res = await fetch("/api/referrals/validate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ code: referral }),
-    });
-    const result = await res.json();
-    if (result.valid) {
-      setReferralDiscount(result.discount);
-      setCouponMsg(`Referral applied: −${result.discount}`);
-    } else {
-      setReferralDiscount(0);
-      setCouponMsg(result.message ?? "Invalid referral code");
+    if (!referral.trim()) {
+      toast.error("Enter a referral code");
+      return;
+    }
+    try {
+      const res = await fetch("/api/referrals/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: referral }),
+      });
+      const result = await res.json();
+      if (result.valid) {
+        setReferralDiscount(result.discount);
+        setCouponMsg("");
+        toast.success("Referral applied", `You save ₹${result.discount}`);
+      } else {
+        setReferralDiscount(0);
+        setCouponMsg("");
+        toast.error(result.message ?? "Invalid referral code");
+      }
+    } catch {
+      toast.error("Could not validate referral", "Please try again.");
     }
   }
 
@@ -74,7 +129,7 @@ export function CheckoutForm() {
     const order = await createOrderApi({
       items,
       paymentMethod,
-      couponCode: discount > 0 ? coupon : undefined,
+      couponCode: discount > 0 ? appliedCoupon || coupon : undefined,
       customerEmail: form.email || undefined,
       shipping: {
         fullName: form.fullName,
@@ -88,6 +143,7 @@ export function CheckoutForm() {
       ...extra,
     });
     clearCart();
+    toast.success("Order placed!", `Order ${order.orderNumber}`);
     router.push(
       `/orders/confirmation?order=${order.orderNumber}${order.mock ? "&mock=1" : ""}`
     );
@@ -95,7 +151,10 @@ export function CheckoutForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
     setLoading(true);
     setCouponMsg("");
     try {
@@ -125,8 +184,11 @@ export function CheckoutForm() {
         return;
       }
       await placeOrder();
-    } catch {
-      setCouponMsg("Checkout failed. Please try again.");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Checkout failed. Please try again.";
+      setCouponMsg("");
+      toast.error("Checkout failed", message);
     } finally {
       setLoading(false);
     }
@@ -220,16 +282,72 @@ export function CheckoutForm() {
             </li>
           ))}
         </ul>
-        <div className="flex gap-2">
-          <input
-            value={coupon}
-            onChange={(e) => setCoupon(e.target.value.toUpperCase())}
-            placeholder="Coupon code"
-            className="h-10 flex-1 rounded-full border border-border px-4 text-sm"
-          />
-          <Button type="button" variant="outline" onClick={applyCoupon}>
-            Apply
-          </Button>
+        <div className="space-y-3">
+          <p className="text-xs font-medium text-muted">Available offers</p>
+          {activeCoupons.length > 0 ? (
+            <ul className="space-y-2">
+              {activeCoupons.map((c) => {
+                const isApplied =
+                  appliedCoupon === c.code && discount > 0;
+                return (
+                  <li
+                    key={c.code}
+                    className={`flex items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-sm ${
+                      isApplied
+                        ? "border-green-600/40 bg-green-50 dark:bg-green-950/30"
+                        : "border-border"
+                    }`}
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium">{c.code}</p>
+                      <p className="text-xs text-muted">
+                        {c.description ?? formatCouponOffer(c)}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant={isApplied ? "default" : "outline"}
+                      size="sm"
+                      disabled={isApplied || applyingCode === c.code}
+                      onClick={() => applyCoupon(c.code)}
+                    >
+                      {isApplied
+                        ? "Applied"
+                        : applyingCode === c.code
+                          ? "Applying…"
+                          : "Apply"}
+                    </Button>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="text-xs text-muted">No offers available right now.</p>
+          )}
+          <div className="flex gap-2">
+            <input
+              value={coupon}
+              onChange={(e) => {
+                setCoupon(e.target.value.toUpperCase());
+                if (appliedCoupon && e.target.value.toUpperCase() !== appliedCoupon) {
+                  setAppliedCoupon("");
+                  setDiscount(0);
+                }
+              }}
+              placeholder="Or enter a coupon code"
+              className="h-10 flex-1 rounded-full border border-border px-4 text-sm"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!!applyingCode}
+              onClick={() => applyCoupon()}
+            >
+              {applyingCode && !activeCoupons.some((c) => c.code === applyingCode)
+                ? "Applying…"
+                : "Apply"}
+            </Button>
+          </div>
         </div>
         <div className="flex gap-2">
           <input

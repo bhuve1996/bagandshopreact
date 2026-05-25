@@ -30,11 +30,16 @@ export function SearchResults() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <Skeleton key={i} className="aspect-4/5" />
-        ))}
-      </div>
+      <>
+        <p role="status" className="sr-only">
+          Loading search results
+        </p>
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4" aria-busy="true">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Skeleton key={i} className="aspect-4/5" />
+          ))}
+        </div>
+      </>
     );
   }
 
@@ -42,7 +47,7 @@ export function SearchResults() {
 
   if (products.length === 0) {
     return (
-      <p className="py-16 text-center text-muted">
+      <p role="status" className="py-16 text-center text-muted">
         No results for &ldquo;{q}&rdquo;
       </p>
     );
@@ -50,7 +55,7 @@ export function SearchResults() {
 
   return (
     <>
-      <p className="mb-8 text-sm text-muted">
+      <p role="status" className="mb-8 text-sm text-muted">
         {products.length} results for &ldquo;{q}&rdquo;
       </p>
       <ProductGrid products={products} />

@@ -1,6 +1,13 @@
 import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { staticPageMetadata } from "@/lib/seo/config";
 
-export const metadata = { title: "Shipping" };
+export async function generateMetadata() {
+  return staticPageMetadata("/shipping", {
+    title: "Shipping",
+    description:
+      "Shipping times, free delivery threshold, and tracking for Bag & Shop orders.",
+  });
+}
 
 export default function ShippingPage() {
   return (

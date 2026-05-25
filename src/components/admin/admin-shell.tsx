@@ -1,41 +1,75 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { BrandLogoLink } from "@/components/layout/brand-logo";
+import { AdminNav, adminNavItems } from "@/components/admin/admin-nav";
+import { siteConfig } from "@/lib/site-content";
 import { usePathname } from "next/navigation";
-import {
-  BarChart3,
-  Image,
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Tag,
-  Users,
-  Star,
-} from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const nav = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
-  { href: "/admin/coupons", label: "Coupons", icon: Tag },
-  { href: "/admin/banners", label: "Banners", icon: Image },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/reviews", label: "Reviews", icon: Star },
-];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const currentLabel =
+    adminNavItems.find(
+      (item) =>
+        pathname === item.href ||
+        (item.href !== "/admin" && pathname.startsWith(item.href))
+    )?.label ?? "Admin";
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
 
   return (
     <div className="min-h-screen bg-stone-100 dark:bg-stone-950">
+      <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 lg:hidden">
+        <div className="min-w-0">
+          <BrandLogoLink href="/admin" height={22} />
+          <p className="truncate text-xs text-muted">{currentLabel}</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setMobileOpen((o) => !o)}
+          className="rounded-lg p-2 hover:bg-stone-100 dark:hover:bg-stone-800"
+          aria-expanded={mobileOpen}
+          aria-label={mobileOpen ? "Close menu" : "Open admin menu"}
+        >
+          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </header>
+
+      {mobileOpen && (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          aria-label="Close menu"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
       <div className="flex">
-        <aside className="sticky top-0 hidden h-screen w-56 shrink-0 border-r border-border bg-card lg:block">
-          <div className="border-b border-border px-4 py-5">
-            <Link href="/admin" className="text-sm font-semibold tracking-tight">
-              Bag & Shop Admin
-            </Link>
+        <aside
+          className={cn(
+            "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-card transition-transform duration-200 lg:static lg:z-auto lg:h-screen lg:w-56 lg:shrink-0 lg:translate-x-0",
+            mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          )}
+        >
+          <div className="hidden border-b border-border px-4 py-5 lg:block">
+            <BrandLogoLink href="/admin" height={24} className="mb-1" />
+            <p className="text-xs text-muted">{siteConfig.name} Admin</p>
             <Link
               href="/"
               className="mt-1 block text-xs text-muted hover:underline"
@@ -43,31 +77,32 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               ← Storefront
             </Link>
           </div>
-          <nav className="space-y-0.5 p-3">
-            {nav.map((item) => {
-              const active =
-                pathname === item.href ||
-                (item.href !== "/admin" && pathname.startsWith(item.href));
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors",
-                    active
-                      ? "bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900"
-                      : "text-muted hover:bg-stone-100 hover:text-foreground dark:hover:bg-stone-800"
-                  )}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <div className="flex items-center justify-between border-b border-border px-4 py-3 lg:hidden">
+            <p className="text-sm font-medium">Menu</p>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              className="rounded-lg p-1 hover:bg-stone-100 dark:hover:bg-stone-800"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto p-3">
+            <AdminNav onNavigate={() => setMobileOpen(false)} />
+          </div>
+          <div className="border-t border-border p-3 lg:hidden">
+            <Link
+              href="/"
+              className="block rounded-lg px-3 py-2 text-sm text-muted hover:bg-stone-100 hover:text-foreground dark:hover:bg-stone-800"
+              onClick={() => setMobileOpen(false)}
+            >
+              ← Storefront
+            </Link>
+          </div>
         </aside>
-        <main className="min-w-0 flex-1 p-6 lg:p-10">{children}</main>
+
+        <main className="min-w-0 flex-1 p-4 sm:p-6 lg:p-10">{children}</main>
       </div>
     </div>
   );

@@ -1,6 +1,13 @@
 import { WishlistView } from "@/features/wishlist/wishlist-view";
+import { staticPageMetadata } from "@/lib/seo/config";
 
-export const metadata = { title: "Wishlist" };
+export async function generateMetadata() {
+  const meta = await staticPageMetadata("/wishlist", {
+    title: "Wishlist",
+    description: "Your saved Bag & Shop products.",
+  });
+  return { ...meta, robots: { index: false, follow: true } };
+}
 
 export default function WishlistPage() {
   return (

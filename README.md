@@ -21,9 +21,22 @@ npm run dev
 
 ```bash
 docker compose up -d
-npm run db:push
-npm run db:seed
+npm run db:sync
 ```
+
+(`db:sync` = `db:push` → `db:import` → `db:seed` — replaces old catalog with CSV data only.)
+
+### Import Shopify CSV (Bag & Shop catalog)
+
+Place export at `data/products_export.csv`, then:
+
+```bash
+npm run db:import
+```
+
+Imports **24 products** with variants. Images are copied from `data/scraped-data/assets/images` into `public/products/{slug}/` (not Shopify CDN). Requires `data/scraped-data/website-data.json` for best handle→image matching.
+
+`data/` and `public/products/` are **gitignored** — see [docs/DATA.md](docs/DATA.md) for the local folder layout.
 
 ## Demo accounts
 
@@ -59,6 +72,16 @@ npm run db:seed
 ## Admin
 
 [http://localhost:3000/admin](http://localhost:3000/admin) — `admin@test.com` / `admin123`
+
+| Section | Manage |
+|---------|--------|
+| **Products** | Edit/create with variants, images, flags, category, marketing collection |
+| **Categories** | Create, edit, delete (when empty), name/slug/description/image |
+| **Collections** | Create, edit, delete (when empty), marketing collections |
+| **Orders** | Status & payment updates |
+| **Reviews** | Approve / reject |
+| **Banners** | Homepage carousel CMS |
+| **Coupons** | Promo codes |
 
 ## Cron (abandoned cart)
 

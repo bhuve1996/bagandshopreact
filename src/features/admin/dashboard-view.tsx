@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { adminNavItems } from "@/components/admin/admin-nav";
 import { StatCard } from "@/components/admin/stat-card";
 import { formatPrice } from "@/lib/utils";
 import type { DashboardStats } from "@/services/analytics";
@@ -18,9 +20,34 @@ export function DashboardView() {
 
   const maxRev = Math.max(...data.revenueByDay.map((d) => d.revenue), 1);
 
+  const manageLinks = adminNavItems.filter((item) => item.href !== "/admin");
+
   return (
     <div className="space-y-10">
-      <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted">Overview and quick links to manage the store.</p>
+      </div>
+
+      <div className="card-premium p-6">
+        <h2 className="text-sm font-semibold">Manage store</h2>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {manageLinks.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-2 rounded-lg border border-border px-3 py-2.5 text-sm transition-colors hover:bg-stone-50 dark:hover:bg-stone-900"
+              >
+                <Icon className="h-4 w-4 shrink-0 text-muted" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Revenue (30d)" value={formatPrice(data.revenue)} />
         <StatCard label="Orders" value={String(data.orders)} />
@@ -28,7 +55,28 @@ export function DashboardView() {
         <StatCard
           label="Customers"
           value={String(data.customers)}
-          hint={`${data.conversionRate.toFixed(1)}% est. conversion`}
+          hint={`${data.conversionRate.toFixed(1)}% view → purchase`}
+        />
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          label="Product views (30d)"
+          value={String(data.engagement.funnel.productViews)}
+        />
+        <StatCard
+          label="Add to cart"
+          value={String(data.engagement.funnel.addToCart)}
+          hint={`${data.engagement.funnel.viewToCartRate}% of views`}
+        />
+        <StatCard
+          label="Assistant opens"
+          value={String(data.engagement.assistant.opens)}
+        />
+        <StatCard
+          label="Abandoned carts"
+          value={String(data.engagement.abandonedCarts)}
+          hint="Not recovered"
         />
       </div>
 

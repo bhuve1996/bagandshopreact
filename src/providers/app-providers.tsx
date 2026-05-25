@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
 import { AuthSessionProvider } from "@/providers/session-provider";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
@@ -23,6 +24,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       <AuthSessionProvider>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           {children}
+          <Toaster />
         </ThemeProvider>
       </AuthSessionProvider>
     </QueryClientProvider>

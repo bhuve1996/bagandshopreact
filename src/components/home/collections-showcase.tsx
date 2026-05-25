@@ -1,21 +1,31 @@
 import Image from "next/image";
 import Link from "next/link";
-import { collections } from "@/lib/mock-data";
+import { SectionHeading } from "@/components/ui/section-heading";
+import type { HomepageCopy, LabelsCopy } from "@/types/storefront-settings";
+import type { Collection } from "@/types";
 
-export function CollectionsShowcase() {
+type Props = {
+  collections: Collection[];
+  section: HomepageCopy["collections"];
+  labels: LabelsCopy;
+};
+
+export function CollectionsShowcase({ collections, section, labels }: Props) {
+  if (collections.length === 0) return null;
+
+  const featured = collections.slice(0, 3);
+  const exploreCta = section.exploreCta || labels.exploreCollection;
+
   return (
     <section className="section-padding">
       <div className="container-page space-y-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted">
-            Curated collections
-          </p>
-          <h2 className="mt-1 text-3xl font-semibold tracking-tight">
-            Stories worth carrying
-          </h2>
-        </div>
+        <SectionHeading
+          eyebrow={section.eyebrow}
+          title={section.title}
+          className="mb-0"
+        />
         <div className="grid gap-6 lg:grid-cols-3">
-          {collections.map((col, i) => (
+          {featured.map((col, i) => (
             <Link
               key={col.id}
               href={`/collections/${col.slug}`}
@@ -42,7 +52,7 @@ export function CollectionsShowcase() {
                   </h3>
                   <p className="mt-1 text-sm text-white/80">{col.description}</p>
                   <span className="mt-4 inline-block text-sm font-medium underline-offset-4 group-hover:underline">
-                    Explore →
+                    {exploreCta}
                   </span>
                 </div>
               </div>

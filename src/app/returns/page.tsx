@@ -1,6 +1,13 @@
 import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { staticPageMetadata } from "@/lib/seo/config";
 
-export const metadata = { title: "Returns" };
+export async function generateMetadata() {
+  return staticPageMetadata("/returns", {
+    title: "Returns",
+    description:
+      "15-day returns policy and how to return Bag & Shop products.",
+  });
+}
 
 export default function ReturnsPage() {
   return (
@@ -10,16 +17,12 @@ export default function ReturnsPage() {
         packaging with tags attached.
       </p>
       <p>
-        To start a return, email support with your order number. Refunds are
-        processed to your original payment method within 5–7 business days after
-        we receive the item.
+        To start a return, email us with your order number. Refunds are
+        processed within 5–7 business days after we receive the item.
       </p>
       <p>
-        Exchanges are subject to stock availability. See our{" "}
-        <a href="/faq" className="text-foreground underline">
-          FAQ
-        </a>{" "}
-        for more details.
+        Sale items and personalized products may not be eligible unless
+        defective.
       </p>
     </StaticPageLayout>
   );

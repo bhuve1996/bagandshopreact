@@ -5,6 +5,7 @@ import type { CartItem } from "@/types";
 import { validateCoupon } from "@/services/coupons";
 import { sendOrderConfirmationEmail } from "@/services/email";
 import { markCartRecovered } from "@/services/abandoned-cart";
+import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackEvent } from "@/services/analytics";
 
 const SHIPPING_FREE_THRESHOLD = 999;
@@ -134,10 +135,16 @@ export async function createOrder(input: CreateOrderInput) {
   await markCartRecovered(input.userId, input.customerEmail);
 
   await trackEvent({
-    type: "purchase",
+    type: AnalyticsEventType.PURCHASE,
     orderId: order.id,
     userId: input.userId,
-    metadata: { total, orderNumber },
+    path: "/checkout",
+    metadata: {
+      total,
+      orderNumber,
+      itemCount: input.items.length,
+      paymentMethod: input.paymentMethod,
+    },
   });
 
   const email =

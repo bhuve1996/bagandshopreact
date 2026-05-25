@@ -1,6 +1,13 @@
 import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { staticPageMetadata } from "@/lib/seo/config";
 
-export const metadata = { title: "Privacy policy" };
+export async function generateMetadata() {
+  return staticPageMetadata("/privacy", {
+    title: "Privacy policy",
+    description:
+      "How Bag & Shop collects, uses, and protects your personal information.",
+  });
+}
 
 export default function PrivacyPage() {
   return (

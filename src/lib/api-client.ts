@@ -33,6 +33,20 @@ export async function fetchCollections(): Promise<Collection[]> {
   return res.json();
 }
 
+export type PublicCoupon = {
+  code: string;
+  description: string | null;
+  type: "PERCENT" | "FIXED";
+  value: number;
+  minOrder: number;
+};
+
+export async function fetchActiveCouponsApi(): Promise<PublicCoupon[]> {
+  const res = await fetch(`${base}/api/coupons`);
+  if (!res.ok) throw new Error("Failed to fetch coupons");
+  return res.json();
+}
+
 export async function validateCouponApi(code: string, subtotal: number) {
   const res = await fetch(`${base}/api/coupons/validate`, {
     method: "POST",

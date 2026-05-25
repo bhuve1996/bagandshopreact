@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/lib/toast";
 
 export function ReferralPanel() {
   const { data } = useQuery({
@@ -28,10 +29,15 @@ export function ReferralPanel() {
         variant="outline"
         size="sm"
         className="mt-3"
-        onClick={() => {
-          navigator.clipboard.writeText(data.link);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(data.link);
+            setCopied(true);
+            toast.success("Invite link copied");
+            setTimeout(() => setCopied(false), 2000);
+          } catch {
+            toast.error("Could not copy link");
+          }
         }}
       >
         {copied ? "Copied!" : "Copy invite link"}

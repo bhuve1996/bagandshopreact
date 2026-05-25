@@ -8,7 +8,7 @@ export async function isDatabaseReady(): Promise<boolean> {
   try {
     const prisma = getPrisma();
     await prisma.$queryRaw`SELECT 1`;
-    // Connection alone is not enough — empty DBs must fall back to mock data.
+    // Connection alone is not enough — schema must be migrated.
     const tables = await prisma.$queryRaw<{ exists: boolean }[]>`
       SELECT EXISTS (
         SELECT FROM information_schema.tables
