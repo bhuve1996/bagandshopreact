@@ -210,7 +210,7 @@ export function BannersAdmin() {
         </div>
       </form>
       <ul className="space-y-3">
-        {banners.map((b) => (
+        {banners.map((b: Banner) => (
           <li
             key={b.id}
             className="card-premium flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"
