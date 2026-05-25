@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-placeholder";
 import { slugify } from "@/lib/slug";
 import { toast } from "@/lib/toast";
 import { formatPrice } from "@/lib/utils";
@@ -48,7 +49,7 @@ const emptyBundle = (kind: GiftBundleKind) => ({
   slug: "",
   description: "",
   tagline: "",
-  image: "",
+  image: PRODUCT_PLACEHOLDER_IMAGE,
   kind,
   priceOverride: "",
   minOrderQty: kind === "GIFTING" ? "1" : "10",
@@ -163,7 +164,7 @@ export function CorporateAdmin() {
       description: form.description,
       tagline: form.tagline || undefined,
       kind: form.kind,
-      image: form.image,
+      image: form.image.trim() || PRODUCT_PLACEHOLDER_IMAGE,
       priceOverride: form.priceOverride
         ? Number(form.priceOverride)
         : null,

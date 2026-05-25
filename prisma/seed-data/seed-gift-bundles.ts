@@ -1,4 +1,5 @@
 import type { PrismaClient } from "../../src/generated/prisma/client";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "../../src/lib/product-placeholder";
 
 type BundleSeed = {
   id: string;
@@ -11,6 +12,8 @@ type BundleSeed = {
   featured: boolean;
   sortOrder: number;
   priceOverride?: number;
+  /** Card image; defaults to brand placeholder (not first product photo). */
+  image?: string;
   items: { productSlug: string; quantity: number }[];
 };
 
@@ -32,12 +35,7 @@ export async function seedGiftBundles(prisma: PrismaClient, bundles: BundleSeed[
     }
     if (itemRows.length === 0) continue;
 
-    const firstProduct = await prisma.product.findUnique({
-      where: { id: itemRows[0].productId },
-      select: { images: true },
-    });
-    const image =
-      firstProduct?.images[0] ?? "/products/_placeholders/category.jpg";
+    const image = bundle.image ?? PRODUCT_PLACEHOLDER_IMAGE;
 
     await prisma.corporateBundle.upsert({
       where: { id: bundle.id },

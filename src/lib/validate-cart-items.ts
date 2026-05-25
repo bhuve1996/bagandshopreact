@@ -1,5 +1,6 @@
 import { isDatabaseReady } from "@/lib/db-ready";
 import { getPrisma } from "@/lib/prisma";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-placeholder";
 import { requireDatabaseForCheckout } from "@/lib/security/env";
 import type { CartItem } from "@/types";
 
@@ -55,7 +56,7 @@ export async function validateAndResolveCartItems(
 
     let price = product.price;
     let stock = product.stock;
-    const image = product.images[0] ?? "/placeholder-product.svg";
+    const image = product.images[0] ?? PRODUCT_PLACEHOLDER_IMAGE;
 
     if (line.variantId) {
       const variant = product.variants.find((v) => v.id === line.variantId);

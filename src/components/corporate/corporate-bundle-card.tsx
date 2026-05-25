@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { giftBundleImageUrl } from "@/lib/product-placeholder";
 import { Gift, Package } from "lucide-react";
 import { GiftBundleAddToCart } from "@/components/corporate/gift-bundle-add-to-cart";
 import { formatPrice } from "@/lib/utils";
@@ -29,7 +30,7 @@ export function CorporateBundleCard({
     <article className="card-premium flex flex-col overflow-hidden">
       <Link href={linkHref} className="group relative aspect-4/3 overflow-hidden">
         <Image
-          src={bundle.image}
+          src={giftBundleImageUrl(bundle.image)}
           alt={bundle.name}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"

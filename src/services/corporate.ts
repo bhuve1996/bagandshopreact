@@ -1,5 +1,9 @@
 import { isDatabaseReady } from "@/lib/db-ready";
 import { getPrisma } from "@/lib/prisma";
+import {
+  PRODUCT_PLACEHOLDER_IMAGE,
+  giftBundleImageUrl,
+} from "@/lib/product-placeholder";
 import type {
   CorporateBundle,
   CorporateBundleItem,
@@ -77,7 +81,7 @@ function mapBundle(row: BundleRow): CorporateBundle {
     name: row.name,
     description: row.description,
     tagline: row.tagline ?? undefined,
-    image: row.image,
+    image: giftBundleImageUrl(row.image),
     kind: row.kind,
     priceOverride: row.priceOverride ?? undefined,
     minOrderQty: row.minOrderQty,
@@ -292,14 +296,9 @@ export async function adminUpdateCorporateInquiryStatus(
   });
 }
 
-/** Resolve bundle image from first product if missing */
+/** Default card image for gift/corporate bundles (not a product gallery photo). */
 export async function resolveBundleImageFromProducts(
-  productIds: string[]
+  _productIds: string[]
 ): Promise<string> {
-  if (productIds.length === 0) return "/products/_placeholders/category.jpg";
-  const p = await getPrisma().product.findFirst({
-    where: { id: { in: productIds } },
-    select: { images: true },
-  });
-  return p?.images[0] ?? "/products/_placeholders/category.jpg";
+  return PRODUCT_PLACEHOLDER_IMAGE;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-placeholder";
 import { toast } from "@/lib/toast";
 import { useCartStore } from "@/store/cart-store";
 import type { CorporateBundle } from "@/types/corporate";
@@ -24,7 +25,7 @@ export function GiftBundleAddToCart({
       return;
     }
     for (const item of bundle.items) {
-      const image = item.product.images[0] ?? "/products/_placeholders/category.jpg";
+      const image = item.product.images[0] ?? PRODUCT_PLACEHOLDER_IMAGE;
       addItem(
         {
           productId: item.product.id,

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CorporateBundleCard } from "@/components/corporate/corporate-bundle-card";
 import { GiftBundleAddToCart } from "@/components/corporate/gift-bundle-add-to-cart";
+import { giftBundleImageUrl } from "@/lib/product-placeholder";
 import { formatPrice } from "@/lib/utils";
 import type { CorporateBundle } from "@/types/corporate";
 
@@ -77,7 +78,7 @@ function GiftingBundleDetail({ bundle }: { bundle: CorporateBundle }) {
         <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:items-start">
           <div className="relative aspect-square max-w-md overflow-hidden rounded-2xl">
             <Image
-              src={bundle.image}
+              src={giftBundleImageUrl(bundle.image)}
               alt=""
               fill
               className="object-cover"

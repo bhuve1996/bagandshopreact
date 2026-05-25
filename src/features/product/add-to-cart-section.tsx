@@ -6,6 +6,7 @@ import { StockNotifyForm } from "@/features/product/stock-notify-form";
 import { VariantSelector } from "@/features/product/variant-selector";
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-placeholder";
 import { toast } from "@/lib/toast";
 import { useStorefrontCopy } from "@/providers/storefront-copy-provider";
 import { useCartStore } from "@/store/cart-store";
@@ -39,7 +40,10 @@ export function AddToCartSection({
   const displayPrice = active?.price ?? product.price;
   const displayCompare = active?.compareAtPrice ?? product.compareAtPrice;
   const displayImage =
-    active?.image ?? product.images[0] ?? product.hoverImage ?? "";
+    active?.image ??
+      product.images[0] ??
+      product.hoverImage ??
+      PRODUCT_PLACEHOLDER_IMAGE;
   const outOfStock =
     active?.inStock === false && variants.length > 0;
 

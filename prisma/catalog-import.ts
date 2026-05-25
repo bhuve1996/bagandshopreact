@@ -6,13 +6,14 @@ import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 
 import { getPgConnectionString } from "../src/lib/pg-connection";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "../src/lib/product-placeholder";
 import { syncProductFaqs } from "../src/lib/product-faqs";
 
 const pool = new Pool({ connectionString: getPgConnectionString() });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-const DEFAULT_CATEGORY_IMAGE = "/products/_placeholders/category.jpg";
+const DEFAULT_CATEGORY_IMAGE = PRODUCT_PLACEHOLDER_IMAGE;
 const CATALOG_PATH = path.join(process.cwd(), "prisma", "catalog.json");
 const PRODUCTS_PUBLIC = path.join(process.cwd(), "public", "products");
 
@@ -106,7 +107,9 @@ function resolveProductImages(product: CatalogProduct): string[] {
     return fs.existsSync(path.join(PRODUCTS_PUBLIC, rel));
   });
   if (existing.length > 0) return existing;
-  return discoverProductImages(product.slug);
+  const discovered = discoverProductImages(product.slug);
+  if (discovered.length > 0) return discovered;
+  return [PRODUCT_PLACEHOLDER_IMAGE];
 }
 
 function tagFlags(tags: string[]) {
@@ -280,11 +283,7 @@ export async function importCatalogFromRepo() {
 
   await purgeStaleCatalog(importSlugs);
 
-  const categoryImage = fs.existsSync(
-    path.join(PRODUCTS_PUBLIC, "_placeholders", "category.jpg")
-  )
-    ? DEFAULT_CATEGORY_IMAGE
-    : DEFAULT_CATEGORY_IMAGE;
+  const categoryImage = DEFAULT_CATEGORY_IMAGE;
 
   for (const cat of catalog.categories) {
     await prisma.category.upsert({
@@ -312,9 +311,8 @@ export async function importCatalogFromRepo() {
     if (!categoryId) continue;
 
     const localImages = resolveProductImages(p);
-    if (localImages.length === 0) {
-      console.warn(`No images in public/products/${p.slug}, skipping`);
-      continue;
+    if (localImages[0] === PRODUCT_PLACEHOLDER_IMAGE) {
+      console.warn(`No images in public/products/${p.slug}, using placeholder`);
     }
 
     const flags = tagFlags(p.tags);

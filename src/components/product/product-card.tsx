@@ -14,6 +14,7 @@ import {
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
 import { toast } from "@/lib/toast";
+import { productImageUrl } from "@/lib/product-placeholder";
 import { cn, formatPrice } from "@/lib/utils";
 import { useStorefrontCopy } from "@/providers/storefront-copy-provider";
 import { useCartStore } from "@/store/cart-store";
@@ -57,7 +58,7 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
       variantId: v?.id,
       name:
         v && variantCount > 1 ? `${product.name} — ${v.name}` : product.name,
-      image: v?.image ?? product.images[0],
+      image: v?.image ?? productImageUrl(product.images),
       price: v?.price ?? priceDisplay.fromPrice,
       slug: product.slug,
     });
@@ -86,7 +87,7 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
           <span className="sr-only">{product.name}</span>
         </Link>
         <Image
-          src={product.images[0]}
+          src={productImageUrl(product.images)}
           alt={product.name}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

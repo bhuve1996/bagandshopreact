@@ -55,7 +55,7 @@ export const seedSiteVideos = SEED_VIDEOS.map((v, i) => ({
   id: v.id,
   title: v.title,
   src: v.src,
-  poster: "/products/_placeholders/category.jpg",
+  poster: "/products/_placeholders/placeholder-bagnshop.png",
   href: v.href,
   sortOrder: i,
   active: true,
