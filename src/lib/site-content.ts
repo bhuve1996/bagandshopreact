@@ -3,7 +3,7 @@
  * Live brand, homepage headings, and UI labels are edited in Admin → Content & labels.
  */
 export const siteConfig = {
-  name: "Bag & Shop",
+  name: "BagnShop",
   tagline: "Design-led lifestyle accessories",
   announcement: "Free shipping on orders above ₹999 · Shop the latest drops",
   currency: "INR",

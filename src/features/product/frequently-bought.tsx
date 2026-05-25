@@ -1,19 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { ProductGrid } from "@/components/product/product-grid";
 import type { Product } from "@/types";
 
-export function FrequentlyBought({ slug }: { slug: string }) {
-  const { data } = useQuery({
-    queryKey: ["bundle", slug],
-    queryFn: () =>
-      fetch(`/api/recommendations?slug=${slug}&bundle=true`).then(
-        (r) => r.json() as Promise<{ products: Product[] }>
-      ),
-  });
-
-  const products = data?.products ?? [];
+export function FrequentlyBought({ products }: { products: Product[] }) {
   if (products.length === 0) return null;
 
   return (

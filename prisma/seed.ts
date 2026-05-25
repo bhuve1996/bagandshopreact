@@ -4,7 +4,13 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { importCatalogFromRepo } from "./catalog-import";
+import { seedBlogPosts } from "./seed-data/blog-posts";
 import { seedSiteVideos } from "./seed-data/site-videos";
+import { seedCorporateBundles } from "./seed-data/corporate-bundles";
+import { seedProductFaqsBySlug } from "./seed-data/product-faqs";
+import { seedProductFaqsFromMap } from "../src/lib/product-faqs";
+import { seedGiftingBundles } from "./seed-data/gifting-bundles";
+import { seedGiftBundles } from "./seed-data/seed-gift-bundles";
 import {
   DEFAULT_STOREFRONT_SETTINGS,
   STOREFRONT_SETTINGS_KEY,
@@ -170,6 +176,23 @@ async function main() {
     },
   });
 
+  for (const post of seedBlogPosts) {
+    await prisma.blogPost.upsert({
+      where: { id: post.id },
+      update: {
+        slug: post.slug,
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        coverImage: post.coverImage,
+        published: post.published,
+        publishedAt: post.publishedAt,
+        author: post.author,
+      },
+      create: post,
+    });
+  }
+
   for (const video of seedSiteVideos) {
     await prisma.siteVideo.upsert({
       where: { id: video.id },
@@ -195,6 +218,12 @@ async function main() {
     products.map((p) => p.id)
   );
 
+  console.log("Seeding product FAQs...");
+  const faqCount = await seedProductFaqsFromMap(prisma, seedProductFaqsBySlug);
+
+  console.log("Seeding gift bundles (corporate + perfect gifting)...");
+  await seedGiftBundles(prisma, [...seedCorporateBundles, ...seedGiftingBundles]);
+
   await prisma.siteSetting.upsert({
     where: { key: STOREFRONT_SETTINGS_KEY },
     create: {
@@ -205,7 +234,12 @@ async function main() {
   });
 
   console.log("Seed complete.");
+  console.log(`  ${seedBlogPosts.length} blog posts`);
   console.log(`  ${seedSiteVideos.length} homepage videos (sample clips)`);
+  console.log(`  ${faqCount} product FAQ entries (sample)`);
+  console.log(
+    `  ${seedCorporateBundles.length} corporate + ${seedGiftingBundles.length} gifting bundles (sample)`
+  );
   console.log("  customer@test.com / password123");
   console.log("  admin@test.com / admin123");
   if (products.length === 0) {

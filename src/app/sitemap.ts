@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getSiteUrl } from "@/lib/seo/site-url";
 import { getAllProductSitemapEntries } from "@/lib/seo/sitemap-products";
+import { getAllBlogSitemapEntries } from "@/services/blog";
 import { getCategories, getCollections } from "@/services/products";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -26,10 +27,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === "" ? 1 : path === "/collections" ? 0.9 : 0.7,
   }));
 
-  const [categories, collections, products] = await Promise.all([
+  const [categories, collections, products, blogPosts] = await Promise.all([
     getCategories(),
     getCollections(),
     getAllProductSitemapEntries(),
+    getAllBlogSitemapEntries(),
   ]);
 
   const seen = new Set<string>(staticRoutes.map((e) => e.url));
@@ -68,6 +70,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: p.updatedAt,
       changeFrequency: "weekly",
       priority: 0.9,
+    });
+  }
+
+  for (const post of blogPosts) {
+    pushUnique(dynamic, `/blog/${post.slug}`, {
+      lastModified: post.updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.6,
     });
   }
 

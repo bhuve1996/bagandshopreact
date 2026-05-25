@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ProductDetail } from "@/features/product/product-detail";
 import {
   BreadcrumbJsonLd,
+  FaqJsonLd,
   ProductJsonLd,
 } from "@/lib/seo/json-ld";
 import { getSeoSettings } from "@/lib/seo/config";
@@ -45,6 +46,11 @@ export default async function ProductPage({ params }: Props) {
         <>
           <ProductJsonLd product={product} brandName={brand.name} />
           <BreadcrumbJsonLd items={breadcrumbs} />
+          {product.faqs && product.faqs.length > 0 && (
+            <FaqJsonLd
+              faqs={product.faqs.map((f) => ({ q: f.question, a: f.answer }))}
+            />
+          )}
         </>
       )}
       <ProductDetail slug={slug} />

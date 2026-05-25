@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { ReferralPanel } from "@/features/account/referral-panel";
+import { SignOutButton } from "@/features/auth/sign-out-button";
 
 export const metadata = { title: "Account" };
 
@@ -37,6 +38,7 @@ export default async function AccountPage() {
             Track order
           </Link>
         </nav>
+        <SignOutButton className="mt-10" />
       </div>
     </div>
   );

@@ -5,11 +5,25 @@ import {
   adminGetStorefrontSettings,
   adminUpdateStorefrontSettings,
 } from "@/services/storefront-settings";
+import { SOCIAL_PLATFORM_LABELS } from "@/lib/social-platforms";
 import { mergeStorefrontSettings } from "@/types/storefront-settings";
 
 const faqItemSchema = z.object({
   q: z.string().min(1),
   a: z.string().min(1),
+});
+
+const policyPageSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  body: z.string().min(1),
+});
+
+const policyPagesSchema = z.object({
+  privacy: policyPageSchema,
+  shipping: policyPageSchema,
+  returns: policyPageSchema,
+  terms: policyPageSchema,
 });
 
 const seoSchema = z.object({
@@ -40,8 +54,25 @@ function validateStorefrontPayload(body: unknown) {
     body as Parameters<typeof mergeStorefrontSettings>[0]
   );
   const seo = seoSchema.parse(merged.seo);
+  policyPagesSchema.parse(merged.policyPages);
   if (!merged.support.email.includes("@")) {
     throw new Error("Valid support email required");
+  }
+  for (const link of merged.social.links) {
+    const label = SOCIAL_PLATFORM_LABELS[link.platform];
+    const url = link.url.trim();
+    if (link.enabled && !url) {
+      throw new Error(`${label}: URL required when enabled`);
+    }
+    if (!url) continue;
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        throw new Error("invalid protocol");
+      }
+    } catch {
+      throw new Error(`${label}: enter a valid http(s) URL`);
+    }
   }
   return mergeStorefrontSettings({ ...merged, seo });
 }

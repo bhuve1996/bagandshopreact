@@ -25,6 +25,11 @@ const variantSchema = z.object({
   sku: z.string().optional(),
 });
 
+const faqSchema = z.object({
+  question: z.string().min(1),
+  answer: z.string().min(1),
+});
+
 const createSchema = z.object({
   slug: z.string().min(1),
   name: z.string().min(1),
@@ -44,6 +49,7 @@ const createSchema = z.object({
   device: z.string().optional(),
   collectionSlug: z.string().optional(),
   variants: z.array(variantSchema).optional(),
+  faqs: z.array(faqSchema).optional(),
 });
 
 export async function POST(request: NextRequest) {

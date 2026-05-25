@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useRef } from "react";
+import { SignOutButton } from "@/features/auth/sign-out-button";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, X } from "lucide-react";
 import { useDialogA11y } from "@/hooks/use-dialog-a11y";
@@ -14,6 +16,7 @@ type MobileMenuProps = {
 };
 
 export function MobileMenu({ navigation, categoryNav }: MobileMenuProps) {
+  const { data: session } = useSession();
   const { mobileMenuOpen, setMobileMenuOpen } = useUIStore();
   const panelRef = useRef<HTMLDivElement>(null);
   const close = () => setMobileMenuOpen(false);
@@ -112,11 +115,11 @@ export function MobileMenu({ navigation, categoryNav }: MobileMenuProps) {
             </ul>
             <div className="space-y-2 border-t border-border p-4">
               <Link
-                href="/account"
+                href={session ? "/account" : "/login"}
                 onClick={close}
                 className="block text-sm"
               >
-                Account
+                {session ? "Account" : "Sign in"}
               </Link>
               <Link
                 href="/wishlist"
@@ -125,6 +128,14 @@ export function MobileMenu({ navigation, categoryNav }: MobileMenuProps) {
               >
                 Wishlist
               </Link>
+              {session && (
+                <SignOutButton
+                  variant="ghost"
+                  size="sm"
+                  className="h-auto w-full justify-start px-0 text-sm font-normal text-muted hover:text-foreground"
+                  onSignedOut={close}
+                />
+              )}
             </div>
             </div>
           </motion.nav>

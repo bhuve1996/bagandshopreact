@@ -1,3 +1,5 @@
+import { siteConfig } from "@/lib/site-content";
+
 declare global {
   interface Window {
     Razorpay?: new (options: Record<string, unknown>) => { open: () => void };
@@ -43,7 +45,7 @@ export async function openRazorpayCheckout(params: {
     key: data.key,
     amount: data.amount,
     currency: data.currency,
-    name: "Bag & Shop",
+    name: siteConfig.name,
     description: `Order ${params.receipt}`,
     order_id: data.orderId,
     prefill: {

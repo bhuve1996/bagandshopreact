@@ -102,6 +102,7 @@ export async function createOrder(input: CreateOrderInput) {
     data: {
       orderNumber,
       userId: input.userId,
+      customerEmail: input.customerEmail?.toLowerCase(),
       paymentMethod: input.paymentMethod,
       paymentStatus,
       subtotal,

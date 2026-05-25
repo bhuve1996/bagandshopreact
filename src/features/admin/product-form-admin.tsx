@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { Button } from "@/components/ui/button";
+import { TagInput } from "@/features/admin/tag-input";
 import { toast } from "@/lib/toast";
 
 type MediaPickerTarget =
@@ -59,6 +60,7 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [variants, setVariants] = useState<VariantFormRow[]>([]);
+  const [faqsText, setFaqsText] = useState("");
   const [mediaPicker, setMediaPicker] = useState<MediaPickerTarget | null>(null);
   const [form, setForm] = useState({
     slug: "",
@@ -68,7 +70,7 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
     compareAtPrice: "",
     images: "",
     hoverImage: "",
-    tags: "",
+    tags: [] as string[],
     categoryId: "",
     stock: "100",
     device: "",
@@ -104,7 +106,7 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
           compareAtPrice: p.compareAtPrice ? String(p.compareAtPrice) : "",
           images: (p.images as string[]).join("\n"),
           hoverImage: p.hoverImage ?? "",
-          tags: (p.tags as string[]).join(", "),
+          tags: (p.tags as string[]) ?? [],
           categoryId: p.categoryId,
           stock: String(p.stock ?? 100),
           device: p.device ?? "",
@@ -138,6 +140,16 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
               )
             : []
         );
+        setFaqsText(
+          p.faqs?.length
+            ? p.faqs
+                .map(
+                  (f: { question: string; answer: string }) =>
+                    `${f.question}|${f.answer}`
+                )
+                .join("\n")
+            : ""
+        );
       })
       .catch(() => setError("Could not load product"))
       .finally(() => setLoading(false));
@@ -157,6 +169,16 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
         sku: v.sku.trim() || undefined,
       }));
 
+    const faqs = faqsText
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        const [question, ...rest] = line.split("|");
+        return { question: question.trim(), answer: rest.join("|").trim() };
+      })
+      .filter((f) => f.question && f.answer);
+
     return {
       slug: form.slug.trim(),
       name: form.name.trim(),
@@ -165,7 +187,7 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
       compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : undefined,
       images,
       hoverImage: form.hoverImage.trim() || undefined,
-      tags: form.tags.split(",").map((s) => s.trim()).filter(Boolean),
+      tags: form.tags,
       categoryId: form.categoryId,
       stock: Number(form.stock),
       device: form.device.trim() || undefined,
@@ -180,6 +202,7 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
         : variantPayload.length > 0
           ? variantPayload
           : undefined,
+      faqs,
     };
   }
 
@@ -391,14 +414,14 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
             ))}
           </select>
         </label>
-        <label className="block">
-          <span className="text-xs text-muted">Tags (comma-separated)</span>
-          <input
+        <div className="block sm:col-span-2">
+          <span className="text-xs text-muted">Tags</span>
+          <TagInput
+            className="mt-1"
             value={form.tags}
-            onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
-            className="mt-1 h-10 w-full rounded-lg border border-border px-3 text-sm"
+            onChange={(tags) => setForm((f) => ({ ...f, tags }))}
           />
-        </label>
+        </div>
         <div className="flex flex-wrap gap-6">
           <label className="flex items-center gap-2 text-sm">
             <input
@@ -482,6 +505,23 @@ export function ProductFormAdmin({ productId }: ProductFormAdminProps) {
             </Button>
           </div>
         </label>
+      </section>
+
+      <section className="card-premium space-y-4 p-6">
+        <h2 className="text-sm font-semibold">Product FAQs</h2>
+        <p className="text-xs text-muted">
+          Shown on the product page in a Questions &amp; answers section and in
+          FAQ structured data for search. One per line: question | answer
+        </p>
+        <textarea
+          value={faqsText}
+          onChange={(e) => setFaqsText(e.target.value)}
+          rows={8}
+          placeholder={
+            "Can I travel with this mirror?|Yes — it folds flat for suitcases.\nWhat magnification is included?|1×, 2×, and 3× panels."
+          }
+          className="w-full rounded-lg border border-border px-3 py-2 font-mono text-xs"
+        />
       </section>
 
       <section className="card-premium space-y-4 p-6">

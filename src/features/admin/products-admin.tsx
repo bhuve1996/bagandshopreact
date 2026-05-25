@@ -19,6 +19,7 @@ type ProductRow = {
   category?: { name: string; slug: string };
   collection?: { name: string; slug: string } | null;
   collectionSlug?: string | null;
+  tags?: string[];
   _count?: { variants: number };
 };
 
@@ -65,6 +66,7 @@ export function ProductsAdmin() {
                 <th className="p-4">Category</th>
                 <th className="p-4">Price</th>
                 <th className="p-4">Variants</th>
+                <th className="p-4">Tags</th>
                 <th className="p-4">Flags</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
@@ -101,6 +103,18 @@ export function ProductsAdmin() {
                   </td>
                   <td className="p-4">{formatPrice(p.price)}</td>
                   <td className="p-4">{p._count?.variants ?? 0}</td>
+                  <td className="p-4 max-w-[200px]">
+                    {(p.tags?.length ?? 0) > 0 ? (
+                      <p className="line-clamp-2 text-xs text-muted">
+                        {p.tags!.slice(0, 4).join(", ")}
+                        {(p.tags?.length ?? 0) > 4
+                          ? ` +${(p.tags?.length ?? 0) - 4}`
+                          : ""}
+                      </p>
+                    ) : (
+                      <span className="text-xs text-muted">—</span>
+                    )}
+                  </td>
                   <td className="p-4">
                     <div className="flex flex-wrap gap-1">
                       {p.isNew && (

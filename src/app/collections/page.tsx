@@ -5,7 +5,7 @@ import { getCategories, getCollections } from "@/services/products";
 
 export const metadata: Metadata = {
   title: "Shop all collections",
-  description: "Browse categories and curated collections at Bag & Shop.",
+  description: "Browse categories and curated collections at BagnShop.",
 };
 
 export default async function CollectionsIndexPage() {

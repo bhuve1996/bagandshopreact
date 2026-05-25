@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getFrequentlyBoughtTogether } from "@/services/recommendations";
 import { getProductBySlug, getRelatedProducts } from "@/services/products";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -10,5 +11,9 @@ export async function GET(_request: Request, { params }: Props) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
   const related = await getRelatedProducts(product);
-  return NextResponse.json({ product, related });
+  const frequentlyBought = await getFrequentlyBoughtTogether(
+    slug,
+    related.map((p) => p.id)
+  );
+  return NextResponse.json({ product, related, frequentlyBought });
 }

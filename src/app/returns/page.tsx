@@ -1,29 +1,18 @@
-import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { PolicyPageView } from "@/components/content/policy-page-view";
+import { getPolicyPage } from "@/lib/policy-pages";
 import { staticPageMetadata } from "@/lib/seo/config";
+import { getStorefrontSettings } from "@/services/storefront-settings";
 
 export async function generateMetadata() {
+  const { policyPages } = await getStorefrontSettings();
+  const page = getPolicyPage(policyPages, "returns");
   return staticPageMetadata("/returns", {
-    title: "Returns",
-    description:
-      "15-day returns policy and how to return Bag & Shop products.",
+    title: page.title,
+    description: page.description,
   });
 }
 
-export default function ReturnsPage() {
-  return (
-    <StaticPageLayout title="Returns & exchanges">
-      <p>
-        We offer a 15-day easy return policy on unused items in original
-        packaging with tags attached.
-      </p>
-      <p>
-        To start a return, email us with your order number. Refunds are
-        processed within 5–7 business days after we receive the item.
-      </p>
-      <p>
-        Sale items and personalized products may not be eligible unless
-        defective.
-      </p>
-    </StaticPageLayout>
-  );
+export default async function ReturnsPage() {
+  const { policyPages } = await getStorefrontSettings();
+  return <PolicyPageView page={getPolicyPage(policyPages, "returns")} />;
 }

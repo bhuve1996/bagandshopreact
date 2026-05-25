@@ -5,7 +5,7 @@ import { staticPageMetadata } from "@/lib/seo/config";
 export async function generateMetadata() {
   return staticPageMetadata("/careers", {
     title: "Careers",
-    description: "Join the Bag & Shop team — open roles and how to apply.",
+    description: "Join the BagnShop team — open roles and how to apply.",
   });
 }
 

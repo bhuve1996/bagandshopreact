@@ -1,6 +1,6 @@
 import { isDatabaseReady } from "@/lib/db-ready";
 import { getPrisma } from "@/lib/prisma";
-import { mapProduct } from "@/lib/mappers";
+import { syncProductFaqs } from "@/lib/product-faqs";
 import { sendShippingUpdateEmail } from "@/services/email";
 
 export async function adminListProducts() {
@@ -27,6 +27,7 @@ export async function adminGetProduct(id: string) {
       category: true,
       collection: true,
       variants: { orderBy: { name: "asc" } },
+      faqs: { orderBy: { sortOrder: "asc" } },
     },
   });
   return row;
@@ -41,6 +42,11 @@ export type AdminVariantInput = {
   compareAtPrice?: number;
   stock: number;
   sku?: string;
+};
+
+export type AdminFaqInput = {
+  question: string;
+  answer: string;
 };
 
 async function resolveCollectionLink(collectionSlug?: string | null) {
@@ -79,32 +85,34 @@ export async function adminCreateProduct(data: {
   device?: string;
   collectionSlug?: string;
   variants?: AdminVariantInput[];
+  faqs?: AdminFaqInput[];
 }) {
   if (!(await isDatabaseReady())) throw new Error("Database required for admin writes");
   const collectionLink = await resolveCollectionLink(data.collectionSlug ?? null);
+  const { faqs, ...createData } = data;
   const row = await getPrisma().product.create({
     data: {
-      slug: data.slug,
-      name: data.name,
-      description: data.description,
-      metaTitle: normalizeSeoField(data.metaTitle),
-      metaDescription: normalizeSeoField(data.metaDescription),
-      ogImage: normalizeSeoField(data.ogImage),
-      price: data.price,
-      compareAtPrice: data.compareAtPrice,
-      images: data.images,
-      hoverImage: data.hoverImage ?? data.images[1],
-      tags: data.tags,
-      categoryId: data.categoryId,
-      stock: data.stock ?? 100,
-      isNew: data.isNew ?? false,
-      isBestseller: data.isBestseller ?? false,
-      device: data.device || null,
+      slug: createData.slug,
+      name: createData.name,
+      description: createData.description,
+      metaTitle: normalizeSeoField(createData.metaTitle),
+      metaDescription: normalizeSeoField(createData.metaDescription),
+      ogImage: normalizeSeoField(createData.ogImage),
+      price: createData.price,
+      compareAtPrice: createData.compareAtPrice,
+      images: createData.images,
+      hoverImage: createData.hoverImage ?? createData.images[1],
+      tags: createData.tags,
+      categoryId: createData.categoryId,
+      stock: createData.stock ?? 100,
+      isNew: createData.isNew ?? false,
+      isBestseller: createData.isBestseller ?? false,
+      device: createData.device || null,
       collectionSlug: collectionLink?.collectionSlug ?? null,
       collectionId: collectionLink?.collectionId ?? null,
-      variants: data.variants?.length
+      variants: createData.variants?.length
         ? {
-            create: data.variants.map((v) => ({
+            create: createData.variants.map((v) => ({
               name: v.name,
               color: v.color,
               image: v.image,
@@ -116,8 +124,13 @@ export async function adminCreateProduct(data: {
           }
         : undefined,
     },
-    include: { category: true, variants: true },
+    include: { category: true, variants: true, faqs: true },
   });
+  if (faqs !== undefined) {
+    await syncProductFaqs(getPrisma(), row.id, faqs);
+    const withFaqs = await adminGetProduct(row.id);
+    if (withFaqs) return withFaqs;
+  }
   return row;
 }
 
@@ -141,6 +154,7 @@ export async function adminUpdateProduct(
     categoryId: string;
     collectionSlug: string | null;
     variants: AdminVariantInput[];
+    faqs: AdminFaqInput[];
   }>
 ) {
   if (!(await isDatabaseReady())) throw new Error("Database required");
@@ -150,7 +164,7 @@ export async function adminUpdateProduct(
       ? await resolveCollectionLink(data.collectionSlug)
       : undefined;
 
-  const { variants, ...productFields } = data;
+  const { variants, faqs, ...productFields } = data;
 
   return getPrisma().$transaction(async (tx) => {
     const product = await tx.product.update({
@@ -159,7 +173,7 @@ export async function adminUpdateProduct(
         ...productFields,
         ...(collectionLink ?? {}),
       },
-      include: { category: true, collection: true, variants: true },
+      include: { category: true, collection: true, variants: true, faqs: true },
     });
 
     if (variants !== undefined) {
@@ -178,9 +192,21 @@ export async function adminUpdateProduct(
           })),
         });
       }
+    }
+
+    if (faqs !== undefined) {
+      await syncProductFaqs(tx, id, faqs);
+    }
+
+    if (variants !== undefined || faqs !== undefined) {
       return tx.product.findUnique({
         where: { id },
-        include: { category: true, collection: true, variants: true },
+        include: {
+          category: true,
+          collection: true,
+          variants: true,
+          faqs: { orderBy: { sortOrder: "asc" } },
+        },
       });
     }
 
@@ -240,7 +266,10 @@ export async function adminUpdateOrder(
 
   const order = await getPrisma().order.update({
     where: { id: existing.id },
-    data,
+    data: {
+      ...data,
+      ...(updates.status === "DELIVERED" ? { deliveredAt: new Date() } : {}),
+    },
     include: { user: true, items: true },
   });
   if (
@@ -495,4 +524,80 @@ export async function adminDeleteCollection(id: string) {
     );
   }
   return getPrisma().collection.delete({ where: { id } });
+}
+
+export async function adminListBlogPosts() {
+  if (!(await isDatabaseReady())) return [];
+  return getPrisma().blogPost.findMany({
+    orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+  });
+}
+
+export async function adminCreateBlogPost(data: {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  coverImage?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  ogImage?: string | null;
+  author?: string | null;
+  published?: boolean;
+}) {
+  if (!(await isDatabaseReady())) throw new Error("Database required");
+  const published = data.published ?? false;
+  return getPrisma().blogPost.create({
+    data: {
+      slug: data.slug,
+      title: data.title,
+      excerpt: data.excerpt,
+      content: data.content,
+      coverImage: data.coverImage ?? null,
+      metaTitle: data.metaTitle ?? null,
+      metaDescription: data.metaDescription ?? null,
+      ogImage: data.ogImage ?? null,
+      author: data.author ?? null,
+      published,
+      publishedAt: published ? new Date() : null,
+    },
+  });
+}
+
+export async function adminUpdateBlogPost(
+  id: string,
+  data: Partial<{
+    slug: string;
+    title: string;
+    excerpt: string;
+    content: string;
+    coverImage: string | null;
+    metaTitle: string | null;
+    metaDescription: string | null;
+    ogImage: string | null;
+    author: string | null;
+    published: boolean;
+  }>
+) {
+  if (!(await isDatabaseReady())) throw new Error("Database required");
+  const existing = await getPrisma().blogPost.findUnique({ where: { id } });
+  if (!existing) throw new Error("Blog post not found");
+
+  let publishedAt = existing.publishedAt;
+  if (data.published === true && !existing.publishedAt) {
+    publishedAt = new Date();
+  }
+
+  return getPrisma().blogPost.update({
+    where: { id },
+    data: {
+      ...data,
+      ...(data.published !== undefined ? { publishedAt } : {}),
+    },
+  });
+}
+
+export async function adminDeleteBlogPost(id: string) {
+  if (!(await isDatabaseReady())) throw new Error("Database required");
+  return getPrisma().blogPost.delete({ where: { id } });
 }

@@ -7,7 +7,10 @@ import { Heart } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ProductGallery } from "@/features/product/product-gallery";
 import { ProductAccordion } from "@/features/product/product-accordion";
-import { DeliveryEstimate } from "@/features/product/delivery-estimate";
+import { ProductTags } from "@/components/product/product-tags";
+import { DeliveryPromise } from "@/features/product/delivery-promise";
+import { ProductExcitingOffers } from "@/features/product/product-exciting-offers";
+import { StorefrontTrustBenefits } from "@/components/store/storefront-trust-benefits";
 import { ProductHelpActions } from "@/features/product/product-help-actions";
 import { ProductShare } from "@/components/share/product-share";
 import { StickyPurchaseBar } from "@/features/product/sticky-purchase-bar";
@@ -44,6 +47,7 @@ export function ProductDetail({ slug }: { slug: string }) {
 
   const product = data?.product;
   const related = data?.related ?? [];
+  const frequentlyBought = data?.frequentlyBought ?? [];
   const wishlisted = product ? wishlistIds.includes(product.id) : false;
 
   useEffect(() => {
@@ -178,7 +182,9 @@ export function ProductDetail({ slug }: { slug: string }) {
               {product.reviewCount}{" "}
               {product.reviewCount === 1 ? "review" : "reviews"}
             </p>
-            <DeliveryEstimate />
+            <ProductTags tags={product.tags} />
+            <ProductExcitingOffers />
+            <DeliveryPromise />
             <AddToCartSection
               product={product}
               selectedVariant={selectedVariant}
@@ -194,12 +200,16 @@ export function ProductDetail({ slug }: { slug: string }) {
               productName={product.name}
               productSlug={product.slug}
             />
-            <ProductAccordion description={product.description} />
+            <StorefrontTrustBenefits placement="pdp" className="mt-8" />
+            <ProductAccordion
+              description={product.description}
+              faqs={product.faqs}
+            />
           </div>
         </div>
 
         <ProductReviews slug={product.slug} />
-        <FrequentlyBought slug={product.slug} />
+        <FrequentlyBought products={frequentlyBought} />
         {related.length > 0 && (
           <section className="mt-24">
             <h2 className="mb-8 text-2xl font-semibold tracking-tight">

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/lib/toast";
 import { formatPrice } from "@/lib/utils";
@@ -13,32 +14,52 @@ type TrackResult = {
 };
 
 export function TrackOrderView() {
+  const searchParams = useSearchParams();
   const [orderNumber, setOrderNumber] = useState("");
   const [result, setResult] = useState<TrackResult | null>(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function track(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setResult(null);
-    const res = await fetch(
-      `/api/orders/track?order=${encodeURIComponent(orderNumber)}`
-    );
-    if (!res.ok) {
-      const msg = "Order not found. Check the number and try again.";
-      setError(msg);
-      toast.error("Order not found", msg);
+  useEffect(() => {
+    const fromUrl = searchParams.get("order")?.trim();
+    if (fromUrl) setOrderNumber(fromUrl);
+  }, [searchParams]);
+
+  async function track(e?: React.FormEvent) {
+    e?.preventDefault();
+    const normalized = orderNumber.trim();
+    if (!normalized) {
+      setError("Enter your order number.");
       return;
     }
-    const data = (await res.json()) as TrackResult;
-    setResult(data);
-    toast.success("Order found", data.orderNumber);
+    setError("");
+    setResult(null);
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/orders/track?order=${encodeURIComponent(normalized)}`
+      );
+      if (!res.ok) {
+        const msg = "Order not found. Check the number and try again.";
+        setError(msg);
+        toast.error("Order not found", msg);
+        return;
+      }
+      const data = (await res.json()) as TrackResult;
+      setResult(data);
+      toast.success("Order found", data.orderNumber);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="section-padding">
       <div className="container-page max-w-md">
         <h1 className="text-3xl font-semibold tracking-tight">Track order</h1>
+        <p className="mt-2 text-sm text-muted">
+          Enter your order number from the confirmation email (starts with BS).
+        </p>
         <form onSubmit={track} className="card-premium mt-8 space-y-4 p-6">
           <label className="block">
             <span className="text-xs text-muted">Order number</span>
@@ -49,8 +70,8 @@ export function TrackOrderView() {
               className="mt-1 h-11 w-full rounded-xl border border-border px-4 text-sm"
             />
           </label>
-          <Button type="submit" className="w-full">
-            Track
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Looking up…" : "Track"}
           </Button>
           {error && <p className="text-sm text-red-600">{error}</p>}
           {result && (

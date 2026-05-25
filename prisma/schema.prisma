@@ -44,6 +44,17 @@ enum DiscountType {
   FIXED
 }
 
+enum CorporateInquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+enum GiftBundleKind {
+  CORPORATE
+  GIFTING
+}
+
 model User {
   id            String         @id @default(cuid())
   email         String         @unique
@@ -59,8 +70,9 @@ model User {
   addresses     Address[]
   orders        Order[]
   reviews       Review[]
-  wishlist      WishlistItem[]
+  wishlist       WishlistItem[]
   abandonedCarts AbandonedCart[]
+  stockAlerts    StockAlert[]
 }
 
 model Category {
@@ -102,16 +114,20 @@ model Product {
   device          String?
   isNew           Boolean          @default(false)
   isBestseller    Boolean          @default(false)
-  stock           Int              @default(100)
-  categoryId      String
+  stock              Int              @default(100)
+  lowStockNotifiedAt DateTime?
+  categoryId         String
   category        Category         @relation(fields: [categoryId], references: [id])
   collectionId    String?
   collection      Collection?      @relation(fields: [collectionId], references: [id])
   collectionSlug  String?
   variants        ProductVariant[]
+  faqs            ProductFaq[]
   orderItems      OrderItem[]
   reviews         Review[]
   wishlist        WishlistItem[]
+  stockAlerts     StockAlert[]
+  bundleItems     CorporateBundleItem[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -119,6 +135,19 @@ model Product {
   @@index([collectionSlug])
   @@index([isBestseller])
   @@index([isNew])
+}
+
+model ProductFaq {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  question  String
+  answer    String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId, sortOrder])
 }
 
 model ProductVariant {
@@ -182,10 +211,17 @@ model Order {
   shippingCity    String
   shippingState   String
   shippingPincode String
-  razorpayOrderId String?
-  items           OrderItem[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  razorpayOrderId         String?
+  customerEmail           String?
+  deliveredAt             DateTime?
+  reviewReminderSentAt    DateTime?
+  paymentReminderSentAt   DateTime?
+  items                   OrderItem[]
+  createdAt               DateTime      @default(now())
+  updatedAt               DateTime      @updatedAt
+
+  @@index([status, deliveredAt])
+  @@index([paymentStatus, paymentReminderSentAt])
 }
 
 model OrderItem {
@@ -265,24 +301,110 @@ model AnalyticsEvent {
 }
 
 model AbandonedCart {
-  id         String    @id @default(cuid())
-  userId     String?
-  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
-  email      String?
-  items      Json
-  subtotal   Int       @default(0)
-  remindedAt DateTime?
-  recovered  Boolean   @default(false)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id            String    @id @default(cuid())
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email         String?
+  items         Json
+  subtotal      Int       @default(0)
+  reminderCount Int       @default(0)
+  remindedAt    DateTime?
+  recovered     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   @@index([email])
   @@index([remindedAt])
+  @@index([reminderCount])
   @@index([createdAt])
+}
+
+model StockAlert {
+  id         String    @id @default(cuid())
+  email      String
+  productId  String
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId     String?
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  notifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@unique([email, productId])
+  @@index([productId, notifiedAt])
+}
+
+model BlogPost {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  excerpt         String
+  content         String
+  coverImage      String?
+  metaTitle       String?
+  metaDescription String?
+  ogImage         String?
+  author          String?
+  published       Boolean   @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([published])
+  @@index([publishedAt])
 }
 
 model SiteSetting {
   key       String   @id
   value     Json
   updatedAt DateTime @updatedAt
+}
+
+model CorporateBundle {
+  id            String                @id @default(cuid())
+  slug          String                @unique
+  name          String
+  description   String
+  tagline       String?
+  image         String
+  kind          GiftBundleKind        @default(CORPORATE)
+  priceOverride Int?
+  minOrderQty   Int                   @default(10)
+  active        Boolean               @default(true)
+  featured      Boolean               @default(false)
+  sortOrder     Int                   @default(0)
+  items         CorporateBundleItem[]
+  inquiries     CorporateInquiry[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([active, kind, sortOrder])
+}
+
+model CorporateBundleItem {
+  id        String          @id @default(cuid())
+  bundleId  String
+  bundle    CorporateBundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product         @relation(fields: [productId], references: [id])
+  quantity  Int             @default(1)
+
+  @@unique([bundleId, productId])
+}
+
+model CorporateInquiry {
+  id          String                 @id @default(cuid())
+  companyName String
+  contactName String
+  email       String
+  phone       String?
+  bundleId    String?
+  bundle      CorporateBundle?       @relation(fields: [bundleId], references: [id], onDelete: SetNull)
+  quantity    Int?
+  message     String?
+  status      CorporateInquiryStatus @default(NEW)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
 }

@@ -1,32 +1,18 @@
-import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { PolicyPageView } from "@/components/content/policy-page-view";
+import { getPolicyPage } from "@/lib/policy-pages";
 import { staticPageMetadata } from "@/lib/seo/config";
+import { getStorefrontSettings } from "@/services/storefront-settings";
 
 export async function generateMetadata() {
+  const { policyPages } = await getStorefrontSettings();
+  const page = getPolicyPage(policyPages, "shipping");
   return staticPageMetadata("/shipping", {
-    title: "Shipping",
-    description:
-      "Shipping times, free delivery threshold, and tracking for Bag & Shop orders.",
+    title: page.title,
+    description: page.description,
   });
 }
 
-export default function ShippingPage() {
-  return (
-    <StaticPageLayout title="Shipping">
-      <p>
-        We ship across India. Orders are processed within 1–2 business days.
-        Standard delivery takes 2–5 business days depending on your pin code.
-      </p>
-      <p>
-        Free shipping applies on orders above ₹999. You will receive tracking
-        details by email once your order ships.
-      </p>
-      <p>
-        For order status, visit{" "}
-        <a href="/track-order" className="text-foreground underline">
-          Track order
-        </a>{" "}
-        or check your account orders after signing in.
-      </p>
-    </StaticPageLayout>
-  );
+export default async function ShippingPage() {
+  const { policyPages } = await getStorefrontSettings();
+  return <PolicyPageView page={getPolicyPage(policyPages, "shipping")} />;
 }

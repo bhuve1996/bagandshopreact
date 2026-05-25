@@ -164,9 +164,12 @@ export function StorefrontHomepageFields({ settings, onPatch }: CopyAdminProps) 
     { key: "featuredCategories", title: "Featured categories" },
     { key: "trending", title: "Trending products" },
     { key: "collections", title: "Collections showcase" },
+    { key: "gifting", title: "Perfect gifting (homepage)" },
+    { key: "corporate", title: "Corporate gifting (homepage)" },
     { key: "shopByCategory", title: "Shop by category grid" },
     { key: "bestSellers", title: "Best sellers" },
     { key: "testimonials", title: "Testimonials" },
+    { key: "blog", title: "Blog tiles" },
     { key: "instagram", title: "Instagram / gallery" },
     { key: "newsletter", title: "Newsletter" },
   ];
@@ -208,6 +211,23 @@ export function StorefrontHomepageFields({ settings, onPatch }: CopyAdminProps) 
                       patchHome("collections", {
                         ...hp.collections,
                         exploreCta: e.target.value,
+                      })
+                    }
+                    className={inputClass}
+                  />
+                </Field>
+              ) : key === "gifting" || key === "corporate" ? (
+                <Field label="Primary CTA button">
+                  <input
+                    value={
+                      key === "gifting"
+                        ? hp.gifting.ctaText
+                        : hp.corporate.ctaText
+                    }
+                    onChange={(e) =>
+                      patchHome(key, {
+                        ...(key === "gifting" ? hp.gifting : hp.corporate),
+                        ctaText: e.target.value,
                       })
                     }
                     className={inputClass}

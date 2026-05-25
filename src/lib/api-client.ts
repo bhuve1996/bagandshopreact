@@ -18,7 +18,11 @@ export async function fetchProducts(
 export async function fetchProduct(slug: string) {
   const res = await fetch(`${base}/api/products/${slug}`);
   if (!res.ok) throw new Error("Product not found");
-  return res.json() as Promise<{ product: Product; related: Product[] }>;
+  return res.json() as Promise<{
+    product: Product;
+    related: Product[];
+    frequentlyBought: Product[];
+  }>;
 }
 
 export async function fetchCategories(): Promise<Category[]> {

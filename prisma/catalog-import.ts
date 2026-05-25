@@ -6,6 +6,7 @@ import { Pool } from "pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 
 import { getPgConnectionString } from "../src/lib/pg-connection";
+import { syncProductFaqs } from "../src/lib/product-faqs";
 
 const pool = new Pool({ connectionString: getPgConnectionString() });
 const adapter = new PrismaPg(pool);
@@ -25,6 +26,8 @@ type CatalogVariant = {
   image: string;
 };
 
+type CatalogFaq = { question: string; answer: string };
+
 type CatalogProduct = {
   slug: string;
   name: string;
@@ -36,6 +39,7 @@ type CatalogProduct = {
   images: string[];
   hoverImage: string | null;
   variants: CatalogVariant[];
+  faqs?: CatalogFaq[];
 };
 
 type Catalog = {
@@ -142,6 +146,7 @@ async function purgeStaleCatalog(importSlugs: Set<string>) {
     }
     await prisma.wishlistItem.deleteMany({ where: { productId: row.id } });
     await prisma.review.deleteMany({ where: { productId: row.id } });
+    await prisma.productFaq.deleteMany({ where: { productId: row.id } });
     await prisma.productVariant.deleteMany({ where: { productId: row.id } });
     await prisma.product.delete({ where: { id: row.id } });
     removed++;
@@ -372,6 +377,11 @@ export async function importCatalogFromRepo() {
         },
       });
     }
+
+    if (p.faqs?.length) {
+      await syncProductFaqs(prisma, product.id, p.faqs);
+    }
+
     imported++;
     console.log(`  ✓ ${p.slug}`);
   }

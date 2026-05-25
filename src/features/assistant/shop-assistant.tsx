@@ -3,15 +3,24 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { MessageCircle, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { Button } from "@/components/ui/button";
 import { useDialogA11y } from "@/hooks/use-dialog-a11y";
 import { useStorefrontSettings } from "@/hooks/use-storefront-settings";
 import { useAssistantStore } from "@/store/assistant-store";
 import { externalLinkLabel } from "@/lib/a11y";
-import { whatsappShareUrl } from "@/lib/share";
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
-import { DEFAULT_STOREFRONT_SETTINGS } from "@/types/storefront-settings";
+import { whatsappShareUrl } from "@/lib/share";
+import {
+  getWhatsAppDefaultMessage,
+  normalizeWhatsAppNumber,
+} from "@/lib/whatsapp";
+import {
+  DEFAULT_STOREFRONT_SETTINGS,
+  type AssistantQuickReply,
+} from "@/types/storefront-settings";
 
 function getReply(
   input: string,
@@ -23,10 +32,14 @@ function getReply(
       return rule.answer;
     }
   }
-  return "I can help with shipping, returns, tracking, and payments. Try a quick reply below or contact our team.";
+  return "I can help with orders, shipping, product info, and returns. Try a quick option below or use Chat with us.";
 }
 
+const floatingStackClass =
+  "fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3 max-lg:bottom-20";
+
 export function ShopAssistant() {
+  const router = useRouter();
   const { data: settings = DEFAULT_STOREFRONT_SETTINGS } =
     useStorefrontSettings();
   const open = useAssistantStore((s) => s.open);
@@ -47,7 +60,11 @@ export function ShopAssistant() {
   useDialogA11y(open, close, panelRef);
 
   const assistant = settings.assistant;
-  const whatsapp = settings.support.whatsappNumber?.replace(/\D/g, "");
+  const whatsapp = normalizeWhatsAppNumber(settings.support.whatsappNumber);
+  const waMessage = getWhatsAppDefaultMessage(settings.support);
+  const showChat = assistant.enabled;
+  const showFloatingWhatsApp =
+    Boolean(whatsapp) && assistant.showFloatingWhatsApp;
 
   useEffect(() => {
     if (open && !wasOpen.current) {
@@ -72,7 +89,7 @@ export function ShopAssistant() {
     setInput(prefill);
   }, [open, prefill]);
 
-  if (!assistant.enabled) return null;
+  if (!showChat && !showFloatingWhatsApp) return null;
 
   function sendText(userText: string, viaQuickReply = false) {
     if (!userText.trim()) return;
@@ -100,23 +117,93 @@ export function ShopAssistant() {
     if (open) appliedPrefill.current = null;
   }
 
+  function trackWhatsApp(source: string) {
+    trackAnalytics({
+      type: AnalyticsEventType.HELP_WHATSAPP,
+      metadata: { source },
+    });
+  }
+
+  function handleQuickReply(q: AssistantQuickReply) {
+    if (q.action === "whatsapp") {
+      trackAnalytics({
+        type: AnalyticsEventType.ASSISTANT_QUICK_REPLY,
+        metadata: { label: q.label, action: "whatsapp" },
+      });
+      if (whatsapp) {
+        trackWhatsApp("assistant-quick-reply");
+        window.open(
+          whatsappShareUrl(whatsapp, waMessage),
+          "_blank",
+          "noopener,noreferrer"
+        );
+      } else {
+        router.push("/contact");
+      }
+      return;
+    }
+
+    if (q.action === "contact") {
+      trackAnalytics({
+        type: AnalyticsEventType.ASSISTANT_QUICK_REPLY,
+        metadata: { label: q.label, action: "contact" },
+      });
+      router.push("/contact");
+      return;
+    }
+
+    if (q.action === "track-order") {
+      trackAnalytics({
+        type: AnalyticsEventType.ASSISTANT_QUICK_REPLY,
+        metadata: { label: q.label, action: "track-order" },
+      });
+      router.push("/track-order");
+      return;
+    }
+
+    sendText(q.query, true);
+  }
+
   return (
     <>
-      <button
-        type="button"
-        onClick={toggle}
-        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-stone-900 text-white shadow-lg focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 max-lg:bottom-20 dark:bg-stone-100 dark:text-stone-900"
-        aria-label={open ? `Close ${assistant.title}` : `Open ${assistant.title}`}
-        aria-expanded={open}
-        aria-controls={panelId}
-      >
-        {open ? (
-          <X className="h-5 w-5" aria-hidden />
-        ) : (
-          <MessageCircle className="h-5 w-5" aria-hidden />
+      <div className={floatingStackClass}>
+        {showFloatingWhatsApp && whatsapp && (
+          <a
+            href={whatsappShareUrl(whatsapp, waMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackWhatsApp("floating")}
+            aria-label={externalLinkLabel("Message BagnShop on WhatsApp")}
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2"
+          >
+            <WhatsAppIcon className="h-7 w-7" />
+          </a>
         )}
-      </button>
-      {open && (
+        {showChat && (
+          <button
+            type="button"
+            onClick={toggle}
+            className="flex items-center gap-2 rounded-full bg-stone-900 px-4 py-3 text-white shadow-lg transition-transform hover:scale-[1.02] focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 dark:bg-stone-100 dark:text-stone-900"
+            aria-label={
+              open
+                ? `Close ${assistant.floatingChatLabel}`
+                : `Open ${assistant.floatingChatLabel}`
+            }
+            aria-expanded={open}
+            aria-controls={panelId}
+          >
+            {open ? (
+              <X className="h-5 w-5 shrink-0" aria-hidden />
+            ) : (
+              <MessageCircle className="h-5 w-5 shrink-0" aria-hidden />
+            )}
+            <span className="text-sm font-medium">
+              {open ? "Close" : assistant.floatingChatLabel}
+            </span>
+          </button>
+        )}
+      </div>
+      {showChat && open && (
         <div
           id={panelId}
           ref={panelRef}
@@ -169,11 +256,11 @@ export function ShopAssistant() {
               aria-label="Suggested questions"
               className="flex flex-wrap gap-2 border-t border-border px-3 py-2"
             >
-              {assistant.quickReplies.map((q: { label: string; query: string }) => (
+              {assistant.quickReplies.map((q: AssistantQuickReply) => (
                 <button
                   key={q.label}
                   type="button"
-                  onClick={() => sendText(q.query, true)}
+                  onClick={() => handleQuickReply(q)}
                   className="rounded-full border border-border px-3 py-1 text-xs transition-colors hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 dark:hover:bg-stone-800"
                 >
                   {q.label}
@@ -193,7 +280,7 @@ export function ShopAssistant() {
               id="assistant-message"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about shipping, returns…"
+              placeholder="Ask about orders, products, shipping…"
               className="h-10 flex-1 rounded-full border border-border px-4 text-sm focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
               autoComplete="off"
             />
@@ -210,12 +297,14 @@ export function ShopAssistant() {
             </Link>
             {whatsapp && assistant.showWhatsAppLink && (
               <a
-                href={whatsappShareUrl(whatsapp, "Hi, I need help with my order.")}
+                href={whatsappShareUrl(whatsapp, waMessage)}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackWhatsApp("assistant-panel")}
                 aria-label={externalLinkLabel("Chat on WhatsApp")}
-                className="underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
+                className="inline-flex items-center gap-1 underline underline-offset-2 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2"
               >
+                <WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />
                 WhatsApp
               </a>
             )}

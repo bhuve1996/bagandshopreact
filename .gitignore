@@ -48,3 +48,6 @@ next-env.d.ts
 
 # Admin-uploaded media (banners, gallery uploads)
 /public/uploads/
+
+# Local Prisma SQLite scratch file
+/prisma/dev.db

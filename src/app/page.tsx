@@ -1,5 +1,9 @@
+import { StorefrontTrustBenefits } from "@/components/store/storefront-trust-benefits";
 import { BestSellers } from "@/components/home/best-sellers";
+import { BlogSection } from "@/components/home/blog-section";
 import { CollectionsShowcase } from "@/components/home/collections-showcase";
+import { CorporateSection } from "@/components/home/corporate-section";
+import { PerfectGiftingSection } from "@/components/home/perfect-gifting-section";
 import { FeaturedCategories } from "@/components/home/featured-categories";
 import { HeroCarousel } from "@/components/home/hero-carousel";
 import { VideoCarousel } from "@/components/home/video-carousel";
@@ -13,6 +17,8 @@ import { TrendingProducts } from "@/components/home/trending-products";
 import { getFeaturedReviews } from "@/services/reviews";
 import { getStorefrontSettings } from "@/services/storefront-settings";
 import { getActiveSiteVideos } from "@/services/site-videos";
+import { listPublishedBlogPosts } from "@/services/blog";
+import { getCorporateBundles, getGiftingBundles } from "@/services/corporate";
 import {
   getCategories,
   getCollections,
@@ -32,6 +38,9 @@ export default async function HomePage() {
     featuredReviews,
     siteVideos,
     storefront,
+    corporateBundles,
+    giftingBundles,
+    blogPosts,
   ] = await Promise.all([
     getProducts({ isBestseller: true, limit: 6 }),
     getProducts({ sort: "popular", limit: 8 }),
@@ -42,6 +51,9 @@ export default async function HomePage() {
     getFeaturedReviews(3),
     getActiveSiteVideos(),
     getStorefrontSettings(),
+    getCorporateBundles({ featuredOnly: true, limit: 3 }),
+    getGiftingBundles({ featuredOnly: true, limit: 3 }),
+    listPublishedBlogPosts(3),
   ]);
 
   const { homepage, labels } = storefront;
@@ -51,6 +63,7 @@ export default async function HomePage() {
   return (
     <>
       <HeroCarousel />
+      <StorefrontTrustBenefits placement="homepage" />
       <TrendingProducts
         products={trending.items}
         section={homepage.trending}
@@ -66,6 +79,14 @@ export default async function HomePage() {
         labels={labels}
       />
       <LifestyleBanners banners={lifestyle} discoverLabel={labels.discover} />
+      <PerfectGiftingSection
+        bundles={giftingBundles}
+        section={homepage.gifting}
+      />
+      <CorporateSection
+        bundles={corporateBundles}
+        section={homepage.corporate}
+      />
       <ShopByCategory
         categories={categoryShowcase}
         section={homepage.shopByCategory}
@@ -76,6 +97,7 @@ export default async function HomePage() {
         section={homepage.bestSellers}
       />
       <Testimonials reviews={featuredReviews} />
+      <BlogSection posts={blogPosts} section={homepage.blog} />
       <InstagramSection
         images={spotlightImages(spotlight.items)}
         section={homepage.instagram}

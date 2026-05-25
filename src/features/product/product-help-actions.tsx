@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useId } from "react";
-import { HelpCircle, MessageCircle, MessagesSquare } from "lucide-react";
+import { HelpCircle, MessagesSquare } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { useStorefrontSettings } from "@/hooks/use-storefront-settings";
 import { buildProductSharePayload, whatsappShareUrl } from "@/lib/share";
+import { normalizeWhatsAppNumber } from "@/lib/whatsapp";
 import { externalLinkLabel } from "@/lib/a11y";
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
@@ -33,8 +35,9 @@ export function ProductHelpActions({
 
   if (!settings) return null;
 
-  const whatsapp = settings.support.whatsappNumber?.replace(/\D/g, "");
+  const whatsapp = normalizeWhatsAppNumber(settings.support.whatsappNumber);
   const askMessage = `Hi, I have a question about "${productName}".`;
+  const productInfoMessage = `Hi, I'd like product info (materials, size, specs) for "${productName}".`;
 
   function openWhatsApp() {
     if (!whatsapp) return;
@@ -71,21 +74,38 @@ export function ProductHelpActions({
       </h2>
       <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         {settings.assistant.enabled && (
-          <button
-            type="button"
-            onClick={() => {
-              trackAnalytics({
-                type: AnalyticsEventType.HELP_ASK_PRODUCT,
-                productId,
-                metadata: { slug: productSlug },
-              });
-              openAssistant(askMessage);
-            }}
-            className={actionClass}
-          >
-            <MessagesSquare className="h-4 w-4 shrink-0" aria-hidden />
-            Ask about this product
-          </button>
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                trackAnalytics({
+                  type: AnalyticsEventType.HELP_ASK_PRODUCT,
+                  productId,
+                  metadata: { slug: productSlug },
+                });
+                openAssistant(askMessage);
+              }}
+              className={actionClass}
+            >
+              <MessagesSquare className="h-4 w-4 shrink-0" aria-hidden />
+              Ask about this product
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                trackAnalytics({
+                  type: AnalyticsEventType.HELP_ASK_PRODUCT,
+                  productId,
+                  metadata: { slug: productSlug, intent: "product-info" },
+                });
+                openAssistant(productInfoMessage);
+              }}
+              className={actionClass}
+            >
+              <HelpCircle className="h-4 w-4 shrink-0" aria-hidden />
+              Product info
+            </button>
+          </>
         )}
         {whatsapp && settings.assistant.showWhatsAppLink && (
           <button
@@ -94,10 +114,7 @@ export function ProductHelpActions({
             className={actionClass}
             aria-label={externalLinkLabel("Chat on WhatsApp")}
           >
-            <MessageCircle
-              className="h-4 w-4 shrink-0 text-emerald-600"
-              aria-hidden
-            />
+            <WhatsAppIcon className="h-4 w-4 shrink-0 text-[#25D366]" />
             Chat on WhatsApp
           </button>
         )}

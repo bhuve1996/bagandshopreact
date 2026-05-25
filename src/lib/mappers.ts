@@ -1,4 +1,10 @@
-import type { Category, Collection, Product, ProductVariant } from "@/types";
+import type {
+  Category,
+  Collection,
+  Product,
+  ProductFaq,
+  ProductVariant,
+} from "@/types";
 
 type DbProduct = {
   id: string;
@@ -30,6 +36,12 @@ type DbProduct = {
     stock: number;
     sku: string | null;
   }[];
+  faqs?: {
+    id: string;
+    question: string;
+    answer: string;
+    sortOrder: number;
+  }[];
 };
 
 export function mapProduct(p: DbProduct): Product {
@@ -55,6 +67,16 @@ export function mapProduct(p: DbProduct): Product {
     isNew: p.isNew,
     isBestseller: p.isBestseller,
     variants: p.variants?.map(mapVariant),
+    faqs: p.faqs?.map(mapProductFaq),
+  };
+}
+
+function mapProductFaq(f: NonNullable<DbProduct["faqs"]>[number]): ProductFaq {
+  return {
+    id: f.id,
+    question: f.question,
+    answer: f.answer,
+    sortOrder: f.sortOrder,
   };
 }
 

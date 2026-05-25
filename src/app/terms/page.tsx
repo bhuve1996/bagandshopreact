@@ -1,28 +1,18 @@
-import { StaticPageLayout } from "@/components/content/static-page-layout";
+import { PolicyPageView } from "@/components/content/policy-page-view";
+import { getPolicyPage } from "@/lib/policy-pages";
 import { staticPageMetadata } from "@/lib/seo/config";
+import { getStorefrontSettings } from "@/services/storefront-settings";
 
 export async function generateMetadata() {
+  const { policyPages } = await getStorefrontSettings();
+  const page = getPolicyPage(policyPages, "terms");
   return staticPageMetadata("/terms", {
-    title: "Terms of service",
-    description: "Terms and conditions for shopping at Bag & Shop.",
+    title: page.title,
+    description: page.description,
   });
 }
 
-export default function TermsPage() {
-  return (
-    <StaticPageLayout title="Terms of service">
-      <p>
-        By using Bag & Shop you agree to these terms. Product images and
-        descriptions are for illustration; minor variations may occur.
-      </p>
-      <p>
-        Prices are listed in INR and may change without notice. Orders are
-        confirmed when payment is received or COD is accepted at dispatch.
-      </p>
-      <p>
-        We reserve the right to cancel orders affected by stock or pricing
-        errors. Liability is limited to the amount paid for the affected order.
-      </p>
-    </StaticPageLayout>
-  );
+export default async function TermsPage() {
+  const { policyPages } = await getStorefrontSettings();
+  return <PolicyPageView page={getPolicyPage(policyPages, "terms")} />;
 }

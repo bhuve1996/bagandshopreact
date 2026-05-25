@@ -65,7 +65,7 @@ See [docs/DATA.md](docs/DATA.md).
 
 - **Reviews** — submit on PDP, admin moderation at `/admin/reviews`
 - **SEO** — `/sitemap.xml`, `/robots.txt`, Product JSON-LD schema
-- **Abandoned cart** — auto-save cart + cron email (`GET /api/cron/abandoned-cart` with `Authorization: Bearer $CRON_SECRET`)
+- **Abandoned cart** — auto-save cart + 3-stage cron emails; plus review, payment, stock, and coupon crons (see **Cron jobs**)
 - **Referrals** — unique codes on account page, discount at checkout
 - **CMS banners** — hero carousel loads from DB via `/api/banners`
 - **Shop assistant** — floating help widget (shipping, returns, tracking)
@@ -86,14 +86,33 @@ See [docs/DATA.md](docs/DATA.md).
 | **Banners** | Homepage carousel CMS |
 | **Coupons** | Promo codes |
 
-## Cron (abandoned cart)
+## Cron jobs
+
+All routes require `Authorization: Bearer $CRON_SECRET`. Set `CRON_ADMIN_EMAIL` for low-stock and coupon-expiry admin emails.
+
+| Endpoint | Schedule (Vercel) | What it does |
+|----------|-------------------|--------------|
+| `/api/cron/abandoned-cart` | Hourly | 3-stage cart reminder emails (1h / 24h / 72h) |
+| `/api/cron/payment-pending` | Hourly :15 | Razorpay orders still unpaid after 2h |
+| `/api/cron/back-in-stock` | Hourly :30 | Emails stock-alert subscribers when `stock > 0` |
+| `/api/cron/review-requests` | Daily 9:00 | Review prompt 7 days after delivery |
+| `/api/cron/coupons` | Daily midnight | Deactivate expired coupons; email admin |
+| `/api/cron/low-stock` | Daily 8:00 | Email admin when product stock ≤ threshold |
+| `/api/cron/run-all` | Manual | Runs every job above in parallel |
 
 ```bash
+# One job
 curl -H "Authorization: Bearer $CRON_SECRET" \
   http://localhost:3000/api/cron/abandoned-cart
+
+# All jobs
+curl -H "Authorization: Bearer $CRON_SECRET" \
+  http://localhost:3000/api/cron/run-all
 ```
 
-Schedule hourly in production (Vercel Cron, GitHub Actions, etc.).
+`vercel.json` includes cron schedules for Vercel deployments. For Docker/self-hosted, use system cron or GitHub Actions with the same URLs.
+
+Customers subscribe to back-in-stock alerts on the product page (POST `/api/stock-alerts`).
 
 ## Docker
 

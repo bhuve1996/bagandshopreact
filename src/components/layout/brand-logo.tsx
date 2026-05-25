@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { brandAssets, siteConfig } from "@/lib/site-content";
+import { brandAssets } from "@/lib/site-content";
+import { useStorefrontCopy } from "@/providers/storefront-copy-provider";
 import { cn } from "@/lib/utils";
 
 type BrandLogoProps = {
@@ -11,12 +14,13 @@ type BrandLogoProps = {
 };
 
 export function BrandLogo({ className, height = 32, priority }: BrandLogoProps) {
+  const { brand } = useStorefrontCopy();
   const width = Math.round((height * brandAssets.logoWidth) / brandAssets.logoHeight);
 
   return (
     <Image
       src={brandAssets.logo}
-      alt={siteConfig.name}
+      alt={brand.name}
       width={width}
       height={height}
       className={cn("w-auto object-contain", className)}
@@ -36,11 +40,13 @@ export function BrandLogoLink({
   priority,
   href = "/",
 }: BrandLogoLinkProps) {
+  const { brand } = useStorefrontCopy();
+
   return (
     <Link
       href={href}
       className={cn("inline-flex shrink-0", className)}
-      aria-label={`${siteConfig.name} home`}
+      aria-label={`${brand.name} home`}
     >
       <BrandLogo height={height} priority={priority} />
     </Link>

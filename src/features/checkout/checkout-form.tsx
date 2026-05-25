@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import { toast } from "@/lib/toast";
 import { formatPrice } from "@/lib/utils";
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
+import { StorefrontTrustBenefits } from "@/components/store/storefront-trust-benefits";
 import { useCartStore, useCartTotals } from "@/store/cart-store";
 
 const SHIPPING_FREE = 999;
@@ -22,6 +23,7 @@ const SHIPPING_COST = 99;
 
 export function CheckoutForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const { items, clearCart } = useCartStore();
   const { subtotal, itemCount } = useCartTotals();
@@ -35,6 +37,7 @@ export function CheckoutForm() {
   const [applyingCode, setApplyingCode] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"COD" | "UPI" | "RAZORPAY">("COD");
   const [loading, setLoading] = useState(false);
+  const appliedUrlCoupon = useRef(false);
   const [form, setForm] = useState({
     email: session?.user?.email ?? "",
     fullName: session?.user?.name ?? "",
@@ -94,6 +97,15 @@ export function CheckoutForm() {
       setApplyingCode(null);
     }
   }
+
+  useEffect(() => {
+    const fromUrl = searchParams.get("coupon")?.trim().toUpperCase();
+    if (!fromUrl || itemCount === 0 || appliedUrlCoupon.current) return;
+    appliedUrlCoupon.current = true;
+    setCoupon(fromUrl);
+    void applyCoupon(fromUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per visit when URL includes coupon
+  }, [searchParams, itemCount]);
 
   async function applyReferral() {
     if (!referral.trim()) {
@@ -206,7 +218,9 @@ export function CheckoutForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-12 lg:grid-cols-2">
+    <>
+      <StorefrontTrustBenefits placement="checkout" className="mb-10" />
+      <form onSubmit={handleSubmit} className="grid gap-12 lg:grid-cols-2">
       <div className="space-y-8">
         <section>
           <h2 className="text-lg font-semibold">Shipping address</h2>
@@ -392,5 +406,6 @@ export function CheckoutForm() {
         </Button>
       </div>
     </form>
+    </>
   );
 }

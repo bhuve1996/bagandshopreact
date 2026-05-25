@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { MessageCircle } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
 import { externalLinkLabel } from "@/lib/a11y";
 import { whatsappShareUrl } from "@/lib/share";
+import {
+  getWhatsAppDefaultMessage,
+  normalizeWhatsAppNumber,
+} from "@/lib/whatsapp";
 import type { StorefrontSettings } from "@/types/storefront-settings";
 
 type ContactViewProps = {
@@ -13,7 +17,8 @@ type ContactViewProps = {
 };
 
 export function ContactView({ support }: ContactViewProps) {
-  const whatsapp = support.whatsappNumber?.replace(/\D/g, "");
+  const whatsapp = normalizeWhatsAppNumber(support.whatsappNumber);
+  const waMessage = getWhatsAppDefaultMessage(support);
 
   return (
     <div className="section-padding">
@@ -44,7 +49,7 @@ export function ContactView({ support }: ContactViewProps) {
         )}
         {whatsapp && (
           <a
-            href={whatsappShareUrl(whatsapp, "Hi, I'd like to get in touch.")}
+            href={whatsappShareUrl(whatsapp, waMessage)}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() =>
@@ -56,7 +61,7 @@ export function ContactView({ support }: ContactViewProps) {
             aria-label={externalLinkLabel("Message on WhatsApp")}
             className="mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-stone-100 focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 dark:hover:bg-stone-800"
           >
-            <MessageCircle className="h-4 w-4 text-emerald-600" aria-hidden />
+            <WhatsAppIcon className="h-4 w-4 text-[#25D366]" />
             Message on WhatsApp
           </a>
         )}

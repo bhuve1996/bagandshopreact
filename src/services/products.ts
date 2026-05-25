@@ -92,11 +92,11 @@ export async function getProducts(
   }
   if (resolvedFilters.tags?.length) where.tags = { hasSome: resolvedFilters.tags };
   if (resolvedFilters.search) {
+    const term = resolvedFilters.search;
     where.OR = [
-      { name: { contains: resolvedFilters.search, mode: "insensitive" } },
-      {
-        description: { contains: resolvedFilters.search, mode: "insensitive" },
-      },
+      { name: { contains: term, mode: "insensitive" } },
+      { description: { contains: term, mode: "insensitive" } },
+      { tags: { has: term } },
     ];
   }
 
@@ -142,21 +142,39 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   }
   const row = await getPrisma().product.findUnique({
     where: { slug },
-    include: { category: true, variants: true },
+    include: {
+      category: true,
+      variants: true,
+      faqs: { orderBy: { sortOrder: "asc" } },
+    },
   });
   return row ? mapProduct(row) : null;
+}
+
+/** Other products in the same category (slug from Admin → Products). */
+export async function getProductsByCategory(
+  product: Product,
+  options: {
+    limit: number;
+    excludeIds?: string[];
+    sort?: ProductFilters["sort"];
+  }
+): Promise<Product[]> {
+  const exclude = new Set([product.id, ...(options.excludeIds ?? [])]);
+  const result = await getProducts({
+    category: product.category,
+    limit: options.limit + exclude.size + 4,
+    page: 1,
+    sort: options.sort ?? "popular",
+  });
+  return result.items.filter((p) => !exclude.has(p.id)).slice(0, options.limit);
 }
 
 export async function getRelatedProducts(
   product: Product,
   limit = 4
 ): Promise<Product[]> {
-  const result = await getProducts({
-    category: product.category,
-    limit: limit + 1,
-    page: 1,
-  });
-  return result.items.filter((p) => p.id !== product.id).slice(0, limit);
+  return getProductsByCategory(product, { limit, sort: "popular" });
 }
 
 export async function getCategories(): Promise<Category[]> {

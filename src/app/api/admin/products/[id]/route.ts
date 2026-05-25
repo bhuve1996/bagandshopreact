@@ -22,6 +22,11 @@ const variantSchema = z.object({
   sku: z.string().optional(),
 });
 
+const faqSchema = z.object({
+  question: z.string().min(1),
+  answer: z.string().min(1),
+});
+
 const patchSchema = z.object({
   name: z.string().min(1).optional(),
   description: z.string().optional(),
@@ -40,6 +45,7 @@ const patchSchema = z.object({
   categoryId: z.string().optional(),
   collectionSlug: z.string().nullable().optional(),
   variants: z.array(variantSchema).optional(),
+  faqs: z.array(faqSchema).optional(),
 });
 
 export async function GET(_req: NextRequest, { params }: Props) {

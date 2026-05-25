@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { StockNotifyForm } from "@/features/product/stock-notify-form";
 import { VariantSelector } from "@/features/product/variant-selector";
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
@@ -39,6 +40,8 @@ export function AddToCartSection({
   const displayCompare = active?.compareAtPrice ?? product.compareAtPrice;
   const displayImage =
     active?.image ?? product.images[0] ?? product.hoverImage ?? "";
+  const outOfStock =
+    active?.inStock === false && variants.length > 0;
 
   function addToCart(buyNow = false) {
     if (!active) {
@@ -153,6 +156,8 @@ export function AddToCartSection({
           You save {Math.round(((displayCompare - displayPrice) / displayCompare) * 100)}%
         </p>
       )}
+
+      {outOfStock && <StockNotifyForm productSlug={product.slug} />}
     </div>
   );
 }

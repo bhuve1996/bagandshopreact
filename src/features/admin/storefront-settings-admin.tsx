@@ -9,8 +9,22 @@ import {
   StorefrontHomepageFields,
   StorefrontLabelsFields,
 } from "@/features/admin/storefront-copy-fields";
+import { StorefrontPolicyFields } from "@/features/admin/storefront-policy-fields";
+import { StorefrontProductOffersFields } from "@/features/admin/storefront-product-offers-fields";
+import { StorefrontDeliveryFields } from "@/features/admin/storefront-delivery-fields";
 import { StorefrontSeoFields } from "@/features/admin/storefront-seo-fields";
-import type { ShareChannel, StorefrontSettings } from "@/types/storefront-settings";
+import {
+  SOCIAL_PLATFORM_LABELS,
+  SocialPlatformIcon,
+} from "@/lib/social-platforms";
+import {
+  formatAssistantQuickReplyLine,
+  parseAssistantQuickReplyLine,
+  type ShareChannel,
+  type SocialLink,
+  type SocialPlatform,
+  type StorefrontSettings,
+} from "@/types/storefront-settings";
 
 const SHARE_OPTIONS: { id: ShareChannel; label: string }[] = [
   { id: "copy", label: "Copy link" },
@@ -69,6 +83,17 @@ export function StorefrontSettingsAdmin() {
     patch("share", { channels });
   }
 
+  function updateSocialLink(
+    platform: SocialPlatform,
+    updates: Partial<Pick<SocialLink, "url" | "enabled">>
+  ) {
+    if (!settings) return;
+    const links = settings.social.links.map((link) =>
+      link.platform === platform ? { ...link, ...updates } : link
+    );
+    patch("social", { links });
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!settings) return;
@@ -103,17 +128,64 @@ export function StorefrontSettingsAdmin() {
       <div>
         <h1 className="text-2xl font-semibold">Content &amp; labels</h1>
         <p className="mt-1 text-sm text-muted">
-          Brand, SEO meta, homepage copy, labels, support, sharing, and assistant.
+          Brand, policy pages, SEO meta, homepage copy, labels, delivery timer,
+          trust badges, footer social links, support, sharing, and assistant.
         </p>
       </div>
 
       <StorefrontSeoFields settings={settings} onPatch={patch} />
+      <StorefrontPolicyFields settings={settings} onPatch={patch} />
       <StorefrontBrandFields settings={settings} onPatch={patch} />
       <StorefrontHomepageFields settings={settings} onPatch={patch} />
       <StorefrontLabelsFields settings={settings} onPatch={patch} />
 
       <section className="card-premium space-y-4 p-6">
-        <h2 className="text-lg font-semibold">Support & WhatsApp</h2>
+        <h2 className="text-lg font-semibold">Footer social links</h2>
+        <p className="text-sm text-muted">
+          Icons appear in the site footer when enabled and a valid URL is set.
+        </p>
+        <ul className="space-y-3">
+          {settings.social.links.map((link) => (
+            <li
+              key={link.platform}
+              className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-center"
+            >
+              <label className="flex min-w-[9rem] items-center gap-2 text-sm font-medium">
+                <input
+                  type="checkbox"
+                  checked={link.enabled}
+                  onChange={(e) =>
+                    updateSocialLink(link.platform, {
+                      enabled: e.target.checked,
+                    })
+                  }
+                />
+                <SocialPlatformIcon
+                  platform={link.platform}
+                  className="h-4 w-4 shrink-0"
+                />
+                {SOCIAL_PLATFORM_LABELS[link.platform]}
+              </label>
+              <input
+                type="url"
+                placeholder="https://"
+                value={link.url}
+                onChange={(e) =>
+                  updateSocialLink(link.platform, { url: e.target.value })
+                }
+                className="h-10 min-w-0 flex-1 rounded-lg border border-border px-3 text-sm"
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="card-premium space-y-4 p-6">
+        <h2 className="text-lg font-semibold">Support &amp; WhatsApp</h2>
+        <p className="text-sm text-muted">
+          Store name, phone, and WhatsApp power Contact, corporate inquiries, and
+          floating &quot;Chat with us&quot; buttons site-wide.
+        </p>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Support email">
             <input
@@ -124,21 +196,32 @@ export function StorefrontSettingsAdmin() {
               className="h-10 w-full rounded-lg border border-border px-3 text-sm"
             />
           </Field>
-          <Field label="Phone (optional)">
+          <Field label="Phone (displayed on Contact)" hint="e.g. +919108254515">
             <input
               value={settings.support.phone ?? ""}
               onChange={(e) => patch("support", { phone: e.target.value })}
+              placeholder="+919108254515"
               className="h-10 w-full rounded-lg border border-border px-3 text-sm"
             />
           </Field>
           <Field label="WhatsApp number (country code, digits only)">
             <input
-              placeholder="919876543210"
+              placeholder="919108254515"
               value={settings.support.whatsappNumber ?? ""}
               onChange={(e) =>
                 patch("support", { whatsappNumber: e.target.value })
               }
               className="h-10 w-full rounded-lg border border-border px-3 text-sm sm:col-span-2"
+            />
+          </Field>
+          <Field label="Default WhatsApp message (prefilled when customers tap the icon)">
+            <textarea
+              value={settings.support.whatsappDefaultMessage ?? ""}
+              onChange={(e) =>
+                patch("support", { whatsappDefaultMessage: e.target.value })
+              }
+              rows={2}
+              className="w-full rounded-lg border border-border px-3 py-2 text-sm sm:col-span-2"
             />
           </Field>
           <Field label="Support hours / reply time">
@@ -147,6 +230,28 @@ export function StorefrontSettingsAdmin() {
               onChange={(e) => patch("support", { hours: e.target.value })}
               rows={2}
               className="w-full rounded-lg border border-border px-3 py-2 text-sm sm:col-span-2"
+            />
+          </Field>
+        </div>
+        <div className="space-y-3 border-t border-border pt-4">
+          <p className="text-sm font-medium">Floating buttons (bottom-right)</p>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={settings.assistant.showFloatingWhatsApp}
+              onChange={(e) =>
+                patch("assistant", { showFloatingWhatsApp: e.target.checked })
+              }
+            />
+            Show green WhatsApp icon above chat
+          </label>
+          <Field label="Chat button label">
+            <input
+              value={settings.assistant.floatingChatLabel}
+              onChange={(e) =>
+                patch("assistant", { floatingChatLabel: e.target.value })
+              }
+              className="h-10 w-full rounded-lg border border-border px-3 text-sm"
             />
           </Field>
         </div>
@@ -221,26 +326,25 @@ export function StorefrontSettingsAdmin() {
             className="w-full rounded-lg border border-border px-3 py-2 text-sm"
           />
         </Field>
-        <Field label="Quick replies (label | query, one per line)">
+        <Field label="Quick replies (label | query | optional action, one per line)">
+          <p className="mb-1 text-xs text-muted">
+            Actions: <code className="font-mono">whatsapp</code>,{" "}
+            <code className="font-mono">contact</code>,{" "}
+            <code className="font-mono">track-order</code> (omit for in-chat
+            answers)
+          </p>
           <textarea
             value={settings.assistant.quickReplies
-              .map((q) => `${q.label}|${q.query}`)
+              .map((q) => formatAssistantQuickReplyLine(q))
               .join("\n")}
             onChange={(e) => {
               const quickReplies = e.target.value
                 .split("\n")
-                .map((line) => line.trim())
-                .filter(Boolean)
-                .map((line) => {
-                  const [label, ...rest] = line.split("|");
-                  return {
-                    label: label.trim(),
-                    query: (rest.join("|") || label).trim(),
-                  };
-                });
+                .map((line) => parseAssistantQuickReplyLine(line.trim()))
+                .filter((q): q is NonNullable<typeof q> => q !== null);
               patch("assistant", { quickReplies });
             }}
-            rows={5}
+            rows={8}
             className="w-full rounded-lg border border-border px-3 py-2 font-mono text-xs"
           />
         </Field>
@@ -270,25 +374,16 @@ export function StorefrontSettingsAdmin() {
         </Field>
       </section>
 
+      <StorefrontDeliveryFields
+        delivery={settings.delivery}
+        onPatch={(value) => patch("delivery", value)}
+      />
+
       <section className="card-premium space-y-4 p-6">
-        <h2 className="text-lg font-semibold">Delivery (PDP)</h2>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={settings.delivery.showOnPdp}
-            onChange={(e) => patch("delivery", { showOnPdp: e.target.checked })}
-          />
-          Show delivery estimate on product pages
-        </label>
-        <Field label="Estimate text">
-          <input
-            value={settings.delivery.estimateText}
-            onChange={(e) =>
-              patch("delivery", { estimateText: e.target.value })
-            }
-            className="h-10 w-full rounded-lg border border-border px-3 text-sm"
-          />
-        </Field>
+        <StorefrontProductOffersFields
+          settings={settings}
+          onChange={(productOffers) => patch("productOffers", productOffers)}
+        />
       </section>
 
       <Button type="submit" disabled={saving}>

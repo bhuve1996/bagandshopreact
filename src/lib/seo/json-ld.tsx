@@ -119,6 +119,7 @@ export function productJsonLd(product: Product, brandName: string) {
           },
         }
       : {}),
+    ...(product.tags.length > 0 ? { keywords: product.tags.join(", ") } : {}),
   });
 }
 

@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { BrandLogoLink } from "@/components/layout/brand-logo";
-import { siteConfig } from "@/lib/site-content";
+import { FooterSocialLinks } from "@/components/layout/footer-social-links";
+import { useStorefrontCopy } from "@/providers/storefront-copy-provider";
 
 const footerLinks = {
   Shop: [
@@ -17,27 +20,31 @@ const footerLinks = {
   ],
   Company: [
     { label: "About", href: "/about" },
+    { label: "Perfect gifting", href: "/gifting" },
+    { label: "Corporate gifting", href: "/corporate" },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
     { label: "Careers", href: "/careers" },
   ],
   Legal: [
-    { label: "Privacy", href: "/privacy" },
-    { label: "Terms", href: "/terms" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Shipping Policy", href: "/shipping" },
+    { label: "Return & Refund", href: "/returns" },
+    { label: "Terms & Conditions", href: "/terms" },
   ],
 };
 
 export function Footer() {
+  const { brand } = useStorefrontCopy();
+
   return (
     <footer className="border-t border-border bg-card">
       <div className="container-page section-padding">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <BrandLogoLink height={36} />
-            <p className="mt-3 max-w-sm text-sm text-muted">
-              {siteConfig.tagline}. Premium accessories designed for modern
-              life — minimal, functional, and beautifully made.
-            </p>
+            <p className="mt-3 max-w-sm text-sm text-muted">{brand.tagline}</p>
+            <FooterSocialLinks />
           </div>
           {Object.entries(footerLinks).map(([title, links]) => (
             <nav key={title} aria-labelledby={`footer-${title}`}>
@@ -63,7 +70,7 @@ export function Footer() {
           ))}
         </div>
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-xs text-muted sm:flex-row">
-          <p>© {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {brand.name}. All rights reserved.</p>
           <p>Made with care in India</p>
         </div>
       </div>

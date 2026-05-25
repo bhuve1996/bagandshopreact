@@ -4,7 +4,7 @@ import { staticPageMetadata } from "@/lib/seo/config";
 export async function generateMetadata() {
   const meta = await staticPageMetadata("/wishlist", {
     title: "Wishlist",
-    description: "Your saved Bag & Shop products.",
+    description: "Your saved BagnShop products.",
   });
   return { ...meta, robots: { index: false, follow: true } };
 }

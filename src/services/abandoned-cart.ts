@@ -1,6 +1,7 @@
 import { isDatabaseReady } from "@/lib/db-ready";
+import { cronConfig, getSiteUrl } from "@/lib/cron-config";
 import { getPrisma } from "@/lib/prisma";
-import { sendAbandonedCartEmail } from "@/services/email";
+import { sendAbandonedCartFollowUpEmail } from "@/services/email";
 import type { CartItem } from "@/types";
 
 export async function saveAbandonedCart(params: {
@@ -69,38 +70,61 @@ export async function markCartRecovered(userId?: string, email?: string) {
   });
 }
 
+function reminderDelayHours(count: number) {
+  const { firstDelayHours, secondDelayHours, thirdDelayHours } =
+    cronConfig.abandonedCart;
+  if (count === 0) return firstDelayHours;
+  if (count === 1) return secondDelayHours;
+  return thirdDelayHours;
+}
+
 export async function processAbandonedCartReminders() {
   if (!(await isDatabaseReady())) return { sent: 0, mock: true };
 
-  const cutoff = new Date();
-  cutoff.setHours(cutoff.getHours() - 1);
+  const { maxReminders, batchSize } = cronConfig.abandonedCart;
+  const siteUrl = getSiteUrl();
+  const now = new Date();
 
-  const carts = await getPrisma().abandonedCart.findMany({
+  const candidates = await getPrisma().abandonedCart.findMany({
     where: {
       recovered: false,
-      remindedAt: null,
-      updatedAt: { lte: cutoff },
+      reminderCount: { lt: maxReminders },
       email: { not: null },
     },
-    take: 20,
+    take: batchSize * 2,
+    orderBy: { updatedAt: "asc" },
   });
 
   let sent = 0;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-  for (const cart of carts) {
+  for (const cart of candidates) {
+    if (sent >= batchSize) break;
     if (!cart.email) continue;
+
+    const count = cart.reminderCount;
+    const delayHours = reminderDelayHours(count);
+    const cutoff = new Date(now);
+    cutoff.setHours(cutoff.getHours() - delayHours);
+
+    const readyAt = count === 0 ? cart.updatedAt : cart.remindedAt;
+    if (!readyAt || readyAt > cutoff) continue;
+
     const items = cart.items as CartItem[];
-    const result = await sendAbandonedCartEmail({
+    const result = await sendAbandonedCartFollowUpEmail({
       to: cart.email,
       items: items.map((i) => ({ name: i.name, quantity: i.quantity })),
       subtotal: cart.subtotal,
       recoveryUrl: `${siteUrl}/checkout`,
+      stage: count,
     });
+
     if (result.ok) {
       await getPrisma().abandonedCart.update({
         where: { id: cart.id },
-        data: { remindedAt: new Date() },
+        data: {
+          remindedAt: new Date(),
+          reminderCount: count + 1,
+        },
       });
       sent++;
     }

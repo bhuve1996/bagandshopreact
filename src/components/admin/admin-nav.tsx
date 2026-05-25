@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BarChart3,
+  FileText,
   FolderOpen,
   Image,
   Images,
@@ -16,6 +17,7 @@ import {
   Star,
   Settings,
   Video,
+  Briefcase,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,10 +32,12 @@ export const adminNavItems: {
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/categories", label: "Categories", icon: FolderOpen },
   { href: "/admin/collections", label: "Collections", icon: Layers },
+  { href: "/admin/corporate", label: "Gifting bundles", icon: Briefcase },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
   { href: "/admin/coupons", label: "Coupons", icon: Tag },
   { href: "/admin/media", label: "Media gallery", icon: Images },
   { href: "/admin/banners", label: "Banners", icon: Image },
+  { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/videos", label: "Videos", icon: Video },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/reviews", label: "Reviews", icon: Star },

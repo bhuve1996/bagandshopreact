@@ -64,6 +64,8 @@ export function buildSiteNavigation(categories: Category[]): SiteNavigation {
     shop,
     { label: "Best Sellers", href: "/collections/best-sellers" },
     { label: "New Arrivals", href: "/collections/new-arrivals" },
+    { label: "Gifting", href: "/gifting" },
+    { label: "Corporate", href: "/corporate" },
   ];
 
   return { items, categoryItems };

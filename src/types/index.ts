@@ -1,3 +1,10 @@
+export type ProductFaq = {
+  id: string;
+  question: string;
+  answer: string;
+  sortOrder: number;
+};
+
 export type ProductVariant = {
   id: string;
   name: string;
@@ -31,6 +38,7 @@ export type Product = {
   device?: string;
   isNew?: boolean;
   isBestseller?: boolean;
+  faqs?: ProductFaq[];
 };
 
 export type Category = {

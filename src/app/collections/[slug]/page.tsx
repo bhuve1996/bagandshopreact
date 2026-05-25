@@ -3,6 +3,7 @@ import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
 import { buildCollectionBreadcrumbs } from "@/lib/breadcrumbs";
 import { BreadcrumbJsonLd } from "@/lib/seo/json-ld";
 import { getSeoSettings } from "@/lib/seo/config";
+import { getSiteBrand } from "@/lib/site-brand";
 import { pageMetadata } from "@/lib/seo/metadata-helpers";
 import { CollectionPLP } from "@/features/collection/collection-plp";
 import {
@@ -26,10 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolved = resolveCollectionSlug(raw);
   const title =
     cat?.name ?? col?.name ?? resolved.label ?? formatSlugTitle(slug);
+  const brand = await getSiteBrand();
   const description =
     cat?.description ??
     col?.description ??
-    `Shop ${title} at Bag & Shop — design-led lifestyle accessories.`;
+    `Shop ${title} at ${brand.name} — design-led lifestyle accessories.`;
   const image = cat?.image ?? col?.image;
 
   const seo = await getSeoSettings();

@@ -19,6 +19,7 @@ import {
 import { AnalyticsEventType } from "@/lib/analytics-events";
 import { trackAnalytics } from "@/lib/analytics-client";
 import { useStorefrontSettings } from "@/hooks/use-storefront-settings";
+import { normalizeWhatsAppNumber } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import type { ShareChannel } from "@/types/storefront-settings";
 
@@ -70,7 +71,7 @@ export function ProductShare({
     slug: productSlug,
     messageTemplate: settings.share.productMessageTemplate,
   });
-  const whatsapp = settings.support.whatsappNumber?.replace(/\D/g, "");
+  const whatsapp = normalizeWhatsAppNumber(settings.support.whatsappNumber);
 
   function logShare(channel: ShareChannel) {
     trackAnalytics({

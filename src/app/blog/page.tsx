@@ -1,49 +1,78 @@
+import Image from "next/image";
 import Link from "next/link";
 import { StaticPageLayout } from "@/components/content/static-page-layout";
 import { staticPageMetadata } from "@/lib/seo/config";
+import { listPublishedBlogPosts } from "@/services/blog";
 
 export async function generateMetadata() {
   return staticPageMetadata("/blog", {
     title: "Blog",
-    description: "Design, carry, and workspace stories from Bag & Shop.",
+    description: "Design, carry, and workspace stories from BagnShop.",
   });
 }
 
-const posts = [
-  {
-    title: "Desk setup essentials for 2026",
-    href: "/collections/desk",
-    excerpt: "Organizers, mouse pads, and minimal workspace upgrades.",
-  },
-  {
-    title: "How to choose the right phone case",
-    href: "/collections/tech",
-    excerpt: "Fit, protection, and finishes that last.",
-  },
-  {
-    title: "Travel light with smart packing",
-    href: "/collections/travel",
-    excerpt: "Pouches and organizers for every trip.",
-  },
-];
+function formatPostDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-IN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await listPublishedBlogPosts();
+
   return (
     <StaticPageLayout title="Blog">
-      <p>Stories on design, carry, and workspace — shop the collections below.</p>
-      <ul className="mt-8 space-y-8">
-        {posts.map((post) => (
-          <li key={post.title}>
-            <Link
-              href={post.href}
-              className="text-base font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              {post.title}
-            </Link>
-            <p className="mt-2">{post.excerpt}</p>
-          </li>
-        ))}
-      </ul>
+      <p>Stories on design, carry, and workspace.</p>
+      {posts.length === 0 ? (
+        <p className="mt-8 text-sm">New articles coming soon.</p>
+      ) : (
+        <ul className="mt-8 space-y-10">
+          {posts.map((post) => (
+            <li key={post.id} className="border-b border-border pb-10 last:border-0">
+              <article>
+                {post.coverImage ? (
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="relative mb-4 block aspect-2/1 max-h-56 overflow-hidden rounded-xl bg-stone-100"
+                  >
+                    <Image
+                      src={post.coverImage}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 672px) 100vw, 672px"
+                    />
+                  </Link>
+                ) : null}
+                <time
+                  dateTime={post.publishedAt}
+                  className="text-xs uppercase tracking-wide text-muted"
+                >
+                  {formatPostDate(post.publishedAt)}
+                  {post.author ? ` · ${post.author}` : null}
+                </time>
+                <h2 className="mt-2 text-lg font-medium">
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    className="text-foreground underline-offset-4 hover:underline"
+                  >
+                    {post.title}
+                  </Link>
+                </h2>
+                <p className="mt-2">{post.excerpt}</p>
+                <Link
+                  href={`/blog/${post.slug}`}
+                  className="mt-3 inline-block text-sm font-medium underline-offset-4 hover:underline"
+                >
+                  Read more
+                </Link>
+              </article>
+            </li>
+          ))}
+        </ul>
+      )}
     </StaticPageLayout>
   );
 }

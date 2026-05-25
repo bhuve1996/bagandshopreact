@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getOrderByNumber } from "@/services/orders";
 
 export async function GET(request: NextRequest) {
-  const orderNumber = request.nextUrl.searchParams.get("order");
+  const orderNumber = request.nextUrl.searchParams.get("order")?.trim();
   if (!orderNumber) {
     return NextResponse.json({ error: "Order number required" }, { status: 400 });
   }

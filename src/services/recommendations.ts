@@ -1,4 +1,8 @@
-import { getProductBySlug, getProducts } from "@/services/products";
+import {
+  getProductBySlug,
+  getProducts,
+  getProductsByCategory,
+} from "@/services/products";
 import type { Product } from "@/types";
 
 export async function getRecommendations(params: {
@@ -11,14 +15,7 @@ export async function getRecommendations(params: {
   if (params.productSlug) {
     const product = await getProductBySlug(params.productSlug);
     if (!product) return [];
-    const related = await getProducts({
-      category: product.category,
-      limit: limit + 2,
-      page: 1,
-    });
-    return related.items
-      .filter((p) => p.id !== product.id)
-      .slice(0, limit);
+    return getProductsByCategory(product, { limit, sort: "popular" });
   }
 
   if (params.category) {
@@ -39,17 +36,16 @@ export async function getRecommendations(params: {
   return bestsellers.items;
 }
 
-/** Simple “frequently bought together” — same category, higher price band */
+/** Same category as the product (set in Admin → Products); excludes “You may also like” picks. */
 export async function getFrequentlyBoughtTogether(
-  productSlug: string
+  productSlug: string,
+  excludeIds: string[] = []
 ): Promise<Product[]> {
   const product = await getProductBySlug(productSlug);
   if (!product) return [];
-  const result = await getProducts({
-    category: product.category,
-    minPrice: Math.floor(product.price * 0.5),
+  return getProductsByCategory(product, {
     limit: 3,
-    page: 1,
+    excludeIds,
+    sort: "popular",
   });
-  return result.items.filter((p) => p.id !== product.id).slice(0, 3);
 }
