@@ -153,26 +153,27 @@ async function main() {
   const featured = await prisma.product.findFirst({
     orderBy: { createdAt: "desc" },
   });
-  const bannerImage =
-    featured?.images[0] ?? "/products/_placeholders/category.jpg";
+  const homepageHeroImage = "/banners/smart-shopping-banner.png";
 
   await prisma.banner.upsert({
     where: { id: "seed-hero-1" },
     update: {
       title: "Shop Bag & Shop",
       subtitle: "Lifestyle products for home, travel & more",
-      image: bannerImage,
+      image: homepageHeroImage,
       href: featured ? `/products/${featured.slug}` : "/collections",
+      showContent: false,
     },
     create: {
       id: "seed-hero-1",
       title: "Shop Bag & Shop",
       subtitle: "Lifestyle products for home, travel & more",
-      image: bannerImage,
+      image: homepageHeroImage,
       href: featured ? `/products/${featured.slug}` : "/collections",
       position: "homepage",
       sortOrder: 0,
       active: true,
+      showContent: false,
     },
   });
 

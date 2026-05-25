@@ -262,16 +262,17 @@ model WishlistItem {
 }
 
 model Banner {
-  id        String   @id @default(cuid())
-  title     String
-  subtitle  String?
-  image     String
-  href      String
-  position  String   @default("homepage")
-  active    Boolean  @default(true)
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String?
+  image       String
+  href        String
+  position    String   @default("homepage")
+  active      Boolean  @default(true)
+  showContent Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model SiteVideo {

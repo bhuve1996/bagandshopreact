@@ -35,6 +35,8 @@ export function HeroCarousel() {
   const slide = slides[index] ?? slides[0];
   if (!slide) return null;
 
+  const showContent = slide.showContent;
+
   return (
     <section
       className="relative overflow-hidden bg-stone-100 dark:bg-stone-900"
@@ -53,36 +55,48 @@ export function HeroCarousel() {
           >
             <Image
               src={slide.image}
-              alt=""
+              alt={showContent ? "" : slide.title}
               fill
               priority
               className="object-cover"
               sizes="100vw"
-              aria-hidden
+              aria-hidden={showContent}
             />
-            <div className="absolute inset-0 bg-linear-to-t from-stone-900/70 via-stone-900/20 to-transparent sm:bg-linear-to-r sm:from-stone-900/60 sm:via-stone-900/25 sm:to-transparent" />
+            {showContent ? (
+              <div className="absolute inset-0 bg-linear-to-t from-stone-900/70 via-stone-900/20 to-transparent sm:bg-linear-to-r sm:from-stone-900/60 sm:via-stone-900/25 sm:to-transparent" />
+            ) : null}
+            {!showContent ? (
+              <Link
+                href={slide.href}
+                className="absolute inset-0 z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900"
+              >
+                <span className="sr-only">{slide.title}</span>
+              </Link>
+            ) : null}
           </motion.div>
         </AnimatePresence>
-        <div className="container-page absolute inset-0 flex flex-col justify-end pb-12 sm:justify-center sm:pb-0">
-          <motion.div
-            key={slide.id + "-text"}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.5 }}
-            className="max-w-lg text-white"
-            aria-live="polite"
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
-              {slide.subtitle}
-            </p>
-            <h1 className="mt-2 text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
-              {slide.title}
-            </h1>
-            <Button className="mt-8" size="lg" asChild>
-              <Link href={slide.href}>{slide.cta}</Link>
-            </Button>
-          </motion.div>
-        </div>
+        {showContent ? (
+          <div className="container-page absolute inset-0 flex flex-col justify-end pb-12 sm:justify-center sm:pb-0">
+            <motion.div
+              key={slide.id + "-text"}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.5 }}
+              className="max-w-lg text-white"
+              aria-live="polite"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
+                {slide.subtitle}
+              </p>
+              <h1 className="mt-2 text-balance text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+                {slide.title}
+              </h1>
+              <Button className="mt-8" size="lg" asChild>
+                <Link href={slide.href}>{slide.cta}</Link>
+              </Button>
+            </motion.div>
+          </div>
+        ) : null}
         <div className="absolute bottom-6 right-4 flex gap-2 sm:right-8">
           <button
             type="button"

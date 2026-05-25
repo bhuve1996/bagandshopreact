@@ -351,35 +351,45 @@ export async function adminUpsertBanner(
     href: string;
     position?: string;
     active?: boolean;
+    showContent?: boolean;
     sortOrder?: number;
   }
 ) {
   if (!(await isDatabaseReady())) throw new Error("Database required");
+  const payload = {
+    title: data.title,
+    subtitle: data.subtitle,
+    image: data.image,
+    href: data.href,
+    position: data.position ?? "homepage",
+    active: data.active ?? true,
+    showContent: data.showContent ?? true,
+    sortOrder: data.sortOrder ?? 0,
+  };
   if (data.id) {
     return getPrisma().banner.update({
       where: { id: data.id },
-      data: {
-        title: data.title,
-        subtitle: data.subtitle,
-        image: data.image,
-        href: data.href,
-        position: data.position ?? "homepage",
-        active: data.active ?? true,
-        sortOrder: data.sortOrder ?? 0,
-      },
+      data: payload,
     });
   }
-  return getPrisma().banner.create({
-    data: {
-      title: data.title,
-      subtitle: data.subtitle,
-      image: data.image,
-      href: data.href,
-      position: data.position ?? "homepage",
-      active: data.active ?? true,
-      sortOrder: data.sortOrder ?? 0,
-    },
-  });
+  return getPrisma().banner.create({ data: payload });
+}
+
+export async function adminUpdateBanner(
+  id: string,
+  data: {
+    title?: string;
+    subtitle?: string | null;
+    image?: string;
+    href?: string;
+    position?: string;
+    active?: boolean;
+    showContent?: boolean;
+    sortOrder?: number;
+  }
+) {
+  if (!(await isDatabaseReady())) throw new Error("Database required");
+  return getPrisma().banner.update({ where: { id }, data });
 }
 
 export async function adminDeleteBanner(id: string) {

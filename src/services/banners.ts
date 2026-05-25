@@ -8,6 +8,7 @@ export type BannerSlide = {
   cta: string;
   href: string;
   image: string;
+  showContent: boolean;
 };
 
 export async function getActiveBanners(position = "homepage"): Promise<BannerSlide[]> {
@@ -25,5 +26,6 @@ export async function getActiveBanners(position = "homepage"): Promise<BannerSli
     cta: "Shop now",
     href: b.href,
     image: b.image,
+    showContent: b.showContent,
   }));
 }

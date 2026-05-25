@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
         href: z.string(),
         position: z.string().optional(),
         active: z.boolean().optional(),
+        showContent: z.boolean().optional(),
         sortOrder: z.number().optional(),
       })
       .parse(await request.json());

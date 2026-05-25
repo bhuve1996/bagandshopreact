@@ -155,7 +155,7 @@ export function StorefrontSettingsAdmin() {
               key={link.platform}
               className="flex flex-col gap-2 rounded-lg border border-border p-3 sm:flex-row sm:items-center"
             >
-              <label className="flex min-w-[9rem] items-center gap-2 text-sm font-medium">
+              <label className="flex min-w-36 items-center gap-2 text-sm font-medium">
                 <input
                   type="checkbox"
                   checked={link.enabled}
