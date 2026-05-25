@@ -6,8 +6,16 @@ export async function isDatabaseReady(): Promise<boolean> {
   if (!process.env.DATABASE_URL) return false;
   if (cached !== null) return cached;
   try {
-    await getPrisma().$queryRaw`SELECT 1`;
-    cached = true;
+    const prisma = getPrisma();
+    await prisma.$queryRaw`SELECT 1`;
+    // Connection alone is not enough — empty DBs must fall back to mock data.
+    const tables = await prisma.$queryRaw<{ exists: boolean }[]>`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_schema = 'public' AND table_name = 'Category'
+      ) AS "exists"
+    `;
+    cached = tables[0]?.exists === true;
   } catch {
     cached = false;
   }

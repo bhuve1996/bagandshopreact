@@ -160,7 +160,13 @@ async function main() {
 
   await prisma.banner.upsert({
     where: { id: "seed-hero-1" },
-    update: {},
+    update: {
+      title: "Spring Collection",
+      subtitle: "Design-led accessories",
+      image:
+        "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
+      href: "/collections/new-arrivals",
+    },
     create: {
       id: "seed-hero-1",
       title: "Spring Collection",

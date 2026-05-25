@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { CollectionPLP } from "@/features/collection/collection-plp";
+import {
+  formatSlugTitle,
+  normalizeCollectionSlug,
+  resolveCollectionSlug,
+} from "@/lib/collection-slugs";
 import {
   getCategoryBySlug,
   getCollectionBySlug,
@@ -10,27 +14,28 @@ import {
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: raw } = await params;
+  const slug = normalizeCollectionSlug(raw);
   const cat = await getCategoryBySlug(slug);
   const col = await getCollectionBySlug(slug);
-  const title = cat?.name ?? col?.name ?? slug.replace(/-/g, " ");
-  return { title: title.charAt(0).toUpperCase() + title.slice(1) };
+  const resolved = resolveCollectionSlug(raw);
+  const title =
+    cat?.name ?? col?.name ?? resolved.label ?? formatSlugTitle(slug);
+  return { title };
 }
 
 export default async function CollectionPage({ params }: Props) {
-  const { slug } = await params;
+  const { slug: raw } = await params;
+  const slug = normalizeCollectionSlug(raw);
   const category = await getCategoryBySlug(slug);
   const collection = await getCollectionBySlug(slug);
-
-  const knownSlugs = ["best-sellers", "new-arrivals"];
-  if (!category && !collection && !knownSlugs.includes(slug)) {
-    notFound();
-  }
+  const resolved = resolveCollectionSlug(raw);
 
   const heading =
     category?.name ??
     collection?.name ??
-    slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    resolved.label ??
+    formatSlugTitle(slug);
 
   return (
     <>
@@ -44,7 +49,7 @@ export default async function CollectionPage({ params }: Props) {
         </nav>
       </div>
       <CollectionPLP
-        slug={slug}
+        slug={raw}
         heading={heading}
         description={category?.description ?? collection?.description}
       />

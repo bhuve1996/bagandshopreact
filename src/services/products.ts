@@ -4,6 +4,7 @@ import {
   products as mockProducts,
   getProductBySlug as mockGetBySlug,
 } from "@/lib/mock-data";
+import { applyCollectionSlugToFilters } from "@/lib/collection-slugs";
 import { isDatabaseReady } from "@/lib/db-ready";
 import { mapCategory, mapCollection, mapProduct } from "@/lib/mappers";
 import { getPrisma } from "@/lib/prisma";
@@ -51,30 +52,47 @@ function sortMock(products: Product[], sort?: ProductFilters["sort"]) {
 }
 
 function filterMock(filters: ProductFilters): Product[] {
+  const resolved = applyCollectionSlugToFilters(filters);
   let list = [...mockProducts];
-  const slug = filters.collection ?? filters.collectionSlug ?? filters.category;
+  const slug = resolved.collection ?? resolved.collectionSlug ?? resolved.category;
 
-  if (filters.category) {
-    list = list.filter((p) => p.category === filters.category);
+  if (resolved.category) {
+    list = list.filter((p) => p.category === resolved.category);
   }
-  if (filters.collectionSlug || filters.collection) {
-    const col = filters.collectionSlug ?? filters.collection;
+  if (resolved.collectionSlug || resolved.collection) {
+    const col = resolved.collectionSlug ?? resolved.collection;
     if (col === "best-sellers") list = list.filter((p) => p.isBestseller);
     else if (col === "new-arrivals") list = list.filter((p) => p.isNew);
-    else list = list.filter((p) => p.collection === col || p.category === col);
+    else if (col === "work-anywhere") {
+      list = list.filter((p) =>
+        ["desk", "bags", "tech"].includes(p.category)
+      );
+    } else if (col === "gift-sets" || col === "everyday") {
+      list = list.filter(
+        (p) => p.isBestseller || p.isNew || p.collection === "everyday"
+      );
+    } else {
+      list = list.filter(
+        (p) => p.collection === col || p.category === col
+      );
+    }
   }
   if (slug === "best-sellers") list = list.filter((p) => p.isBestseller);
   if (slug === "new-arrivals") list = list.filter((p) => p.isNew);
-  if (filters.isBestseller) list = list.filter((p) => p.isBestseller);
-  if (filters.isNew) list = list.filter((p) => p.isNew);
-  if (filters.device) list = list.filter((p) => p.device?.toLowerCase().includes(filters.device!.toLowerCase()));
-  if (filters.minPrice != null) list = list.filter((p) => p.price >= filters.minPrice!);
-  if (filters.maxPrice != null) list = list.filter((p) => p.price <= filters.maxPrice!);
-  if (filters.tags?.length) {
-    list = list.filter((p) => filters.tags!.some((t) => p.tags.includes(t)));
+  if (resolved.isBestseller) list = list.filter((p) => p.isBestseller);
+  if (resolved.isNew) list = list.filter((p) => p.isNew);
+  if (resolved.device) {
+    list = list.filter((p) =>
+      p.device?.toLowerCase().includes(resolved.device!.toLowerCase())
+    );
   }
-  if (filters.search) {
-    const q = filters.search.toLowerCase();
+  if (resolved.minPrice != null) list = list.filter((p) => p.price >= resolved.minPrice!);
+  if (resolved.maxPrice != null) list = list.filter((p) => p.price <= resolved.maxPrice!);
+  if (resolved.tags?.length) {
+    list = list.filter((p) => resolved.tags!.some((t) => p.tags.includes(t)));
+  }
+  if (resolved.search) {
+    const q = resolved.search.toLowerCase();
     list = list.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
@@ -83,7 +101,7 @@ function filterMock(filters: ProductFilters): Product[] {
         p.tags.some((t) => t.includes(q))
     );
   }
-  return sortMock(list, filters.sort);
+  return sortMock(list, resolved.sort);
 }
 
 function orderBy(sort?: ProductFilters["sort"]) {
@@ -105,12 +123,13 @@ function orderBy(sort?: ProductFilters["sort"]) {
 export async function getProducts(
   filters: ProductFilters = {}
 ): Promise<PaginatedProducts> {
-  const page = filters.page ?? 1;
-  const limit = filters.limit ?? 12;
+  const resolvedFilters = applyCollectionSlugToFilters(filters);
+  const page = resolvedFilters.page ?? 1;
+  const limit = resolvedFilters.limit ?? 12;
   const skip = (page - 1) * limit;
 
   if (!(await isDatabaseReady())) {
-    const all = filterMock(filters);
+    const all = filterMock(resolvedFilters);
     const items = all.slice(skip, skip + limit);
     return {
       items,
@@ -123,27 +142,41 @@ export async function getProducts(
 
   const where: Record<string, unknown> = {};
 
-  if (filters.category) {
-    where.category = { slug: filters.category };
+  if (resolvedFilters.category) {
+    where.category = { slug: resolvedFilters.category };
   }
-  const col = filters.collectionSlug ?? filters.collection;
+  const col = resolvedFilters.collectionSlug ?? resolvedFilters.collection;
   if (col === "best-sellers") where.isBestseller = true;
   else if (col === "new-arrivals") where.isNew = true;
-  else if (col) where.OR = [{ collectionSlug: col }, { category: { slug: col } }];
-  if (filters.isBestseller) where.isBestseller = true;
-  if (filters.isNew) where.isNew = true;
-  if (filters.device) where.device = { contains: filters.device, mode: "insensitive" };
-  if (filters.minPrice != null || filters.maxPrice != null) {
+  else if (col === "work-anywhere") {
+    where.category = { slug: { in: ["desk", "bags", "tech"] } };
+  } else if (col === "gift-sets" || col === "everyday") {
+    where.OR = [{ isBestseller: true }, { isNew: true }, { collectionSlug: "everyday" }];
+  } else if (col) {
+    where.OR = [{ collectionSlug: col }, { category: { slug: col } }];
+  }
+  if (resolvedFilters.isBestseller) where.isBestseller = true;
+  if (resolvedFilters.isNew) where.isNew = true;
+  if (resolvedFilters.device) {
+    where.device = { contains: resolvedFilters.device, mode: "insensitive" };
+  }
+  if (resolvedFilters.minPrice != null || resolvedFilters.maxPrice != null) {
     where.price = {
-      ...(filters.minPrice != null ? { gte: filters.minPrice } : {}),
-      ...(filters.maxPrice != null ? { lte: filters.maxPrice } : {}),
+      ...(resolvedFilters.minPrice != null
+        ? { gte: resolvedFilters.minPrice }
+        : {}),
+      ...(resolvedFilters.maxPrice != null
+        ? { lte: resolvedFilters.maxPrice }
+        : {}),
     };
   }
-  if (filters.tags?.length) where.tags = { hasSome: filters.tags };
-  if (filters.search) {
+  if (resolvedFilters.tags?.length) where.tags = { hasSome: resolvedFilters.tags };
+  if (resolvedFilters.search) {
     where.OR = [
-      { name: { contains: filters.search, mode: "insensitive" } },
-      { description: { contains: filters.search, mode: "insensitive" } },
+      { name: { contains: resolvedFilters.search, mode: "insensitive" } },
+      {
+        description: { contains: resolvedFilters.search, mode: "insensitive" },
+      },
     ];
   }
 
@@ -151,7 +184,7 @@ export async function getProducts(
     getPrisma().product.findMany({
       where,
       include: { category: true, variants: true },
-      orderBy: orderBy(filters.sort),
+      orderBy: orderBy(resolvedFilters.sort),
       skip,
       take: limit,
     }),

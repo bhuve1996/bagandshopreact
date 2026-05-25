@@ -5,7 +5,7 @@ const instagramPosts = [
   "photo-1523275335684-37898b6baf30",
   "photo-1590874103328-eac38a683ce7",
   "photo-1586023492125-27b2c045efd7",
-  "photo-1611186874728-291b8a01a7d5",
+  "photo-1601784551446-20c9e07cdbdb",
   "photo-1553062407-98eeb64c6a62",
   "photo-1601784551446-20c9e07cdbdb",
 ].map(

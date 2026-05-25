@@ -15,7 +15,7 @@ const banners = [
     subtitle: "Curated sets ready to delight",
     href: "/collections/gift-sets",
     image:
-      "https://images.unsplash.com/photo-1549465220-1a0b3a0e5c0e?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
   },
 ];
 

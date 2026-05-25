@@ -18,7 +18,7 @@ export function ShopByDevice() {
           {devices.map((device) => (
             <Link
               key={device.id}
-              href={`/collections/device/${device.slug}`}
+              href={`/collections/${device.slug}`}
               className="group flex flex-col items-center text-center"
             >
               <div className="card-premium relative aspect-square w-full max-w-[120px] overflow-hidden sm:max-w-none">
