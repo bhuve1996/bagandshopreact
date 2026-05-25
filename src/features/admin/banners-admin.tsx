@@ -30,13 +30,21 @@ const emptyForm = {
   active: true,
 };
 
+const emptyBanners: Banner[] = [];
+
+async function fetchAdminBanners(): Promise<Banner[]> {
+  const res = await fetch("/api/admin/banners");
+  if (!res.ok) throw new Error("Failed to load banners");
+  return res.json() as Promise<Banner[]>;
+}
+
 export function BannersAdmin() {
   const qc = useQueryClient();
-  const { data: banners = [] } = useQuery<Banner[]>({
+  const { data } = useQuery({
     queryKey: ["admin-banners"],
-    queryFn: () =>
-      fetch("/api/admin/banners").then((r) => r.json() as Promise<Banner[]>),
+    queryFn: fetchAdminBanners,
   });
+  const banners: Banner[] = data ?? emptyBanners;
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [imagePickerOpen, setImagePickerOpen] = useState(false);
@@ -210,7 +218,7 @@ export function BannersAdmin() {
         </div>
       </form>
       <ul className="space-y-3">
-        {banners.map((b: Banner) => (
+        {banners.map((b) => (
           <li
             key={b.id}
             className="card-premium flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between"
