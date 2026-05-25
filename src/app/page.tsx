@@ -51,15 +51,14 @@ export default async function HomePage() {
   return (
     <>
       <HeroCarousel />
-      <VideoCarousel initialSlides={siteVideos} />
+      <TrendingProducts
+        products={trending.items}
+        section={homepage.trending}
+      />
       <FeaturedCategories
         categories={categories}
         section={homepage.featuredCategories}
         labels={labels}
-      />
-      <TrendingProducts
-        products={trending.items}
-        section={homepage.trending}
       />
       <CollectionsShowcase
         collections={collections}
@@ -82,6 +81,7 @@ export default async function HomePage() {
         section={homepage.instagram}
       />
       <RecentlyViewed />
+      <VideoCarousel initialSlides={siteVideos} />
       <Newsletter />
     </>
   );

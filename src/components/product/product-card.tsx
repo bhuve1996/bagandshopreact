@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Plus } from "lucide-react";
+import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProductCardVariantSwatches } from "@/components/product/product-card-variant-swatches";
 import {
@@ -42,6 +42,35 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
             100
         )
       : null;
+  const variantCount = product.variants?.length ?? 0;
+  const outOfStock =
+    defaultVariant?.inStock === false && variantCount > 0;
+
+  function handlePurchase(buyNow = false) {
+    if (outOfStock) {
+      toast.error("Out of stock", "This variant is currently unavailable.");
+      return;
+    }
+    const v = defaultVariant;
+    addItem({
+      productId: product.id,
+      variantId: v?.id,
+      name:
+        v && variantCount > 1 ? `${product.name} — ${v.name}` : product.name,
+      image: v?.image ?? product.images[0],
+      price: v?.price ?? priceDisplay.fromPrice,
+      slug: product.slug,
+    });
+    toast.addedToCart(product.name);
+    trackAnalytics({
+      type: AnalyticsEventType.ADD_TO_CART,
+      productId: product.id,
+      metadata: { slug: product.slug, source: "card", buyNow },
+    });
+    if (buyNow) {
+      window.location.href = "/checkout";
+    }
+  }
 
   return (
     <motion.article
@@ -121,34 +150,6 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
             )}
           />
         </button>
-        <Button
-          size="icon"
-          variant="secondary"
-          className="absolute bottom-3 right-3 z-20 h-10 w-10 translate-y-2 opacity-0 shadow-lg transition-all group-hover:translate-y-0 group-hover:opacity-100"
-          onClick={(e) => {
-            e.preventDefault();
-            const v = defaultVariant;
-            addItem({
-              productId: product.id,
-              variantId: v?.id,
-              name: v && (product.variants?.length ?? 0) > 1
-                ? `${product.name} — ${v.name}`
-                : product.name,
-              image: v?.image ?? product.images[0],
-              price: v?.price ?? priceDisplay.fromPrice,
-              slug: product.slug,
-            });
-            toast.addedToCart(product.name);
-            trackAnalytics({
-              type: AnalyticsEventType.ADD_TO_CART,
-              productId: product.id,
-              metadata: { slug: product.slug, source: "card" },
-            });
-          }}
-          aria-label={`Add ${product.name} to cart`}
-        >
-          <Plus className="h-4 w-4" />
-        </Button>
       </div>
       <div className="mt-4 space-y-1">
         {product.device && (
@@ -174,6 +175,32 @@ export function ProductCard({ product, priority, className }: ProductCardProps) 
           <span className="text-amber-600">★</span>
           <span>{product.rating}</span>
           <span>({product.reviewCount})</span>
+        </div>
+        <div className="mt-3 flex gap-2">
+          <Button
+            size="sm"
+            className="min-w-0 flex-1 px-3"
+            disabled={outOfStock}
+            onClick={(e) => {
+              e.preventDefault();
+              handlePurchase(false);
+            }}
+          >
+            {outOfStock ? labels.outOfStock : labels.addToCart}
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="min-w-0 flex-1 px-3"
+            disabled={outOfStock}
+            onClick={(e) => {
+              e.preventDefault();
+              handlePurchase(true);
+            }}
+            aria-label={`Buy ${product.name} now`}
+          >
+            Buy now
+          </Button>
         </div>
       </div>
     </motion.article>
