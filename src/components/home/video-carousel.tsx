@@ -37,10 +37,12 @@ export function VideoCarousel({ initialSlides }: Props) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const scrollRaf = useRef<number | null>(null);
+  const [inView, setInView] = useState(false);
 
   const serverSlides = useMemo(
     () => (initialSlides && initialSlides.length > 0 ? initialSlides : []),
@@ -58,11 +60,20 @@ export function VideoCarousel({ initialSlides }: Props) {
 
   const scrollToIndex = useCallback(
     (i: number, behavior: ScrollBehavior = "smooth") => {
+      const container = scrollRef.current;
       const card = cardRefs.current[i];
-      card?.scrollIntoView({
+      if (!container || !card) return;
+
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const targetLeft = Math.max(
+        0,
+        Math.min(cardCenter - container.clientWidth / 2, maxScroll)
+      );
+
+      container.scrollTo({
+        left: targetLeft,
         behavior: reducedMotion ? "auto" : behavior,
-        inline: "center",
-        block: "nearest",
       });
     },
     [reducedMotion]
@@ -95,26 +106,38 @@ export function VideoCarousel({ initialSlides }: Props) {
   }, []);
 
   useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     videoRefs.current.forEach((el, i) => {
       if (!el) return;
-      if (i === index && !paused && !reducedMotion) {
+      if (i === index && !paused && !reducedMotion && inView) {
         void el.play().catch(() => {});
       } else {
         el.pause();
         if (i !== index) el.currentTime = 0;
       }
     });
-  }, [index, paused, reducedMotion]);
+  }, [index, paused, reducedMotion, inView]);
 
   useEffect(() => {
-    if (slides.length === 0 || paused || reducedMotion) return;
+    if (slides.length === 0 || paused || reducedMotion || !inView) return;
     const timer = setInterval(() => {
       const next = (index + 1) % slides.length;
       setIndex(next);
       scrollToIndex(next);
     }, AUTO_ADVANCE_MS);
     return () => clearInterval(timer);
-  }, [slides.length, paused, reducedMotion, index, scrollToIndex]);
+  }, [slides.length, paused, reducedMotion, inView, index, scrollToIndex]);
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -157,6 +180,7 @@ export function VideoCarousel({ initialSlides }: Props) {
 
   return (
     <section
+      ref={sectionRef}
       className="section-padding border-y border-border bg-stone-100 dark:bg-stone-950"
       aria-roledescription="carousel"
       aria-label="Brand video reels"
@@ -253,6 +277,7 @@ export function VideoCarousel({ initialSlides }: Props) {
                         muted
                         playsInline
                         loop
+                        tabIndex={-1}
                         preload={active ? "auto" : "metadata"}
                         controls={reducedMotion}
                         aria-label={s.title}
